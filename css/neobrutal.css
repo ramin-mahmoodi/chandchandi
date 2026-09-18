@@ -126,6 +126,47 @@ body {
   transform: translate(-1px, -1px);
 }
 
+/* Neobrutal Stepper Buttons */
+.neo-stepper-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 18px;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: var(--neo-radius-sm);
+  box-shadow: 1px 1px 0px 0px #000000;
+  color: #000000;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+  padding: 0;
+}
+
+.neo-stepper-btn:hover {
+  background-color: var(--color-lemon);
+  box-shadow: 1.5px 1.5px 0px 0px #000000;
+  transform: translate(-0.5px, -0.5px);
+}
+
+.neo-stepper-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+/* Hide native number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .neo-badge {
   display: inline-flex;
   align-items: center;

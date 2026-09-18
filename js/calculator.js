@@ -34,6 +34,8 @@ class CurrencyCalculator {
     if (this.hasInitializedSelect) return;
     this.hasInitializedSelect = true;
 
+    this.initSteppers();
+
     const trigger = document.getElementById('calc-select-trigger');
     const searchInput = document.getElementById('calc-select-search');
     const container = document.getElementById('calc-select-container');
@@ -316,6 +318,35 @@ class CurrencyCalculator {
     const unit = this.currencyMode === 'rial' ? 'ریال' : 'تومان';
     goldResult.textContent = `${Math.round(total).toLocaleString('fa-IR')} ${unit}`;
   }
+
+  initSteppers() {
+    const bindStepper = (inputId, upBtnId, downBtnId, step, min = 0) => {
+      const input = document.getElementById(inputId);
+      const upBtn = document.getElementById(upBtnId);
+      const downBtn = document.getElementById(downBtnId);
+      if (!input || !upBtn || !downBtn) return;
+
+      const stepValue = (delta) => {
+        let val = parseFloat(input.value) || 0;
+        let next = Math.max(min, Math.round((val + delta) * 100) / 100);
+        input.value = next;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+
+      upBtn.onclick = (e) => {
+        e.preventDefault();
+        stepValue(step);
+      };
+
+      downBtn.onclick = (e) => {
+        e.preventDefault();
+        stepValue(-step);
+      };
+    };
+
+    bindStepper('gold-weight-input', 'gold-weight-up', 'gold-weight-down', 0.5, 0);
+    bindStepper('calc-amount-input', 'calc-amount-up', 'calc-amount-down', 1, 0);
+  }
 }
 
 window.currencyCalculator = new CurrencyCalculator();
@@ -324,5 +355,6 @@ window.currencyCalculator = new CurrencyCalculator();
 document.addEventListener('DOMContentLoaded', () => {
   if (window.currencyCalculator) {
     window.currencyCalculator.initCustomSelect();
+    window.currencyCalculator.initSteppers();
   }
 });
