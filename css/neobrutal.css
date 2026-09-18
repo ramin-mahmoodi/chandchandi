@@ -343,13 +343,13 @@ body {
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(151, 238, 136, 0); }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar (Neobrutalism Style) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--color-page-bg);
   border: none;
 }
 ::-webkit-scrollbar-thumb {
@@ -359,13 +359,4 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-sky);
-}
-
-#calc-select-list {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-main) transparent;
-}
-#calc-select-list::-webkit-scrollbar-track {
-  background: transparent;
-  border: none;
 }
