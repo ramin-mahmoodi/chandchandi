@@ -139,6 +139,83 @@ body {
   letter-spacing: 0.01em;
 }
 
+/* Official neobrutalui.live Select Component */
+.neo-select-trigger {
+  display: flex;
+  min-height: 44px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--neo-radius);
+  border: 2px solid #000000;
+  background-color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  box-shadow: 2px 2px 0px 0px #000000;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.neo-select-trigger:hover {
+  box-shadow: 3px 3px 0px 0px #000000;
+  transform: translate(-1px, -1px);
+}
+
+.neo-select-trigger:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.neo-select-content {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  z-index: 60;
+  border-radius: var(--neo-radius);
+  border: 2px solid #000000;
+  background-color: #ffffff;
+  color: #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  padding: 0.35rem;
+  animation: neoSelectOpen 0.14s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes neoSelectOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.neo-select-item {
+  display: flex;
+  min-height: 2.5rem;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--neo-radius-sm);
+  padding: 0.4rem 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #000000;
+  transition: background-color 0.1s ease;
+}
+
+.neo-select-item:hover,
+.neo-select-item.is-selected {
+  background-color: var(--color-main);
+  color: #000000;
+}
+
 .neo-badge-green {
   background-color: var(--color-mint);
   color: #000000;

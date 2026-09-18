@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const statusBadge = document.getElementById('connection-status-badge');
       if (statusBadge) {
-        statusBadge.innerHTML = '<span class="pulse-green"></span> وضعیت: آنلاین (آماده)';
+        statusBadge.innerHTML = '<span class="pulse-green shrink-0"></span> <span class="truncate">وضعیت: آماده</span>';
       }
 
       // 2. Start timer and background refresh
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const statusBadge = document.getElementById('connection-status-badge');
       if (statusBadge && manual) {
-        statusBadge.innerHTML = '<span class="pulse-green"></span> در حال به‌روزرسانی...';
+        statusBadge.innerHTML = '<span class="pulse-green shrink-0"></span> <span class="truncate">به‌روزرسانی...</span>';
       }
 
       try {
@@ -191,14 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (statusBadge) {
             const isLive = result.source === 'live';
             statusBadge.innerHTML = isLive
-              ? '<span class="pulse-green"></span> وضعیت: زنده (سرور)'
-              : '<span class="pulse-green"></span> وضعیت: داده‌های ذخیره‌شده';
+              ? '<span class="pulse-green shrink-0"></span> <span class="truncate">وضعیت: زنده</span>'
+              : '<span class="pulse-green shrink-0"></span> <span class="truncate">داده‌های ذخیره</span>';
           }
         }
       } catch (err) {
         console.warn('Could not fetch live, keeping current prices', err);
         if (statusBadge) {
-          statusBadge.innerHTML = '<span class="pulse-green"></span> وضعیت: پایدار (آفلاین)';
+          statusBadge.innerHTML = '<span class="pulse-green shrink-0"></span> <span class="truncate">وضعیت: پایدار</span>';
         }
       } finally {
         this.isLoading = false;
