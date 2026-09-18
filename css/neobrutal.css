@@ -428,3 +428,22 @@ header.neo-box {
   border-right: 1px solid #000000;
   border-bottom: none;
 }
+
+/* RTL inner containers (Symbol selector list, Modals) where scrollbar is on the left */
+#calc-select-list::-webkit-scrollbar-track,
+.neo-select-content::-webkit-scrollbar-track,
+.neo-modal::-webkit-scrollbar-track,
+[dir="rtl"] .overflow-y-auto::-webkit-scrollbar-track {
+  border-left: none;
+  border-right: 2px solid #000000;
+}
+
+#calc-select-list::-webkit-scrollbar-thumb,
+.neo-select-content::-webkit-scrollbar-thumb,
+.neo-modal::-webkit-scrollbar-thumb,
+[dir="rtl"] .overflow-y-auto::-webkit-scrollbar-thumb {
+  border-left: none;
+  border-right: 2px solid #000000;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+}
