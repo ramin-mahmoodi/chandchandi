@@ -46,6 +46,116 @@
 
 ---
 
+### نمادهای مهم و دسته‌بندی اسلاگ‌ها (Supported Slugs & Categories)
+
+پارامتر `slug` در استعلام‌های API، نمادهای مورد نظر را برای دریافت قیمت تعیین می‌کند. می‌توان چند نماد را با کاما (`,`) جدا کرده و در یک درخواست ارسال نمود، یا با ارسال رشته کامل، تمام **۹۳ نماد** را به صورت یکجا دریافت کرد.
+
+#### رشته کامل تمام ۹۳ نماد برای استعلام یکجا:
+
+```text
+usd,eur,try,aed,gbp,cad,aud,rub,azn,cny,sek,inr,thb,chf,qar,amd,krw,pkr,jpy,omr,afn,myr,iqd,gel,sar,usd-sulaymaniyah,usd-herat,usd-ist,usd-hav,eur-ist,eur-hav,ars,bhd,brl,dkk,hkd,kgs,kwd,nok,nzd,sgd,syp,tjs,tmt,abshodeh,18ayar,sekkeh,bahar,nim,rob,gerami,usd_xau,xag,usdt,btc,eth,xrp,bnb,shib,ada,doge,ton,not,sol,trx,cake,avax,dot,link,ltc,pepe,uni,xlm,fil,near,eos,aave,grt,xtz,flow,sand,mana,axs,chz,enj,zec,gala,lrc,bat,one,zen,cvc,storj
+```
+
+#### جدول جامع نمادها، نام‌ها و دسته‌بندی:
+
+| ردیف | شناسه (Slug) | نام فارسی | نام انگلیسی | دسته‌بندی | نوع تصویر (CDN Type) |
+| :---: | :--- | :--- | :--- | :---: | :---: |
+| 1 | `abshodeh` | آبشده(مثقال طلا) | Raw 24K Gold (Mesghal) | طلا، سکه و فلزات گرانبها | `gold` |
+| 2 | `18ayar` | گرم طلای 18 عیار | 18K Gold per Gram | طلا، سکه و فلزات گرانبها | `gold` |
+| 3 | `sekkeh` | سکه امامی (طرح جدید) | Full Coin (Imami) | طلا، سکه و فلزات گرانبها | `gold` |
+| 4 | `bahar` | سکه بهار آزادی | Bahar Azadi Coin | طلا، سکه و فلزات گرانبها | `gold` |
+| 5 | `nim` | نیم سکه | Half Coin | طلا، سکه و فلزات گرانبها | `gold` |
+| 6 | `rob` | ربع سکه | Quarter Coin | طلا، سکه و فلزات گرانبها | `gold` |
+| 7 | `gerami` | سکه گرمی | gram sekke | طلا، سکه و فلزات گرانبها | `gold` |
+| 8 | `usd_xau` | انس طلا | Gold Ounce to US Dollar | طلا، سکه و فلزات گرانبها | `gold` |
+| 9 | `xag` | انس نقره | Silver Ounce to US Dollar | طلا، سکه و فلزات گرانبها | `gold` |
+| 10 | `usd` | دلار آمریکا | US Dollar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 11 | `eur` | یورو | Euro | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 12 | `try` | لیر ترکیه | Turkish Lira | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 13 | `aed` | درهم | UAE Dirham | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 14 | `gbp` | پوند انگلیس | British Pound | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 15 | `cad` | دلار کانادا | Canadian Dollar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 16 | `aud` | دلار استرالیا | Australian Dollar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 17 | `rub` | روبل روسیه | Russian Ruble | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 18 | `azn` | منات آذربایجان | Azerbaijani Manat | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 19 | `cny` | یوان چین | Chinese Yuan | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 20 | `sek` | کرون سوئد | Swedish Krona | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 21 | `inr` | روپیه هند | Indian Rupee | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 22 | `thb` | بات تایلند | Thai Baht | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 23 | `chf` | فرانک سوئیس | Swiss Franc | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 24 | `qar` | ریال قطر | Qatari Riyal | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 25 | `amd` | درام ارمنستان | Armenian Dram | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 26 | `krw` | وون کره جنوبی | South Korean Won | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 27 | `pkr` | روپیه پاکستان | Pakistani Rupee | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 28 | `jpy` | ین ژاپن | Japanese Yen | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 29 | `omr` | ریال عمان | Omani Rial | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 30 | `afn` | افغانی | Afghan Afghani | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 31 | `myr` | رینگیت مالزی | Malaysian Ringgit | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 32 | `iqd` | دینار عراق | Iraqi Dinar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 33 | `gel` | لاری گرجستان | Georgian Lari | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 34 | `sar` | ریال عربستان | Saudi Riyal | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 35 | `usd-sulaymaniyah` | دلار سلیمانیه | US Dollar (Sulaymaniyah) | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 36 | `usd-herat` | دلار هرات | US Dollar (Herat) | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 37 | `usd-ist` | دلار استانبول | US Dollar (Istanbul) | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 38 | `usd-hav` | حواله دلار آمریکا | US Dollar (Remittance) | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 39 | `eur-ist` | یورو استانبول | Euro (Istanbul) | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 40 | `eur-hav` | حواله یورو | Euro (Remittance) | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 41 | `ars` | پزو آرژانتین | Argentine Peso | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 42 | `bhd` | دینار بحرین | Bahraini Dinar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 43 | `brl` | رئال برزیل | Brazilian Real | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 44 | `dkk` | کرون دانمارک | Danish Krone | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 45 | `hkd` | دلار هنگ کنگ | Hong Kong Dollar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 46 | `kgs` | سوم قرقیزستان | Kyrgyzstani Som | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 47 | `kwd` | دینار کویت | Kuwaiti Dinar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 48 | `nok` | کرون نروژ | Norwegian Krone | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 49 | `nzd` | دلار نیوزلند | New Zealand Dollar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 50 | `sgd` | دلار سنگاپور | Singapore Dollar | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 51 | `syp` | پوند سوریه | Syrian Pound | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 52 | `tjs` | سامانی تاجیکستان | Tajikistani Somoni | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 53 | `tmt` | منات ترکمنستان | Turkmenistani Manat | ارزهای بین‌المللی و بازارهای حواله / مرزی | `currency` |
+| 54 | `usdt` | تتر | Tether | رمزارزها (Cryptocurrencies) | `crypto` |
+| 55 | `btc` | بیت کوین | Bitcoin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 56 | `eth` | اتریوم | Ethereum | رمزارزها (Cryptocurrencies) | `crypto` |
+| 57 | `xrp` | ریپل | Ripple | رمزارزها (Cryptocurrencies) | `crypto` |
+| 58 | `bnb` | بایننس کوین | binance coin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 59 | `shib` | شیبا | shiba ino | رمزارزها (Cryptocurrencies) | `crypto` |
+| 60 | `ada` | کاردانو | Cardano | رمزارزها (Cryptocurrencies) | `crypto` |
+| 61 | `doge` | دوج‌کوین | Dogecoin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 62 | `ton` | تون کوین | Toncoin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 63 | `not` | نات کوین | Notcoin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 64 | `sol` | سولانا | Solana | رمزارزها (Cryptocurrencies) | `crypto` |
+| 65 | `trx` | ترون | TRON | رمزارزها (Cryptocurrencies) | `crypto` |
+| 66 | `cake` | پنکیک سواپ | Pancakeswap | رمزارزها (Cryptocurrencies) | `crypto` |
+| 67 | `avax` | آوالانچ | Avalanche | رمزارزها (Cryptocurrencies) | `crypto` |
+| 68 | `dot` | پولکادات | Polkadot | رمزارزها (Cryptocurrencies) | `crypto` |
+| 69 | `link` | چین‌لینک | Chainlink | رمزارزها (Cryptocurrencies) | `crypto` |
+| 70 | `ltc` | لایت‌کوین | Litecoin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 71 | `pepe` | پپه | Pepe | رمزارزها (Cryptocurrencies) | `crypto` |
+| 72 | `uni` | یونی‌سواپ | Uniswap | رمزارزها (Cryptocurrencies) | `crypto` |
+| 73 | `xlm` | استلار | Stellar | رمزارزها (Cryptocurrencies) | `crypto` |
+| 74 | `fil` | فایل‌کوین | Filecoin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 75 | `near` | نیر پروتکل | NEAR Protocol | رمزارزها (Cryptocurrencies) | `crypto` |
+| 76 | `eos` | ایاس | EOS | رمزارزها (Cryptocurrencies) | `crypto` |
+| 77 | `aave` | آوه | Aave | رمزارزها (Cryptocurrencies) | `crypto` |
+| 78 | `grt` | گراف | The Graph | رمزارزها (Cryptocurrencies) | `crypto` |
+| 79 | `xtz` | تزوس | Tezos | رمزارزها (Cryptocurrencies) | `crypto` |
+| 80 | `flow` | فلو | Flow | رمزارزها (Cryptocurrencies) | `crypto` |
+| 81 | `sand` | سندباکس | The Sandbox | رمزارزها (Cryptocurrencies) | `crypto` |
+| 82 | `mana` | دی‌سنترالند | Decentraland | رمزارزها (Cryptocurrencies) | `crypto` |
+| 83 | `axs` | اکسی اینفینیتی | Axie Infinity | رمزارزها (Cryptocurrencies) | `crypto` |
+| 84 | `chz` | چیلیز | Chiliz | رمزارزها (Cryptocurrencies) | `crypto` |
+| 85 | `enj` | انجین کوین | Enjin Coin | رمزارزها (Cryptocurrencies) | `crypto` |
+| 86 | `zec` | زدکش | Zcash | رمزارزها (Cryptocurrencies) | `crypto` |
+| 87 | `gala` | گالا | Gala | رمزارزها (Cryptocurrencies) | `crypto` |
+| 88 | `lrc` | لوپرینگ | Loopring | رمزارزها (Cryptocurrencies) | `crypto` |
+| 89 | `bat` | بت | Basic Attention Token | رمزارزها (Cryptocurrencies) | `crypto` |
+| 90 | `one` | هارمونی | Harmony | رمزارزها (Cryptocurrencies) | `crypto` |
+| 91 | `zen` | هورایزن | Horizen | رمزارزها (Cryptocurrencies) | `crypto` |
+| 92 | `cvc` | سیویک | Civic | رمزارزها (Cryptocurrencies) | `crypto` |
+| 93 | `storj` | استورج | Storj | رمزارزها (Cryptocurrencies) | `crypto` |
+
+---
+
 ### الگوریتم گام‌به‌گام تولید امضای دیجیتال (HMAC-SHA256)
 
 سرور اپلیکیشن برای جلوگیری از دستکاری درخواست‌ها و تضمین سلامت آن‌ها، بررسی می‌کند که پارامترهای هر درخواست با الگوریتم HMAC-SHA256 امضا شده باشند. مراحل تولید درخواست به شرح زیر است:
