@@ -402,7 +402,7 @@ header.neo-box {
 
 ::-webkit-scrollbar-thumb {
   background: #b6ace4;
-  border: 2px solid #000000;
+  border: 1px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -421,7 +421,7 @@ header.neo-box {
 
 ::-webkit-scrollbar-thumb:horizontal {
   background: #b6ace4;
-  border: 2px solid #000000;
+  border: 1px solid #000000;
 }
 
 /* Main Page Viewport Scrollbar - Remove right border touching window edge */
@@ -436,9 +436,9 @@ body::-webkit-scrollbar-track {
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb {
   border-right: none;
-  border-left: 2px solid #000000;
-  border-top: 2px solid #000000;
-  border-bottom: 2px solid #000000;
+  border-left: 1px solid #000000;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
 }
 
 /* Ensure inner menus, selects, and modals preserve full borders */
@@ -452,5 +452,5 @@ body::-webkit-scrollbar-thumb {
 #calc-select-list::-webkit-scrollbar-thumb,
 .neo-select-content::-webkit-scrollbar-thumb,
 .neo-modal::-webkit-scrollbar-thumb {
-  border: 2px solid #000000 !important;
+  border: 1px solid #000000 !important;
 }
