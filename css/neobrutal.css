@@ -345,12 +345,12 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-page-bg);
-  border-left: 2px solid #000;
+  background: transparent;
+  border: none;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-main);
@@ -359,4 +359,13 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-sky);
+}
+
+#calc-select-list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-main) transparent;
+}
+#calc-select-list::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
 }
