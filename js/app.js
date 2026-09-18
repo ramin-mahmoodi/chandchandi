@@ -1,5 +1,5 @@
 /**
- * Main Application Controller for Alanchand Neobrutalism Web
+ * Main Application Controller for ChandChandi (Neobrutalism Web)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,10 +16,39 @@ document.addEventListener('DOMContentLoaded', () => {
     isLoading: false,
 
     init() {
+      // 1. Instantly populate with bundled or cached data so UI is NEVER empty
+      const cached = localStorage.getItem('alanchand_cached_data');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          this.data = parsed.data.data || parsed.data;
+          this.updateTimestamp(parsed.data.updated_at || parsed.data.updatedAt);
+        } catch (e) {
+          this.data = window.ALANCHAND_FALLBACK_DATA || {};
+          this.updateTimestamp(window.ALANCHAND_UPDATED_AT);
+        }
+      } else {
+        this.data = window.ALANCHAND_FALLBACK_DATA || {};
+        this.updateTimestamp(window.ALANCHAND_UPDATED_AT);
+      }
+
       this.bindEvents();
       this.updateCurrencyToggleButton();
+      this.renderGrid();
+      this.updateTicker();
+
+      if (window.currencyCalculator) {
+        window.currencyCalculator.setSymbolsData(this.data);
+      }
+
+      const statusBadge = document.getElementById('connection-status-badge');
+      if (statusBadge) {
+        statusBadge.innerHTML = '<span class="pulse-green"></span> آماده (آفلاین/کش)';
+      }
+
+      // 2. Start timer and attempt live refresh in background
       this.startCountdownTimer();
-      this.loadData();
+      this.loadData(false);
     },
 
     bindEvents() {
@@ -162,14 +191,16 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (statusBadge) {
-            const srcText = result.source === 'live' ? 'زنده (سرور)' : (result.source === 'cache' ? 'کش محلی' : 'آفلاین');
-            statusBadge.innerHTML = `<span class="pulse-green"></span> وضعیت: ${srcText}`;
+            const isLive = result.source === 'live';
+            statusBadge.innerHTML = isLive
+              ? '<span class="pulse-green"></span> وضعیت: آنلاین (زنده)'
+              : '<span class="pulse-green"></span> وضعیت: داده‌های ذخیره‌شده';
           }
         }
       } catch (err) {
-        console.error('Failed to load prices', err);
+        console.warn('Live fetch not reachable, using offline/cached prices', err);
         if (statusBadge) {
-          statusBadge.innerHTML = '<span style="color:#c00;">●</span> خطا در اتصال';
+          statusBadge.innerHTML = '<span class="pulse-green"></span> وضعیت: پایدار (آفلاین)';
         }
       } finally {
         this.isLoading = false;
@@ -207,18 +238,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const countDisplay = document.getElementById('filtered-count');
       if (!container) return;
 
-      container.innerHTML = '';
-
       const keys = Object.keys(this.data);
       if (keys.length === 0) {
         container.innerHTML = `
           <div class="col-span-full neo-card text-center p-8 bg-yellow-100">
-            <div class="text-2xl font-black mb-2">در حال دریافت اطلاعات...</div>
-            <p class="text-gray-700 font-bold">لطفاً چند لحظه صبر کنید تا ارتباط با سرور برقرار شود.</p>
+            <div class="text-2xl font-black mb-2">در حال بارگذاری...</div>
+            <p class="text-gray-700 font-bold">در حال راه‌اندازی کارت‌های بازار.</p>
           </div>
         `;
         return;
       }
+
+      container.innerHTML = '';
 
       // Filter
       const filteredKeys = keys.filter(key => {
@@ -339,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
 
-        // Card click opens modal, except star button
         card.addEventListener('click', (e) => {
           if (e.target.closest('.fav-star-btn')) {
             e.stopPropagation();
@@ -390,7 +420,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       });
 
-      // Repeat for continuous marquee
       tickerContainer.innerHTML = html + html;
     },
 
@@ -426,7 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Buy & Sell (if available)
       if (item.buy || item.sell) {
         detailsHtml += `
           <div class="grid grid-cols-2 gap-3 mb-4">
@@ -442,7 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
-      // Coin bubble (حباب) if available
       if (item.bubble !== undefined && item.bubble !== null) {
         detailsHtml += `
           <div class="neo-box p-3 bg-purple-100 mb-4">
@@ -459,7 +486,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
-      // Dollar rate (for gold/coins)
       if (item.dolar_rate) {
         detailsHtml += `
           <div class="neo-box p-3 bg-blue-50 mb-4 flex justify-between items-center">
