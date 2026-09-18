@@ -85,59 +85,89 @@ https://api.alanchand.com/app/v2.php?key=fc6cdb49aeae4b8feea5b1f574701944&platfo
 
 ---
 
-### معماری خط لوله رمزنگاری و استراتژی تاب‌آوری (Cryptographic & Resilient Architecture)
+### راه‌اندازی پروکسی اختصاصی کلادفلر (Cloudflare Worker CORS Proxy)
 
-سیستم استعلام نرخ‌ها برای تضمین **امنیت ارتباط با سرور** و **عدم قطعی نمایش اطلاعات به کاربر**، از دو سازوکار مستقل و هماهنگ بهره می‌برد:
+مرورگرهای وب به دلیل سیاست امنیتی Same-Origin و محدودیت‌های CORS مانع از فراخوانی مستقیم API الان‌چند در محیط کلاینت‌ساید می‌شوند. همچنین پروکسی‌های عمومی اشتراکی در ساعات شلوغی ممکن است دچار کندی یا قطعی مقطعی گردند. 
 
-#### ۱. چرخه رمزنگاری و تولید امضای دیجیتال (Cryptographic Signing Pipeline)
-سرور الان‌چند برای احراز هویت درخواست‌ها و اطمینان از اصالت کلاینت، از هش کلیددار (`HMAC-SHA256`) استفاده می‌کند. این فرآیند در کلاینت به صورت خودکار طی مراحل زیر انجام می‌شود:
+برای برقراری ارتباط بدون واسطه، امن و پایدار، استفاده از یک ورکر شخصی روی شبکه ابری کلادفلر (Cloudflare Edge Network) توصیه می‌شود. پلن رایگان کلادفلر روزانه ۱۰۰٬۰۰۰ درخواست را بدون هزینه و با پاسخ‌دهی در کمتر از ۵۰ میلی‌ثانیه پردازش می‌کند.
 
-1. **گردآوری پارامترها:** استخراج زمان دقیق جاری سیستم بر حسب ثانیه (Unix Timestamp)، کلید عمومی کلاینت (`key`)، شناسه پلتفرم (`android`)، نگارش اپلیکیشن (`3.1.0`) و فهرست نمادهای انتخابی (`slug`).
-2. **مرتب‌سازی قطعی (Deterministic Sorting):** نام تمام کلیدها به ترتیب حروف الفبای انگلیسی مرتب می‌شوند (`key` -> `platform` -> `slug` -> `ts` -> `type` -> `v`) تا رشته کوئری همیشه ساختاری استاندارد، پایدار و یکسان داشته باشد.
-3. **تشکیل رشته معیار (Canonical Query String):** تمامی کلیدها و مقادیر متناظر بر اساس استاندارد URL Encode کدگذاری شده و با نویسه `&` به یکدیگر پیوند می‌خورند.
-4. **محاسبه هش HMAC:** رشته حاصل به همراه کلید محرمانه (Secret Key) به الگوریتم SHA-256 داده می‌شود و یک امضای دیجیتال ۶۴ کاراکتری هگزادسیمال تولید می‌گردد.
-5. **ساخت آدرس نهایی:** امضای تولیدشده تحت پارامتر `&sign=...` به انتهای آدرس افزوده شده و درخواست `GET` آماده ارسال به سرور می‌شود.
+#### استقرار خودکار با یک کلیک (1-Click Deploy)
 
-#### ۲. استراتژی تاب‌آوری و کارکرد بدون قطعی (High Availability & Offline Strategy)
-برای تضمین این‌که کاربر تحت هیچ شرایطی (اعم از اختلالات سراسری اینترنت، تحریم، مسدودسازی شبکه یا خطای CORS) با صفحه خالی یا بدون قیمت روبرو نشود، سیستم از مکانیزم حفاظتی سه‌سطحی بهره می‌برد:
+با کلیک روی نشان زیر می‌توانید این ورکر را به صورت خودکار و بدون نیاز به دانلود کدی، روی حساب کلادفلر خود مستقر کنید:
 
-- **سطح اول (دریافت زنده):** ارسال درخواست از طریق مسیرهای توزیع‌شده (ارتباط مستقیم یا رله‌های پروکسی پشتیبان) برای دریافت تازه‌ترین نرخ‌ها و ذخیره فوری آن‌ها در حافظه محلی مرورگر (`LocalStorage`).
-- **سطح دوم (کش آفلاین مرورگر):** چنانچه ارتباط شبکه با سرور دچار قطعی یا تایم‌اوت شود، برنامه بدون فوت وقت آخرین نرخ‌های معتبر ذخیره‌شده در `LocalStorage` را همراه با زمان آخرین به‌روزرسانی نمایش می‌دهد.
-- **سطح سوم (دیتاست آفلاین همراه پروژه):** در سناریویی که کاربر برای اولین‌بار بدون اتصال به اینترنت وارد سایت شود و سابقه کش وجود نداشته باشد، کل بسته داده‌های ۹۳ نماد که به صورت محلی در سورس پروژه تعبیه شده بلافاصله بارگذاری می‌شود تا تمام کارت‌ها و ماشین‌حساب‌ها فعال باشند.
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ramin-mahmoodi/chandchandi)
 
-#### دیاگرام جریان پردازش و تاب‌آوری سیستم
+#### مراحل راه‌اندازی دستی در داشبورد کلادفلر
 
-```mermaid
-flowchart TD
-    subgraph Client ["کلاینت و مرورگر"]
-        A["آغاز استعلام (دستی یا خودکار)"] --> B["۱. آماده‌سازی پارامترها و زمان (Timestamp)"]
-        B --> C["۲. مرتب‌سازی الفبایی کلیدها (Canonicalization)"]
-        C --> D["۳. محاسبه امضا با کلید محرمانه (HMAC-SHA256)"]
-        D --> E["۴. تولید نشانی کامل استعلام (sign=...)"]
-    end
+۱. ورود به حساب کاربری در [workers.cloudflare.com](https://workers.cloudflare.com/).
+۲. رفتن به بخش **Compute (Workers)** و کلیک روی **Create Application** و سپس **Create Worker**.
+۳. تعیین نام دلخواه برای ورکر (مانند `chandchandi-proxy`) و فشردن دکمه **Deploy**.
+۴. ورود به بخش **Edit code** و جایگزینی محتوا با سورس کد زیر.
+۵. فشردن دکمه **Save and Deploy**.
+۶. کپی کردن نشانی نهایی ورکر (مانند `https://chandchandi-proxy.your-subdomain.workers.dev/?url=`) و وارد کردن آن در بخش تنظیمات وب‌سایت «چندچندی؟».
 
-    subgraph Network ["لایه شبکه و توزیع"]
-        E --> F{"ارسال درخواست"}
-        F -->|"مسیر مستقیم / رله پروکسی"| G["سرور الان‌چند (api.alanchand.com)"]
-    end
+#### استقرار از طریق خط فرمان (Wrangler CLI)
 
-    subgraph Resilience ["پردازش پاسخ و چرخه تاب‌آوری"]
-        G -->|"پاسخ موفق (HTTP 200)"| H["استخراج داده‌های JSON و ذخیره در LocalStorage"]
-        G -->|"خطای شبکه یا اختلال سرور"| I["بازیابی فوری از کش محلی (LocalStorage)"]
-        F -->|"عدم دسترسی به شبکه"| I
-        
-        I -->|"نبود کش قبلی"| J["بارگذاری دیتاست آفلاین همراه (Bundled Dataset)"]
-        
-        H --> K["نمایش نرخ‌های زنده در کارت‌ها، تیکر و ماشین‌حساب"]
-        I --> K
-        J --> K
-    end
+توسعه‌دهندگان می‌توانند با ابزار رسمی Wrangler در محیط ترمینال اقدام به استقرار کنند:
 
-    classDef default fill:#ffffff,stroke:#000000,stroke-width:1.5px,color:#000000;
-    classDef highlight fill:#fed170,stroke:#000000,stroke-width:2px,color:#000000;
-    classDef success fill:#97ee88,stroke:#000000,stroke-width:2px,color:#000000;
-    class K highlight;
-    class H success;
+```bash
+# ورود به حساب کلادفلر
+npx wrangler login
+
+# استقرار خودکار ورکر بر روی کلادفلر
+npx wrangler deploy
+```
+
+#### سورس کد ورکر (`cloudflare-worker/worker.js`)
+
+```javascript
+export default {
+  async fetch(request, env, ctx) {
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Accept, User-Agent',
+      'Access-Control-Max-Age': '86400',
+    };
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    const url = new URL(request.url);
+    const targetUrl = url.searchParams.get('url');
+
+    if (!targetUrl) {
+      return new Response(JSON.stringify({ error: 'Missing ?url= parameter' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    try {
+      const response = await fetch(targetUrl, {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'okhttp/4.12.0'
+        }
+      });
+
+      const body = await response.text();
+      return new Response(body, {
+        status: response.status,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+  }
+};
 ```
 
 
