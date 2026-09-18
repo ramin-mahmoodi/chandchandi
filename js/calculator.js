@@ -1,5 +1,6 @@
 /**
  * Neobrutalism Quick Converter & Gold Calculator
+ * Follows neobrutalui.live select component behavior
  */
 
 class CurrencyCalculator {
@@ -7,14 +8,14 @@ class CurrencyCalculator {
     this.symbolsData = {};
     this.currencyMode = 'toman'; // 'toman' or 'rial'
     this.selectedSymbol = 'usd';
-    this.isSelectOpen = false;
     this.hasInitializedSelect = false;
   }
 
   setSymbolsData(data) {
     this.symbolsData = data || {};
     this.initCustomSelect();
-    this.populateSelectOptions();
+    const isCurrentlyOpen = this.isDropdownOpen();
+    this.populateSelectOptions(!isCurrentlyOpen);
     this.recalculate();
   }
 
@@ -23,33 +24,44 @@ class CurrencyCalculator {
     this.recalculate();
   }
 
+  isDropdownOpen() {
+    const dropdown = document.getElementById('calc-select-dropdown');
+    if (!dropdown) return false;
+    return !dropdown.classList.contains('hidden') && dropdown.style.display !== 'none';
+  }
+
   initCustomSelect() {
     if (this.hasInitializedSelect) return;
     this.hasInitializedSelect = true;
 
     const trigger = document.getElementById('calc-select-trigger');
-    const dropdown = document.getElementById('calc-select-dropdown');
     const searchInput = document.getElementById('calc-select-search');
+    const container = document.getElementById('calc-select-container');
 
+    // Handle clicks on trigger button
     if (trigger) {
       trigger.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
         this.toggleDropdown();
       });
     }
 
+    // Handle clicks outside container
     document.addEventListener('click', (e) => {
-      const container = document.getElementById('calc-select-container');
       if (container && !container.contains(e.target)) {
         this.closeDropdown();
       }
     });
 
+    // Handle Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') this.closeDropdown();
     });
 
+    // Search filter input
     if (searchInput) {
+      searchInput.addEventListener('click', (e) => e.stopPropagation());
       searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim().toLowerCase();
         const items = document.querySelectorAll('.calc-select-item');
@@ -57,35 +69,44 @@ class CurrencyCalculator {
           const text = (item.getAttribute('data-search') || '').toLowerCase();
           if (!query || text.includes(query)) {
             item.classList.remove('hidden');
+            item.style.display = 'flex';
           } else {
             item.classList.add('hidden');
+            item.style.display = 'none';
           }
         });
       });
-      searchInput.addEventListener('click', (e) => e.stopPropagation());
     }
   }
 
   toggleDropdown() {
+    if (this.isDropdownOpen()) {
+      this.closeDropdown();
+    } else {
+      this.openDropdown();
+    }
+  }
+
+  openDropdown() {
     const dropdown = document.getElementById('calc-select-dropdown');
     const trigger = document.getElementById('calc-select-trigger');
     const chevron = document.getElementById('calc-select-chevron');
     const searchInput = document.getElementById('calc-select-search');
-    if (!dropdown || !trigger) return;
+    if (!dropdown) return;
 
-    this.isSelectOpen = !this.isSelectOpen;
-    if (this.isSelectOpen) {
-      dropdown.classList.remove('hidden');
-      trigger.setAttribute('aria-expanded', 'true');
-      if (chevron) chevron.classList.add('rotate-180');
-      if (searchInput) {
-        searchInput.value = '';
-        const items = document.querySelectorAll('.calc-select-item');
-        items.forEach(el => el.classList.remove('hidden'));
-        setTimeout(() => searchInput.focus(), 60);
-      }
-    } else {
-      this.closeDropdown();
+    dropdown.classList.remove('hidden');
+    dropdown.style.display = 'block';
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    if (chevron) chevron.classList.add('rotate-180');
+
+    if (searchInput) {
+      searchInput.value = '';
+      const items = document.querySelectorAll('.calc-select-item');
+      items.forEach(el => {
+        el.classList.remove('hidden');
+        el.style.display = 'flex';
+      });
+      setTimeout(() => searchInput.focus(), 50);
     }
   }
 
@@ -93,16 +114,18 @@ class CurrencyCalculator {
     const dropdown = document.getElementById('calc-select-dropdown');
     const trigger = document.getElementById('calc-select-trigger');
     const chevron = document.getElementById('calc-select-chevron');
-    if (!dropdown || !trigger) return;
+    if (!dropdown) return;
 
-    this.isSelectOpen = false;
     dropdown.classList.add('hidden');
-    trigger.setAttribute('aria-expanded', 'false');
+    dropdown.style.display = 'none';
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (chevron) chevron.classList.remove('rotate-180');
   }
 
-  selectSymbol(key) {
+  selectSymbol(key, shouldClose = true) {
+    if (!key) return;
     this.selectedSymbol = key;
+
     const select = document.getElementById('calc-symbol-select');
     if (select) {
       select.value = key;
@@ -122,31 +145,36 @@ class CurrencyCalculator {
       }
     }
 
+    // Highlight selected item in list
     const allItems = document.querySelectorAll('.calc-select-item');
     allItems.forEach(el => {
       const isSelected = el.getAttribute('data-value') === key;
       const checkIcon = el.querySelector('.check-icon');
       if (isSelected) {
-        el.classList.add('bg-[#b6ace4]');
+        el.classList.add('bg-[#b6ace4]', 'is-selected');
+        el.setAttribute('aria-selected', 'true');
         if (checkIcon) checkIcon.classList.remove('hidden');
       } else {
-        el.classList.remove('bg-[#b6ace4]');
+        el.classList.remove('bg-[#b6ace4]', 'is-selected');
+        el.setAttribute('aria-selected', 'false');
         if (checkIcon) checkIcon.classList.add('hidden');
       }
     });
 
-    this.closeDropdown();
+    if (shouldClose) {
+      this.closeDropdown();
+    }
     this.recalculate();
   }
 
-  populateSelectOptions() {
+  populateSelectOptions(autoSelectFirst = true) {
     const select = document.getElementById('calc-symbol-select');
     const list = document.getElementById('calc-select-list');
-    if (!select) return;
+    if (!select || !list) return;
 
     const currentVal = this.selectedSymbol || select.value || 'usd';
     select.innerHTML = '';
-    if (list) list.innerHTML = '';
+    list.innerHTML = '';
 
     const prioritySlugs = ['usd', 'eur', 'aed', 'try', 'gbp', '18ayar', 'sekkeh', 'bahar', 'nim', 'rob', 'btc', 'eth', 'usdt', 'sol', 'ton'];
     const keys = Object.keys(this.symbolsData);
@@ -175,48 +203,47 @@ class CurrencyCalculator {
       select.appendChild(opt);
 
       // 2. Neobrutal dropdown item
-      if (list) {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = `calc-select-item neo-select-item ${isSelected ? 'bg-[#b6ace4]' : ''}`;
-        itemDiv.setAttribute('data-value', k);
-        itemDiv.setAttribute('data-search', `${item.fa_name || ''} ${item.slug || ''} ${k} ${displayName}`);
-        itemDiv.setAttribute('role', 'option');
-        itemDiv.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      const itemDiv = document.createElement('div');
+      itemDiv.className = `calc-select-item neo-select-item ${isSelected ? 'bg-[#b6ace4] is-selected' : ''}`;
+      itemDiv.setAttribute('data-value', k);
+      itemDiv.setAttribute('data-search', `${item.fa_name || ''} ${item.slug || ''} ${k} ${displayName}`);
+      itemDiv.setAttribute('role', 'option');
+      itemDiv.setAttribute('aria-selected', isSelected ? 'true' : 'false');
 
-        itemDiv.innerHTML = `
-          <div class="flex items-center gap-2 truncate">
-            <img src="assets/icons/${item.type || 'currency'}/${iconSlug}.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
-            <span class="truncate font-bold text-xs sm:text-sm">${displayName}</span>
-          </div>
-          <svg class="check-icon h-4 w-4 shrink-0 text-black stroke-[3] ${isSelected ? '' : 'hidden'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        `;
+      itemDiv.innerHTML = `
+        <div class="flex items-center gap-2 truncate pointer-events-none">
+          <img src="assets/icons/${item.type || 'currency'}/${iconSlug}.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
+          <span class="truncate font-bold text-xs sm:text-sm">${displayName}</span>
+        </div>
+        <svg class="check-icon h-4 w-4 shrink-0 text-black stroke-[3] pointer-events-none ${isSelected ? '' : 'hidden'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      `;
 
-        itemDiv.addEventListener('click', () => {
-          this.selectSymbol(k);
-        });
+      itemDiv.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.selectSymbol(k, true);
+      });
 
-        list.appendChild(itemDiv);
-      }
+      list.appendChild(itemDiv);
     });
 
     const activeKey = this.symbolsData[currentVal] ? currentVal : (this.symbolsData['usd'] ? 'usd' : keys[0]);
     if (activeKey) {
-      this.selectSymbol(activeKey);
+      this.selectSymbol(activeKey, false);
     }
   }
 
   recalculate() {
     const amountInput = document.getElementById('calc-amount-input');
-    const symbolSelect = document.getElementById('calc-symbol-select');
     const resultDisplay = document.getElementById('calc-result-display');
     const detailsDisplay = document.getElementById('calc-details-display');
 
-    if (!amountInput || !symbolSelect || !resultDisplay) return;
+    if (!amountInput || !resultDisplay) return;
 
     const amount = parseFloat(amountInput.value) || 0;
-    const selectedKey = symbolSelect.value;
+    const selectedKey = this.selectedSymbol || document.getElementById('calc-symbol-select')?.value || 'usd';
     const symbolItem = this.symbolsData[selectedKey];
 
     if (!symbolItem) {
@@ -292,3 +319,10 @@ class CurrencyCalculator {
 }
 
 window.currencyCalculator = new CurrencyCalculator();
+
+// Safety fallback for early DOM readiness
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.currencyCalculator) {
+    window.currencyCalculator.initCustomSelect();
+  }
+});

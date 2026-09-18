@@ -70,16 +70,16 @@
         </div>
 
         <!-- Action Bar: Status, Unit Switch, Refresh, Settings -->
-        <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
           <!-- Connection Badge -->
-          <div id="connection-status-badge" class="neo-badge bg-white text-black font-bold text-xs h-10 w-full sm:w-[155px] flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000] truncate">
+          <div id="connection-status-badge" class="neo-badge bg-white text-black font-bold text-xs h-9 px-3 flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000]">
             <span class="pulse-green shrink-0"></span>
-            <span id="connection-status-text" class="truncate">وضعیت: آماده</span>
+            <span id="connection-status-text">وضعیت: آماده (داده‌های بازار)</span>
           </div>
 
           <!-- Currency Unit Toggle (Toman / Rial) -->
-          <button id="currency-toggle-btn" class="neo-btn bg-white hover:bg-[#b6ace4] text-xs sm:text-sm h-10 w-full sm:w-[155px] flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000] transition-colors" title="تغییر واحد ریال / تومان">
-            <svg class="w-4 h-4 shrink-0 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <button id="currency-toggle-btn" class="neo-btn bg-white hover:bg-[#b6ace4] text-xs sm:text-sm h-9 px-3 py-0 flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000] transition-colors" title="تغییر واحد ریال / تومان">
+            <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>
             </svg>
             <span>واحد:</span>
@@ -87,22 +87,20 @@
           </button>
 
           <!-- Refresh Button with Countdown -->
-          <button id="refresh-btn" class="neo-btn bg-white hover:bg-[#97ee88] text-xs sm:text-sm h-10 w-full sm:w-[155px] flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000] transition-colors" title="به‌روزرسانی فوری">
-            <svg id="refresh-icon" class="w-4 h-4 shrink-0 transition-transform stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <button id="refresh-btn" class="neo-btn bg-white hover:bg-[#97ee88] text-xs sm:text-sm h-9 px-3 py-0 flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000] transition-colors" title="به‌روزرسانی فوری">
+            <svg id="refresh-icon" class="w-4 h-4 transition-transform stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
               <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/>
             </svg>
-            <span>تازه‌سازی</span>
             <span id="countdown-display" class="font-mono font-black text-xs font-num">30s</span>
           </button>
 
-          <!-- Settings Button -->
-          <button id="open-settings-btn" class="neo-btn bg-white hover:bg-[#fed170] text-xs sm:text-sm h-10 w-full sm:w-[155px] flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000] transition-colors" title="تنظیمات پروکسی و برنامه">
-            <svg class="w-4 h-4 shrink-0 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Settings Button (Compact Square) -->
+          <button id="open-settings-btn" class="neo-btn bg-white hover:bg-[#fed170] h-9 w-9 p-0 flex items-center justify-center shadow-[2px_2px_0px_#000] transition-colors" title="تنظیمات پروکسی و برنامه">
+            <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
               <circle cx="12" cy="12" r="3"/>
             </svg>
-            <span>تنظیمات</span>
           </button>
         </div>
 
@@ -130,7 +128,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <!-- Currency / Crypto Converter -->
-        <div class="neo-box-sm bg-white p-4">
+        <div class="neo-box-sm bg-white p-4 relative z-30">
           <h3 class="font-black text-sm mb-3 flex items-center gap-2 text-black">
             <svg class="w-4 h-4 text-black stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>
@@ -144,7 +142,7 @@
             </div>
             <div>
               <label class="block text-xs font-black text-gray-700 mb-1">انتخاب نماد:</label>
-              <div class="relative w-full" id="calc-select-container">
+              <div class="relative w-full z-40" id="calc-select-container">
                 <!-- Neobrutal Select Trigger -->
                 <button 
                   type="button" 
@@ -153,11 +151,11 @@
                   aria-expanded="false" 
                   class="neo-select-trigger"
                 >
-                  <div class="flex items-center gap-2 truncate">
+                  <div class="flex items-center gap-2 truncate pointer-events-none">
                     <img id="calc-selected-icon" src="assets/icons/currency/USD.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
                     <span id="calc-selected-label" class="truncate font-black">دلار آمریکا (USD)</span>
                   </div>
-                  <span aria-hidden="true" class="shrink-0 mr-1 text-black opacity-70">
+                  <span aria-hidden="true" class="shrink-0 mr-1 text-black opacity-70 pointer-events-none">
                     <svg id="calc-select-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
                       <path d="m6 9 6 6 6-6"/>
                     </svg>
