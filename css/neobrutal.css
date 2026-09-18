@@ -1,4 +1,4 @@
-/* Neobrutalism UI Styling inspired by neobrutal-ui */
+/* Neobrutalism UI Styling - Soft & High-Contrast Eye-Friendly Palette */
 
 :root {
   --neo-border: 3px solid #000000;
@@ -7,17 +7,21 @@
   --neo-shadow: 4px 4px 0px #000000;
   --neo-shadow-md: 6px 6px 0px #000000;
   --neo-shadow-lg: 8px 8px 0px #000000;
-  --neo-radius: 8px;
+  --neo-radius: 10px;
 
-  /* Colors */
-  --color-yellow: #FFE600;
-  --color-green: #00F5D4;
-  --color-purple: #B8C0FF;
-  --color-pink: #FF90E8;
-  --color-blue: #70D6FF;
-  --color-red: #FF6B6B;
+  /* Eye-Friendly Neobrutal Color Palette (No harsh neon) */
+  --color-primary: #C7D2FE;     /* Soft Lavender / Periwinkle */
+  --color-accent: #93C5FD;      /* Soft Sky Blue */
+  --color-mint: #A7F3D0;        /* Soothing Mint */
+  --color-gold: #FDE68A;        /* Warm Pastel Amber / Gold */
+  --color-peach: #FED7AA;       /* Soft Peach */
+  --color-rose: #FECDD3;        /* Soft Coral / Rose */
   --color-card-bg: #FFFFFF;
-  --color-bg-subtle: #FFFDF8;
+  --color-page-bg: #F8F6F0;     /* Warm Paper-like Off-White */
+}
+
+body {
+  background-color: var(--color-page-bg);
 }
 
 /* Core Neobrutal Components */
@@ -33,7 +37,7 @@
 .neo-box-sm {
   border: 2px solid #000;
   box-shadow: var(--neo-shadow-sm);
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .neo-card {
@@ -81,20 +85,20 @@
 }
 
 .neo-btn-primary {
-  background-color: var(--color-yellow);
+  background-color: var(--color-primary);
 }
 
-.neo-btn-success {
-  background-color: var(--color-green);
+.neo-btn-mint {
+  background-color: var(--color-mint);
 }
 
-.neo-btn-purple {
-  background-color: var(--color-purple);
+.neo-btn-gold {
+  background-color: var(--color-gold);
 }
 
 .neo-btn-danger {
-  background-color: var(--color-red);
-  color: #fff;
+  background-color: var(--color-rose);
+  color: #9F1239;
 }
 
 .neo-input {
@@ -122,7 +126,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.65rem;
   border: 2px solid #000000;
   box-shadow: 2px 2px 0px #000000;
   border-radius: 999px;
@@ -132,18 +136,18 @@
 }
 
 .neo-badge-green {
-  background-color: #A6FF96;
-  color: #055018;
+  background-color: #A7F3D0;
+  color: #065F46;
 }
 
 .neo-badge-red {
-  background-color: #FFA5A5;
-  color: #7A0A0A;
+  background-color: #FECDD3;
+  color: #9F1239;
 }
 
 .neo-badge-gray {
-  background-color: #E2E8F0;
-  color: #1A202C;
+  background-color: #F1F5F9;
+  color: #334155;
 }
 
 .neo-tab {
@@ -164,7 +168,7 @@
 }
 
 .neo-tab.active {
-  background-color: var(--color-yellow);
+  background-color: var(--color-primary);
   box-shadow: var(--neo-shadow);
   transform: translate(-2px, -2px);
 }
@@ -172,12 +176,12 @@
 /* Marquee Ticker */
 .ticker-wrap {
   overflow: hidden;
-  background: var(--color-yellow);
+  background: #EDE9FE;
   border-top: var(--neo-border);
   border-bottom: var(--neo-border);
   box-shadow: var(--neo-shadow-sm);
   white-space: nowrap;
-  padding: 0.6rem 0;
+  padding: 0.65rem 0;
   direction: ltr;
 }
 
@@ -210,49 +214,49 @@
 .neo-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
   z-index: 999;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
 }
 
 .neo-modal {
   background: #ffffff;
   border: var(--neo-border-thick);
   box-shadow: var(--neo-shadow-xl);
-  border-radius: 12px;
+  border-radius: 14px;
   width: 100%;
-  max-width: 540px;
+  max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  animation: modalPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: modalPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes modalPop {
-  0% { transform: scale(0.9); opacity: 0; }
+  0% { transform: scale(0.92); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
 /* Pulse animation for live dot */
 .pulse-green {
   display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: #00E676;
+  width: 9px;
+  height: 9px;
+  background-color: #10B981;
   border-radius: 50%;
   border: 1.5px solid #000;
-  box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7);
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
   animation: neoPulse 1.8s infinite;
 }
 
 @keyframes neoPulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 /* Custom Scrollbar */
@@ -261,14 +265,14 @@
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #FFFDF8;
+  background: #F8F6F0;
   border-left: 2px solid #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #FFE600;
+  background: #C7D2FE;
   border: 2px solid #000;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF90E8;
+  background: #93C5FD;
 }

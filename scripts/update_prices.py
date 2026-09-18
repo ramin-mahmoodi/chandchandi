@@ -12,7 +12,7 @@ APP_VERSION = "3.1.0"
 PUBLIC_KEY = "fc6cdb49aeae4b8feea5b1f574701944"
 HMAC_SECRET = "eec8497f92e73aa5bef4960ff3af950764042f8d06df10e1ece919e895f7db30"
 
-def fetch_prices(slug="usd,eur,18ayar,btc"):
+def fetch_prices(slug="usd,eur,try,aed,gbp,cad,aud,rub,azn,cny,sek,inr,thb,chf,qar,amd,krw,pkr,jpy,omr,afn,myr,iqd,gel,sar,usd-sulaymaniyah,usd-herat,usd-ist,usd-hav,eur-ist,eur-hav,ars,bhd,brl,dkk,hkd,kgs,kwd,nok,nzd,sgd,syp,tjs,tmt,abshodeh,18ayar,sekkeh,bahar,nim,rob,gerami,usd_xau,xag,usdt,btc,eth,xrp,bnb,shib,ada,doge,ton,not,sol,trx,cake,avax,dot,link,ltc,pepe,uni,xlm,fil,near,eos,aave,grt,xtz,flow,sand,mana,axs,chz,enj,zec,gala,lrc,bat,one,zen,cvc,storj"):
     ts = str(int(time.time()))
     params = {
         "platform": "android",
@@ -49,11 +49,11 @@ def main():
 
     # Save to data/fallback_prices.json
     with open("data/fallback_prices.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
 
     # Save to js/fallback-data.js
     js_content = '/**\n * Bundled Instant Fallback & Offline Market Data\n * Auto-updated by GitHub Actions\n */\n'
-    js_content += 'window.ALANCHAND_FALLBACK_DATA = ' + json.dumps(data.get('data', {}), ensure_ascii=False, indent=2) + ';\n'
+    js_content += 'window.ALANCHAND_FALLBACK_DATA = ' + json.dumps(data.get('data', {}), ensure_ascii=False, separators=(',', ':')) + ';\n'
     js_content += 'window.ALANCHAND_UPDATED_AT = ' + json.dumps(data.get('updated_at', 'لحظاتی پیش'), ensure_ascii=False) + ';\n'
 
     with open("js/fallback-data.js", "w", encoding="utf-8") as f:
