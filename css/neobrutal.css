@@ -389,11 +389,6 @@ header.neo-box {
 }
 
 /* Custom Scrollbar - Official neobrutalui.live Style */
-* {
-  scrollbar-color: #b6ace4 #ffffff;
-  scrollbar-width: auto;
-}
-
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
@@ -407,10 +402,7 @@ header.neo-box {
 
 ::-webkit-scrollbar-thumb {
   background: #b6ace4;
-  border-left: 2px solid #000000;
-  border-right: 2px solid #000000;
-  border-bottom: 1px solid #000000;
-  border-top: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -422,15 +414,12 @@ header.neo-box {
 }
 
 ::-webkit-scrollbar-track:horizontal {
+  background: #ffffff;
   border-top: 2px solid #000000;
   border-bottom: 2px solid #000000;
-  border-left: none;
-  border-right: none;
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
-  border-top: 2px solid #000000;
-  border-bottom: 2px solid #000000;
-  border-left: 1px solid #000000;
-  border-right: 1px solid #000000;
+  background: #b6ace4;
+  border: 2px solid #000000;
 }
