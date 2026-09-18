@@ -210,7 +210,7 @@ class AlanchandApi {
     for (const url of targetUrls) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
 
         const resp = await fetch(url, {
           method: 'GET',

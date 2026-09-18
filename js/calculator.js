@@ -43,7 +43,7 @@ class CurrencyCalculator {
       const item = this.symbolsData[k];
       const opt = document.createElement('option');
       opt.value = k;
-      opt.textContent = ${item.fa_name || item.slug} ();
+      opt.textContent = `${item.fa_name || item.slug} (${(item.slug || k).toUpperCase()})`;
       select.appendChild(opt);
     });
 
@@ -87,13 +87,13 @@ class CurrencyCalculator {
     const totalValue = amount * priceInToman;
     const unitLabel = this.currencyMode === 'rial' ? 'ریال' : 'تومان';
 
-    resultDisplay.textContent = ${totalValue.toLocaleString('fa-IR')} ;
+    resultDisplay.textContent = `${Math.round(totalValue).toLocaleString('fa-IR')} ${unitLabel}`;
 
     if (detailsDisplay) {
-      const singlePriceFormatted = priceInToman.toLocaleString('fa-IR');
-      let extraInfo = نرخ هر واحد:  ;
+      const singlePriceFormatted = Math.round(priceInToman).toLocaleString('fa-IR');
+      let extraInfo = `نرخ هر واحد: ${singlePriceFormatted} ${unitLabel}`;
       if (symbolItem.bubble && symbolItem.bubble > 0) {
-        extraInfo +=  | حباب:   (%);
+        extraInfo += ` | حباب: ${Math.round(symbolItem.bubble).toLocaleString('fa-IR')} (${symbolItem.bubble_per || 0}%)`;
       }
       detailsDisplay.textContent = extraInfo;
     }
@@ -117,7 +117,7 @@ class CurrencyCalculator {
 
     const total = grams * pricePerGram;
     const unit = this.currencyMode === 'rial' ? 'ریال' : 'تومان';
-    goldResult.textContent = ${Math.round(total).toLocaleString('fa-IR')} ;
+    goldResult.textContent = `${Math.round(total).toLocaleString('fa-IR')} ${unit}`;
   }
 }
 

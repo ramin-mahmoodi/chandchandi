@@ -232,6 +232,24 @@ document.addEventListener('DOMContentLoaded', () => {
       return this.currencyMode === 'rial' ? 'ریال' : 'تومان';
     },
 
+    formatCryptoUsd(usdVal, decRound) {
+      const num = parseFloat(usdVal) || 0;
+      if (num === 0) return '0.00';
+      let maxDigits = 2;
+      let minDigits = 2;
+      if (decRound !== undefined && decRound !== null) {
+        maxDigits = Math.max(2, Math.min(parseInt(decRound) || 2, 8));
+        minDigits = Math.min(2, maxDigits);
+      } else if (num < 1) {
+        maxDigits = 6;
+        minDigits = 2;
+      }
+      return num.toLocaleString('en-US', {
+        minimumFractionDigits: minDigits,
+        maximumFractionDigits: maxDigits
+      });
+    },
+
     renderGrid() {
       const container = document.getElementById('cards-grid');
       const countDisplay = document.getElementById('filtered-count');
@@ -334,16 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let priceHtml = '';
         if (isCrypto) {
           // Crypto: Main price is in USD ($)
-          const usdVal = item.price ?? 0;
-          let formattedUsd = '';
-          if (usdVal < 1) {
-            formattedUsd = parseFloat(usdVal).toFixed(4);
-          } else {
-            formattedUsd = parseFloat(usdVal).toLocaleString('en-US', {
-              minimumFractionDigits: item.dec_round !== undefined ? item.dec_round : 2,
-              maximumFractionDigits: 2
-            });
-          }
+          const formattedUsd = this.formatCryptoUsd(item.price, item.dec_round);
 
           const tomanVal = item.toman ? this.formatPrice(item.toman) : null;
 
@@ -476,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let displayPrice = '';
         if (item.type === 'crypto') {
-          const formattedUsd = parseFloat(item.price || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+          const formattedUsd = this.formatCryptoUsd(item.price, item.dec_round);
           displayPrice = `$${formattedUsd}`;
           if (item.toman) {
             displayPrice += ` (${this.formatPrice(item.toman)} ${unit})`;
@@ -527,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let priceBoxHtml = '';
       if (isCrypto) {
-        const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { maximumFractionDigits: 4 });
+        const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
         priceBoxHtml = `
           <div class="neo-box p-3 bg-[#DDD6FE]">
             <div class="text-xs font-bold text-gray-700 mb-1">قیمت دلاری:</div>
