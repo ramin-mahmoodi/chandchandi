@@ -1,22 +1,31 @@
 /* Vazirmatn Persian Font & Global Typography */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Vazirmatn:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
 :root {
-  --font-persian: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-persian: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --font-heading: 'Space Grotesk', 'Vazirmatn', sans-serif;
 }
 
-body {
+body, button, input, select, textarea {
   font-family: var(--font-persian);
   direction: rtl;
   text-align: right;
-  background-color: #fcf8ee;
-  color: #121212;
+  color: #000000;
   margin: 0;
   padding: 0;
 }
 
+/* Persian Numerals using Vazirmatn's native tabular digits */
+.font-num {
+  font-family: var(--font-persian);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  display: inline-block;
+  direction: rtl;
+}
+
+/* English-only code / ticker symbols */
 .font-mono {
   font-family: var(--font-mono);
   direction: ltr;

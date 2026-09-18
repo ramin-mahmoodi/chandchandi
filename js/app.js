@@ -333,19 +333,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isPositive = changePercent > 0;
         const isNegative = changePercent < 0;
-        const badgeClass = isPositive ? 'neo-badge-green' : (isNegative ? 'neo-badge-red' : 'neo-badge-gray');
-        const changeIcon = isPositive ? '▲' : (isNegative ? '▼' : '▬');
-        const changeSign = isPositive ? '+' : '';
+        let changeBadgeHtml = '';
+        if (isPositive) {
+          changeBadgeHtml = `
+            <span class="neo-badge neo-badge-green font-bold text-xs">
+              <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
+              <span class="font-num font-black">${changePercent}%+</span>
+            </span>
+          `;
+        } else if (isNegative) {
+          changeBadgeHtml = `
+            <span class="neo-badge neo-badge-red font-bold text-xs">
+              <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
+              <span class="font-num font-black">${Math.abs(changePercent)}%-</span>
+            </span>
+          `;
+        } else {
+          changeBadgeHtml = `
+            <span class="neo-badge neo-badge-gray font-bold text-xs">
+              <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>
+              <span class="font-num font-black">۰%</span>
+            </span>
+          `;
+        }
 
-        // 2. Determine Category Tag Color
-        let categoryColor = 'bg-[#BAE6FD] text-sky-950'; // Soft Sky Blue
+        // 2. Determine Category Tag Color & SVG Icon
+        let categoryColor = 'bg-[#7DD3FC] text-sky-950'; // Sky Blue
         let categoryName = 'ارز فیات';
+        let categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`;
+
         if (item.type === 'gold') {
-          categoryColor = 'bg-[#FDE68A] text-amber-950'; // Soft Warm Gold
+          categoryColor = 'bg-[#FED170] text-amber-950'; // Sunny Lemon Gold
           categoryName = 'طلا و سکه';
+          categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>`;
         } else if (item.type === 'crypto') {
-          categoryColor = 'bg-[#DDD6FE] text-purple-950'; // Soft Purple
+          categoryColor = 'bg-[#C4B5FD] text-purple-950'; // Soft Purple
           categoryName = 'رمزارز';
+          categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5M9.5 6v12M12 6v2M12 16v2"/></svg>`;
         }
 
         // 3. Build Price Display Block
@@ -353,20 +377,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isCrypto) {
           // Crypto: Main price is in USD ($)
           const formattedUsd = this.formatCryptoUsd(item.price, item.dec_round);
-
           const tomanVal = item.toman ? this.formatPrice(item.toman) : null;
 
           priceHtml = `
             <div class="flex items-baseline justify-between gap-1 mb-1">
-              <span class="text-xs font-bold text-gray-500">قیمت (دلار):</span>
+              <span class="text-xs font-bold text-gray-600">قیمت (دلار):</span>
               <div class="flex items-baseline gap-1">
                 <span class="text-xl font-black text-black font-mono tracking-tight">$ ${formattedUsd}</span>
               </div>
             </div>
             ${tomanVal ? `
-              <div class="flex items-baseline justify-between gap-1 text-xs font-bold text-gray-700 bg-gray-50 px-2 py-1 border border-black/20 rounded-md">
+              <div class="flex items-baseline justify-between gap-1 text-xs font-bold text-gray-800 bg-gray-50 px-2 py-1 border border-black/20 rounded-md">
                 <span class="text-gray-500 text-[11px]">معادل تومانی:</span>
-                <span class="font-mono font-black text-black">${tomanVal} ${unit}</span>
+                <div class="flex items-baseline gap-1">
+                  <span class="font-num font-black text-black">${tomanVal}</span>
+                  <span class="text-[11px] font-bold text-gray-600">${unit}</span>
+                </div>
               </div>
             ` : ''}
           `;
@@ -375,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
           priceHtml = `
             <div class="flex items-baseline justify-between gap-1 mb-1">
-              <span class="text-xs font-bold text-gray-500">قیمت دلاری (انس):</span>
+              <span class="text-xs font-bold text-gray-600">قیمت دلاری (انس):</span>
               <div class="flex items-baseline gap-1">
                 <span class="text-xl font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
               </div>
@@ -386,9 +412,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const mainPrice = item.price ?? item.sell ?? item.buy ?? 0;
           priceHtml = `
             <div class="flex items-baseline justify-between gap-1 mb-1">
-              <span class="text-xs font-bold text-gray-500">قیمت:</span>
+              <span class="text-xs font-bold text-gray-600">قیمت:</span>
               <div class="flex items-baseline gap-1">
-                <span class="text-xl font-black text-black font-mono tracking-tight">${this.formatPrice(mainPrice)}</span>
+                <span class="text-xl font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
                 <span class="text-xs font-black text-black">${unit}</span>
               </div>
             </div>
@@ -397,9 +423,15 @@ document.addEventListener('DOMContentLoaded', () => {
           // If buy & sell available (e.g. FX)
           if (item.buy && item.sell) {
             priceHtml += `
-              <div class="flex items-center justify-between text-[11px] font-bold text-gray-500 px-1">
-                <span>خرید: <strong class="font-mono text-black">${this.formatPrice(item.buy)}</strong></span>
-                <span>فروش: <strong class="font-mono text-black">${this.formatPrice(item.sell)}</strong></span>
+              <div class="flex items-center justify-between text-xs font-bold text-gray-700 px-1 pt-1 border-t border-black/10">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 text-emerald-700 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m19 5-14 14m0 0h10m-10 0V9"/></svg>
+                  خرید: <strong class="font-num font-black text-black">${this.formatPrice(item.buy)}</strong>
+                </span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 text-rose-700 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 19 19 5m0 0H9m10 0v10"/></svg>
+                  فروش: <strong class="font-num font-black text-black">${this.formatPrice(item.sell)}</strong>
+                </span>
               </div>
             `;
           }
@@ -409,24 +441,33 @@ document.addEventListener('DOMContentLoaded', () => {
         let bubbleBadge = '';
         if (item.bubble_per !== undefined && item.bubble_per !== null && item.bubble_per !== 0) {
           bubbleBadge = `
-            <span class="neo-badge bg-[#FED7AA] font-mono text-[10px] font-bold text-amber-950" title="حباب سکه">
-              حباب: ${item.bubble_per}%
+            <span class="neo-badge bg-[#FED170] text-[10px] font-bold text-amber-950" title="حباب سکه">
+              <svg class="w-3 h-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              حباب: <span class="font-num font-black">${item.bubble_per}%</span>
             </span>
           `;
         }
 
+        // 5. Star SVG Icon
+        const starSvg = isFav
+          ? `<svg class="w-5 h-5 text-amber-500 fill-amber-300 stroke-black stroke-2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+          : `<svg class="w-5 h-5 text-gray-400 fill-white stroke-black stroke-2 hover:fill-amber-100" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+
         const card = document.createElement('div');
-        card.className = 'neo-card flex flex-col justify-between cursor-pointer';
+        card.className = 'neo-card flex flex-col justify-between cursor-pointer bg-white';
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="neo-badge ${categoryColor} font-extrabold">${categoryName}</span>
+                <span class="neo-badge ${categoryColor} font-extrabold flex items-center gap-1">
+                  ${categoryIcon}
+                  <span>${categoryName}</span>
+                </span>
                 <span class="font-mono font-black text-xs px-2 py-0.5 border-2 border-black rounded-md bg-white">${(item.slug || key).toUpperCase()}</span>
                 ${bubbleBadge}
               </div>
-              <button class="fav-star-btn text-xl transition-transform hover:scale-125 focus:outline-none" data-key="${key}" title="علاقه‌مندی">
-                ${isFav ? '⭐' : '☆'}
+              <button class="fav-star-btn p-1 transition-transform hover:scale-125 focus:outline-none" data-key="${key}" title="علاقه‌مندی">
+                ${starSvg}
               </button>
             </div>
 
@@ -441,9 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="flex items-center justify-between text-xs font-bold mt-2 pt-1 border-t border-black/10">
               <span class="text-gray-500">تغییر ۲۴س:</span>
-              <span class="neo-badge ${badgeClass} font-mono font-black text-xs">
-                ${changeIcon} ${changeSign}${changePercent}%
-              </span>
+              ${changeBadgeHtml}
             </div>
           </div>
         `;
@@ -504,9 +543,9 @@ document.addEventListener('DOMContentLoaded', () => {
         html += `
           <div class="ticker-item">
             <span class="font-black text-black">${item.fa_name || k}:</span>
-            <span class="font-mono font-black text-black">${displayPrice}</span>
-            <span class="font-mono text-xs font-black ${color}">(${changeSign}${changePercent}%)</span>
-            <span class="text-black font-bold mx-2">★</span>
+            <span class="font-num font-black text-black">${displayPrice}</span>
+            <span class="font-num text-xs font-black ${color}">(${changeSign}${changePercent}%)</span>
+            <span class="w-1.5 h-1.5 bg-black border border-black inline-block mx-2.5"></span>
           </div>
         `;
       });
@@ -538,25 +577,25 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isCrypto) {
         const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#DDD6FE]">
+          <div class="neo-box p-3 bg-[#C4B5FD]">
             <div class="text-xs font-bold text-gray-700 mb-1">قیمت دلاری:</div>
-            <div class="text-xl font-black font-mono">$ ${usdVal}</div>
-            ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: ${this.formatPrice(item.toman)} ${unit}</div>` : ''}
+            <div class="text-xl font-black font-mono tracking-tight">$ ${usdVal}</div>
+            ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
           </div>
         `;
       } else if (isDollarGold) {
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#BAE6FD]">
+          <div class="neo-box p-3 bg-[#7DD3FC]">
             <div class="text-xs font-bold text-gray-700 mb-1">قیمت دلاری (انس):</div>
-            <div class="text-xl font-black font-mono">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
+            <div class="text-xl font-black font-mono tracking-tight">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
           </div>
         `;
       } else {
         const p = item.price ?? item.sell ?? item.buy ?? 0;
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#FDE68A]">
+          <div class="neo-box p-3 bg-[#FED170]">
             <div class="text-xs font-bold text-gray-700 mb-1">قیمت فعلی:</div>
-            <div class="text-xl font-black font-mono">${this.formatPrice(p)} <span class="text-xs font-bold">${unit}</span></div>
+            <div class="text-xl font-black text-black font-num">${this.formatPrice(p)} <span class="text-xs font-bold">${unit}</span></div>
           </div>
         `;
       }
@@ -564,10 +603,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let detailsHtml = `
         <div class="grid grid-cols-2 gap-3 mb-4">
           ${priceBoxHtml}
-          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-[#A7F3D0]' : 'bg-[#FECDD3]'}">
+          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-[#97EE88]' : 'bg-[#FF8FAB]'}">
             <div class="text-xs font-bold text-gray-700 mb-1">تغییرات ۲۴ ساعته:</div>
-            <div class="text-lg font-black font-mono">${changePercent >= 0 ? '+' : ''}${changePercent}%</div>
-            ${changeAmount ? `<div class="text-xs font-mono font-bold text-gray-700">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
+            <div class="text-lg font-black font-num">${changePercent >= 0 ? '+' : ''}${changePercent}%</div>
+            ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-700">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
           </div>
         </div>
       `;
@@ -578,11 +617,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div class="neo-box p-3 bg-white">
               <div class="text-xs font-bold text-gray-500 mb-1">قیمت خرید:</div>
-              <div class="text-base font-black font-mono text-green-700">${item.buy ? this.formatPrice(item.buy) + ' ' + unit : 'نامشخص'}</div>
+              <div class="text-base font-black font-num text-emerald-700">${item.buy ? this.formatPrice(item.buy) + ' ' + unit : 'نامشخص'}</div>
             </div>
             <div class="neo-box p-3 bg-white">
               <div class="text-xs font-bold text-gray-500 mb-1">قیمت فروش:</div>
-              <div class="text-base font-black font-mono text-red-700">${item.sell ? this.formatPrice(item.sell) + ' ' + unit : 'نامشخص'}</div>
+              <div class="text-base font-black font-num text-rose-700">${item.sell ? this.formatPrice(item.sell) + ' ' + unit : 'نامشخص'}</div>
             </div>
           </div>
         `;
@@ -591,13 +630,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Coin bubble
       if (item.bubble !== undefined && item.bubble !== null && item.bubble !== 0) {
         detailsHtml += `
-          <div class="neo-box p-3 bg-[#FED7AA] mb-4">
+          <div class="neo-box p-3 bg-[#FED170] mb-4">
             <div class="flex justify-between items-center">
               <div>
                 <div class="text-xs font-black text-amber-950">حباب سکه:</div>
-                <div class="text-base font-black font-mono mt-0.5">${this.formatPrice(item.bubble)} ${unit}</div>
+                <div class="text-base font-black font-num mt-0.5">${this.formatPrice(item.bubble)} ${unit}</div>
               </div>
-              <div class="neo-badge bg-white font-mono font-black text-amber-950">
+              <div class="neo-badge bg-white font-num font-black text-amber-950">
                 ${item.bubble_per || 0}% حباب
               </div>
             </div>
@@ -608,9 +647,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Dollar rate
       if (item.dolar_rate) {
         detailsHtml += `
-          <div class="neo-box p-3 bg-[#BAE6FD] mb-4 flex justify-between items-center">
+          <div class="neo-box p-3 bg-[#7DD3FC] mb-4 flex justify-between items-center">
             <span class="text-xs font-bold text-sky-950">نرخ دلار مبنای محاسبه:</span>
-            <span class="font-mono font-black text-sky-950">${this.formatPrice(item.dolar_rate)} ${unit}</span>
+            <span class="font-num font-black text-sky-950">${this.formatPrice(item.dolar_rate)} ${unit}</span>
           </div>
         `;
       }

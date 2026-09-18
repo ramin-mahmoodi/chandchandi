@@ -1,27 +1,29 @@
-/* Neobrutalism UI Styling - Soft & High-Contrast Eye-Friendly Palette */
+/* Neobrutalism UI Styling - Official neobrutal-ui Design System */
 
 :root {
-  --neo-border: 3px solid #000000;
-  --neo-border-thick: 4px solid #000000;
+  --neo-border: 2.5px solid #000000;
+  --neo-border-thick: 3.5px solid #000000;
   --neo-shadow-sm: 2px 2px 0px #000000;
   --neo-shadow: 4px 4px 0px #000000;
   --neo-shadow-md: 6px 6px 0px #000000;
   --neo-shadow-lg: 8px 8px 0px #000000;
-  --neo-radius: 10px;
+  --neo-shadow-xl: 10px 10px 0px #000000;
+  --neo-radius: 12px;
 
-  /* Eye-Friendly Neobrutal Color Palette (No harsh neon) */
-  --color-primary: #C7D2FE;     /* Soft Lavender / Periwinkle */
-  --color-accent: #93C5FD;      /* Soft Sky Blue */
-  --color-mint: #A7F3D0;        /* Soothing Mint */
-  --color-gold: #FDE68A;        /* Warm Pastel Amber / Gold */
-  --color-peach: #FED7AA;       /* Soft Peach */
-  --color-rose: #FECDD3;        /* Soft Coral / Rose */
-  --color-card-bg: #FFFFFF;
-  --color-page-bg: #F8F6F0;     /* Warm Paper-like Off-White */
+  /* Official Neobrutal-UI Theme Colors (neobrutalui.live) */
+  --color-page-bg: #DFE5F2;     /* Cool Periwinkle/Slate Canvas */
+  --color-card-bg: #FFFFFF;     /* Crisp Pure White for All Cards */
+  --color-main: #88AAEE;        /* Signature Neobrutal Main Accent */
+  --color-mint: #97EE88;        /* Fresh Mint for Positive Trends */
+  --color-lemon: #FED170;       /* Sunny Warm Gold for Coins/Gold */
+  --color-sky: #7DD3FC;         /* Crisp Sky Blue for FX */
+  --color-pink: #FF8FAB;        /* Energetic Soft Pink for Negative Trends */
+  --color-purple: #C4B5FD;      /* Soft Violet for Cryptos */
 }
 
 body {
   background-color: var(--color-page-bg);
+  color: #000000;
 }
 
 /* Core Neobrutal Components */
@@ -85,20 +87,23 @@ body {
 }
 
 .neo-btn-primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-main);
+  color: #000000;
 }
 
 .neo-btn-mint {
   background-color: var(--color-mint);
+  color: #000000;
 }
 
 .neo-btn-gold {
-  background-color: var(--color-gold);
+  background-color: var(--color-lemon);
+  color: #000000;
 }
 
 .neo-btn-danger {
-  background-color: var(--color-rose);
-  color: #9F1239;
+  background-color: var(--color-pink);
+  color: #881337;
 }
 
 .neo-input {
@@ -125,8 +130,8 @@ body {
 .neo-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 0.65rem;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
   border: 2px solid #000000;
   box-shadow: 2px 2px 0px #000000;
   border-radius: 999px;
@@ -136,21 +141,24 @@ body {
 }
 
 .neo-badge-green {
-  background-color: #A7F3D0;
-  color: #065F46;
+  background-color: var(--color-mint);
+  color: #064E3B;
 }
 
 .neo-badge-red {
-  background-color: #FECDD3;
-  color: #9F1239;
+  background-color: var(--color-pink);
+  color: #881337;
 }
 
 .neo-badge-gray {
   background-color: #F1F5F9;
-  color: #334155;
+  color: #1E293B;
 }
 
 .neo-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   border: var(--neo-border);
   box-shadow: var(--neo-shadow-sm);
   border-radius: var(--neo-radius);
@@ -168,7 +176,7 @@ body {
 }
 
 .neo-tab.active {
-  background-color: var(--color-primary);
+  background-color: var(--color-main);
   box-shadow: var(--neo-shadow);
   transform: translate(-2px, -2px);
 }
@@ -176,7 +184,7 @@ body {
 /* Marquee Ticker */
 .ticker-wrap {
   overflow: hidden;
-  background: #EDE9FE;
+  background: var(--color-lemon);
   border-top: var(--neo-border);
   border-bottom: var(--neo-border);
   box-shadow: var(--neo-shadow-sm);
