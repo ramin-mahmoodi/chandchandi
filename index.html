@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>چندچندی؟ | قیمت لحظه‌ای ارز، طلا و رمزارز (Neobrutalism)</title>
+  
+  <!-- Meta tags for SEO & Social -->
+  <meta name="description" content="قیمت لحظه‌ای بازار ارزهای فیات، طلا، سکه و ارزهای دیجیتال با طراحی مدرن نئوبروتالیسم و دریافت زنده از API الان‌چند">
+  <meta property="og:title" content="چندچندی؟ | نرخ لحظه‌ای ارز، طلا و رمزارز">
+  <meta property="og:description" content="داشبورد قیمت لحظه‌ای با سبک Neobrutalism و قابلیت میزبانی روی GitHub Pages">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neoYellow: '#FFE600',
+            neoGreen: '#00F5D4',
+            neoPurple: '#B8C0FF',
+            neoPink: '#FF90E8',
+            neoBlue: '#70D6FF',
+            neoRed: '#FF6B6B',
+            neoCream: '#FCF8EE',
+            neoBg: '#FFFDF8',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Fonts & Neobrutal CSS -->
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/neobrutal.css">
+</head>
+<body class="bg-[#FCF8EE] text-[#121212] min-h-screen flex flex-col selection:bg-[#FFE600] selection:text-black">
+
+  <!-- Top Marquee Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-move" id="ticker-content">
+      <div class="ticker-item">
+        <span class="font-black">در حال بارگذاری نرخ‌های زنده بازار...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-grow">
+
+    <!-- Header Section -->
+    <header class="neo-box bg-[#FFE600] p-4 sm:p-6 mb-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <!-- Brand & Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 neo-box bg-white flex items-center justify-center text-2xl font-black shadow-[3px_3px_0px_#000]">
+            ⚡
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-black font-heading">چندچندی؟</h1>
+              <span class="neo-badge bg-[#FF90E8] text-black font-mono">v3.1.0</span>
+            </div>
+            <p class="text-xs sm:text-sm font-extrabold text-black/80 mt-0.5">
+              داشبورد زنده قیمت ارز، طلا و رمزارز • طراحی نئوبروتالیسم
+            </p>
+          </div>
+        </div>
+
+        <!-- Action Bar: Status, Unit Switch, Refresh -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          <!-- Connection Badge -->
+          <div id="connection-status-badge" class="neo-badge bg-white text-black font-bold text-xs">
+            <span class="pulse-green"></span> وضعیت: اتصال...
+          </div>
+
+          <!-- Currency Unit Toggle (Toman / Rial) -->
+          <button id="currency-toggle-btn" class="neo-btn neo-btn-purple text-xs sm:text-sm py-1.5 px-3">
+            <span>واحد:</span>
+            <span id="currency-toggle-label" class="font-black">تومان</span>
+          </button>
+
+          <!-- Refresh Button with Countdown -->
+          <button id="refresh-btn" class="neo-btn bg-white hover:bg-[#00F5D4] text-xs sm:text-sm py-1.5 px-3" title="به‌روزرسانی فوری">
+            <span id="refresh-icon" class="inline-block transition-transform text-base">🔄</span>
+            <span id="countdown-display" class="font-mono font-black text-xs">30s</span>
+          </button>
+
+          <!-- Settings Button -->
+          <button id="open-settings-btn" class="neo-btn bg-white hover:bg-gray-100 p-2" title="تنظیمات پروکسی و برنامه">
+            ⚙️
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Last Update Bar -->
+      <div class="mt-4 pt-3 border-t-2 border-black border-dashed flex flex-wrap items-center justify-between text-xs font-bold text-black/80">
+        <span id="last-update-text">در حال دریافت جدیدترین قیمت‌ها...</span>
+        <span>کل نمادهای تحت پوشش: <strong class="font-mono">۹۳</strong> نماد رسمی</span>
+      </div>
+    </header>
+
+    <!-- Quick Converter & Gold Calculator Section -->
+    <section class="neo-box bg-white p-5 mb-8">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-black">
+        <h2 class="text-lg sm:text-xl font-black flex items-center gap-2">
+          <span>🧮</span> ماشین‌حساب سریع تبدیل نرخ‌ها و طلا
+        </h2>
+        <span class="text-xs font-extrabold text-gray-500 font-mono">LIVE CONVERTER</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Currency / Crypto Converter -->
+        <div class="neo-box-sm bg-[#FFFDF8] p-4">
+          <h3 class="font-black text-sm mb-3 flex items-center gap-1.5 text-black">
+            <span>💵</span> تبدیل ارز و رمزارز به تومان/ریال
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="block text-xs font-black text-gray-700 mb-1">مقدار ارز:</label>
+              <input type="number" id="calc-amount-input" class="neo-input font-mono text-left" value="1" min="0" step="any">
+            </div>
+            <div>
+              <label class="block text-xs font-black text-gray-700 mb-1">انتخاب نماد:</label>
+              <select id="calc-symbol-select" class="neo-input font-bold bg-white">
+                <option value="usd">دلار آمریکا (USD)</option>
+              </select>
+            </div>
+          </div>
+          <div class="neo-box p-3 bg-[#B8C0FF] flex items-center justify-between">
+            <span class="text-xs font-black text-black">مبلغ نهایی:</span>
+            <span id="calc-result-display" class="text-lg font-black font-mono tracking-tight text-black">---</span>
+          </div>
+          <div id="calc-details-display" class="text-[11px] font-bold text-gray-600 mt-2 text-left font-mono"></div>
+        </div>
+
+        <!-- 18K Gold Calculator -->
+        <div class="neo-box-sm bg-[#FFFDF8] p-4">
+          <h3 class="font-black text-sm mb-3 flex items-center gap-1.5 text-black">
+            <span>✨</span> محاسبه‌گر ارزش طلای ۱۸ عیار
+          </h3>
+          <div class="mb-3">
+            <label class="block text-xs font-black text-gray-700 mb-1">وزن طلا به گرم:</label>
+            <input type="number" id="gold-weight-input" class="neo-input font-mono text-left" value="4.5" min="0" step="any" placeholder="مثلاً ۴.۵ گرم">
+          </div>
+          <div class="neo-box p-3 bg-[#FFE600] flex items-center justify-between">
+            <span class="text-xs font-black text-black">ارزش طلای خام:</span>
+            <span id="gold-result-display" class="text-lg font-black font-mono tracking-tight text-black">---</span>
+          </div>
+          <div class="text-[11px] font-bold text-gray-600 mt-2">
+            * محاسبه بر مبنای نرخ لحظه‌ای ۱ گرم طلای ۱۸ عیار (بدون اجرت و مالیات).
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Filters, Tabs & Search Section -->
+    <section class="mb-6">
+      
+      <!-- Top Row: Search & Count -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        
+        <!-- Search Input -->
+        <div class="relative w-full md:w-96">
+          <input 
+            type="text" 
+            id="search-input" 
+            class="neo-input pr-10" 
+            placeholder="جستجوی نام (مثلاً دلار، بیت کوین، تتر، سکه)..."
+          >
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg pointer-events-none">🔍</span>
+        </div>
+
+        <!-- Counter Badge -->
+        <div class="flex items-center gap-2 self-start md:self-auto">
+          <span class="text-xs font-black text-gray-600">تعداد در حال نمایش:</span>
+          <span id="filtered-count" class="neo-badge bg-white font-mono font-black text-sm">-- نماد</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button class="neo-tab category-tab active" data-category="all">
+          🌐 همه نمادها
+        </button>
+        <button class="neo-tab category-tab" data-category="fav">
+          ⭐ نشان‌شده‌ها
+        </button>
+        <button class="neo-tab category-tab" data-category="gold">
+          🪙 طلا و مسکوکات
+        </button>
+        <button class="neo-tab category-tab" data-category="fx">
+          💵 ارزهای فیات
+        </button>
+        <button class="neo-tab category-tab" data-category="crypto">
+          ⚡ رمزارزها
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Price Cards Grid -->
+    <main>
+      <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+        <!-- Cards injected dynamically by app.js -->
+        <div class="col-span-full neo-card text-center p-8 bg-yellow-50">
+          <div class="text-2xl font-black mb-2">در حال بارگذاری... ⏳</div>
+          <p class="text-sm font-bold text-gray-700">داده‌های بازار در حال واکشی و اعتبارسنجی هستند.</p>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detail-modal" class="neo-modal-backdrop hidden">
+    <div class="neo-modal p-6">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between pb-3 mb-4 border-b-3 border-black">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <h3 id="modal-title" class="text-xl font-black text-black">عنوان نماد</h3>
+            <span id="modal-slug" class="neo-badge bg-[#FFE600] font-mono font-black text-xs">USD</span>
+          </div>
+          <div id="modal-subtitle" class="text-xs font-bold text-gray-500 font-mono">US Dollar</div>
+        </div>
+        <button data-close-modal class="neo-btn bg-[#FF6B6B] text-white p-1.5 text-xs font-black" title="بستن">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div id="modal-details-body">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-4 border-t-2 border-black border-dashed flex justify-end">
+        <button data-close-modal class="neo-btn bg-white hover:bg-gray-100 text-xs py-1.5 px-4 font-black">
+          بستن پنجره
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="neo-modal-backdrop hidden">
+    <div class="neo-modal p-6">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b-3 border-black">
+        <h3 class="text-xl font-black text-black flex items-center gap-2">
+          <span>⚙️</span> تنظیمات اتصال و پروکسی
+        </h3>
+        <button data-close-modal class="neo-btn bg-[#FF6B6B] text-white p-1.5 text-xs font-black">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <label class="block text-xs font-black text-gray-700 mb-1">آدرس پروکسی CORS اختصاصی (اختیاری):</label>
+          <input 
+            type="text" 
+            id="settings-proxy-input" 
+            class="neo-input font-mono text-left text-xs" 
+            placeholder="مثال: https://my-alanchand-proxy.workers.dev/?url="
+          >
+          <p class="text-[11px] font-bold text-gray-500 mt-1">
+            اگر پروکسی اختصاصی کلودفلر خود را راه‌اندازی کرده‌اید، آدرس آن را اینجا وارد کنید. در غیر این صورت فیلد را خالی بگذارید تا از پروکسی‌های پیش‌فرض استفاده شود.
+          </p>
+        </div>
+
+        <div class="neo-box p-3 bg-blue-50 text-xs font-bold text-gray-700">
+          💡 این وب‌سایت کاملاً ایستا (Static) است و بدون نیاز به هیچ سرور خارجی روی <strong>GitHub Pages</strong> کار می‌کند. امضای امنیتی به شکل خودکار توسط الگوریتم رمزنگاری کلاینت‌ساید تولید می‌گردد.
+        </div>
+      </div>
+
+      <div class="pt-4 border-t-2 border-black border-dashed flex items-center justify-between">
+        <button id="save-settings-btn" class="neo-btn neo-btn-success text-xs py-1.5 px-4 font-black">
+          ذخیره و بارگذاری مجدد
+        </button>
+        <button data-close-modal class="neo-btn bg-white hover:bg-gray-100 text-xs py-1.5 px-3 font-black">
+          انصراف
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t-4 border-black bg-white py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-black">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 bg-[#FFE600] border border-black inline-block"></span>
+        <span>طراحی شده با استایل Neobrutalism الهام‌گرفته از <a href="https://github.com/bridgetamana/neobrutal-ui" target="_blank" rel="noreferrer" class="underline decoration-2 hover:bg-[#FFE600] px-1">neobrutal-ui</a></span>
+      </div>
+      <div>
+        <a href="https://github.com/ramin-mahmoodi/chandchandi" target="_blank" rel="noreferrer" class="neo-badge bg-[#00F5D4] text-black hover:bg-[#FFE600] font-mono font-bold">github.com/ramin-mahmoodi/chandchandi ↗</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data-slugs.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
