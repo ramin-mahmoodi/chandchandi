@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const app = {
     data: {},
-    metadata: window.ALANCHAND_SYMBOLS || [],
     currentCategory: 'all',
     searchQuery: '',
     currencyMode: localStorage.getItem('alanchand_currency_mode') || 'toman',
@@ -212,10 +211,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const el = document.getElementById('last-update-text');
       if (!el) return;
       if (timestampStr) {
+        try {
+          const d = new Date(timestampStr);
+          if (!isNaN(d.getTime())) {
+            const timePart = d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+            const datePart = d.toLocaleDateString('fa-IR');
+            el.textContent = `آخرین بروزرسانی بازار: ساعت ${timePart} (${datePart})`;
+            return;
+          }
+        } catch (e) {}
         el.textContent = `آخرین بروزرسانی بازار: ${timestampStr}`;
       } else {
         const now = new Date();
-        el.textContent = `آخرین بروزرسانی: ${now.toLocaleTimeString('fa-IR')}`;
+        const timePart = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+        el.textContent = `آخرین بروزرسانی: ساعت ${timePart}`;
       }
     },
 
@@ -253,13 +262,21 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGrid() {
       const container = document.getElementById('cards-grid');
       const countDisplay = document.getElementById('filtered-count');
+      const totalCountDisplay = document.getElementById('total-symbols-count');
       if (!container) return;
 
       const keys = Object.keys(this.data);
+      if (totalCountDisplay && keys.length > 0) {
+        totalCountDisplay.textContent = keys.length.toLocaleString('fa-IR');
+      }
+
       if (keys.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full neo-card text-center p-8 bg-yellow-50">
-            <div class="text-2xl font-black mb-2">در حال بارگذاری...</div>
+          <div class="col-span-full neo-card text-center p-8 bg-white">
+            <div class="text-2xl font-black mb-2 flex items-center justify-center gap-2">
+              <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+              <span>در حال بارگذاری...</span>
+            </div>
             <p class="text-gray-700 font-bold">داده‌های بازار در حال واکشی هستند.</p>
           </div>
         `;
@@ -296,9 +313,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (filteredKeys.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full neo-card text-center p-8 bg-red-50">
-            <div class="text-2xl font-black mb-2">موردی یافت نشد! 🔍</div>
-            <p class="text-gray-700 font-bold">با عبارت جستجوی وارد شده یا فیلتر فعلی نمادی پیدا نشد.</p>
+          <div class="col-span-full neo-card text-center p-8 bg-white">
+            <div class="text-xl sm:text-2xl font-black mb-2 flex items-center justify-center gap-2">
+              <svg class="w-6 h-6 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>موردی یافت نشد!</span>
+            </div>
+            <p class="text-gray-700 font-bold text-sm">با عبارت جستجوی وارد شده یا فیلتر فعلی نمادی پیدا نشد.</p>
           </div>
         `;
         return;
