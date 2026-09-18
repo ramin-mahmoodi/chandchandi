@@ -1,6 +1,6 @@
 /**
  * Bundled Instant Fallback & Offline Market Data
- * Embedded directly to prevent CORS/file:// blocks
+ * Auto-updated by GitHub Actions
  */
 window.ALANCHAND_FALLBACK_DATA = {
   "usd": {
@@ -147,7 +147,7 @@ window.ALANCHAND_FALLBACK_DATA = {
           "v": 228900
         },
         {
-          "l": 1789713309,
+          "l": 1789714813,
           "v": 228900
         }
       ],
@@ -542,7 +542,7 @@ window.ALANCHAND_FALLBACK_DATA = {
     "icon": "https://api.alanchand.com/assets/fx/eur.png",
     "sell": 262800,
     "buy": 260200,
-    "dolar_rate": 0.871,
+    "dolar_rate": 0.8709,
     "dayChange": 100,
     "dayChangePer": 0.04,
     "app_order": 2,
@@ -677,7 +677,7 @@ window.ALANCHAND_FALLBACK_DATA = {
           "v": 262700
         },
         {
-          "l": 1789713309,
+          "l": 1789714813,
           "v": 262800
         }
       ],
@@ -1461,9 +1461,9 @@ window.ALANCHAND_FALLBACK_DATA = {
     "dayChange": 126970,
     "dayChangePer": 0.54,
     "is_dolar": 0,
-    "real_price": 24160000,
-    "bubble": -670920,
-    "bubble_per": -2.78,
+    "real_price": 24188000,
+    "bubble": -698920,
+    "bubble_per": -2.89,
     "app_order": 1,
     "ads": {
       "pic": "https://alanchand.com/assets/ads/rialxe/wide_main.gif",
@@ -1600,7 +1600,7 @@ window.ALANCHAND_FALLBACK_DATA = {
           "v": 23362110
         },
         {
-          "l": 1789713309,
+          "l": 1789714813,
           "v": 23489080
         }
       ],
@@ -1734,7 +1734,7 @@ window.ALANCHAND_FALLBACK_DATA = {
           "v": 23362110
         },
         {
-          "l": 1789713309,
+          "l": 1789714813,
           "v": 23489080
         }
       ],
@@ -1989,15 +1989,15 @@ window.ALANCHAND_FALLBACK_DATA = {
     "en_name": "Bitcoin",
     "tr_name": "Bitcoin",
     "icon": "https://api.alanchand.com/assets/crypto/btc.png",
-    "price": 77504,
-    "change_24h": 1.323,
+    "price": 77584,
+    "change_24h": 1.447,
     "change_1h": 0.83139312,
     "change_7d": 4.97146137,
     "change_30d": 0.61869498,
     "change_90d": -23.44873641,
     "change_365d": 0,
-    "toman": 17598376406,
-    "toman24hchange": 0.56,
+    "toman": 17595999999,
+    "toman24hchange": 0.25,
     "dec_round": 0,
     "app_order": 2,
     "ads": {
@@ -2131,8 +2131,8 @@ window.ALANCHAND_FALLBACK_DATA = {
           "v": 76616.72
         },
         {
-          "l": 1789713309,
-          "v": 77504
+          "l": 1789714813,
+          "v": 77584
         }
       ],
       "year": [
@@ -3136,4 +3136,4 @@ window.ALANCHAND_FALLBACK_DATA = {
     "app_order": 62
   }
 };
-window.ALANCHAND_UPDATED_AT = "2026-09-18T06:35:09Z";
+window.ALANCHAND_UPDATED_AT = "2026-09-18T07:00:13Z";
