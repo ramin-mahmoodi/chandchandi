@@ -304,10 +304,14 @@ input[type="number"] {
   background: var(--color-lemon);
   border-top: var(--neo-border);
   border-bottom: var(--neo-border);
-  box-shadow: var(--neo-shadow-sm);
+  box-shadow: none;
   white-space: nowrap;
   padding: 0.65rem 0;
   direction: ltr;
+}
+
+header.neo-box {
+  box-shadow: none !important;
 }
 
 .ticker-move {
@@ -384,20 +388,49 @@ input[type="number"] {
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(151, 238, 136, 0); }
 }
 
-/* Custom Scrollbar (Neobrutalism Style) */
+/* Custom Scrollbar - Official neobrutalui.live Style */
+* {
+  scrollbar-color: #b6ace4 #ffffff;
+  scrollbar-width: auto;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--color-page-bg);
-  border: none;
+  background: #ffffff;
+  border-left: 2px solid #000000;
+  border-right: 2px solid #000000;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--color-main);
-  border: 2px solid #000;
-  border-radius: var(--neo-radius-sm);
+  background: #b6ace4;
+  border-left: 2px solid #000000;
+  border-right: 2px solid #000000;
+  border-bottom: 1px solid #000000;
+  border-top: 1px solid #000000;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-sky);
+  background: #9e93db;
+}
+
+::-webkit-scrollbar-corner {
+  background: #000000;
+}
+
+::-webkit-scrollbar-track:horizontal {
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  border-left: none;
+  border-right: none;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
 }
