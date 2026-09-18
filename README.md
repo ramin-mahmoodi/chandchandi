@@ -1,6 +1,14 @@
+<div align="center">
+
 # چندچندی؟ (ChandChandi)
 
-داشبورد سبک، ایستا و لحظه‌ای نرخ طلا، سکه، ارزهای فیات و رمزارزها با معماری نئوبروتالیسم (Neobrutalism).
+**داشبورد سبک، ایستا و لحظه‌ای نرخ طلا، سکه، ارزهای فیات و رمزارزها با معماری نئوبروتالیسم (Neobrutalism)**
+
+<br />
+
+<img src="assets/preview.png" alt="ChandChandi Preview" width="100%" />
+
+</div>
 
 ## معرفی پروژه
 
