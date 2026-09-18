@@ -388,7 +388,7 @@ header.neo-box {
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(151, 238, 136, 0); }
 }
 
-/* Custom Scrollbar - Containers & Menus (Neobrutal Style) */
+/* Custom Scrollbar - Neobrutal Floating Thumb Style */
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
@@ -397,16 +397,18 @@ header.neo-box {
 ::-webkit-scrollbar-track {
   background: #ffffff;
   border-left: 2px solid #000000;
-  border-right: 2px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #b6ace4;
-  border: 1px solid #000000;
+  background-color: #b6ace4;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #000000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9e93db;
+  background-color: #9e93db;
 }
 
 ::-webkit-scrollbar-corner {
@@ -416,41 +418,13 @@ header.neo-box {
 ::-webkit-scrollbar-track:horizontal {
   background: #ffffff;
   border-top: 2px solid #000000;
-  border-bottom: 2px solid #000000;
+  border-left: none;
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
-  background: #b6ace4;
-  border: 1px solid #000000;
-}
-
-/* Main Page Viewport Scrollbar - Remove right border touching window edge */
-:root::-webkit-scrollbar-track,
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-  border-right: none;
-  border-left: 2px solid #000000;
-}
-
-:root::-webkit-scrollbar-thumb,
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  border-right: none;
-  border-left: 1px solid #000000;
-  border-top: 1px solid #000000;
-  border-bottom: 1px solid #000000;
-}
-
-/* Ensure inner menus, selects, and modals preserve full borders */
-#calc-select-list::-webkit-scrollbar-track,
-.neo-select-content::-webkit-scrollbar-track,
-.neo-modal::-webkit-scrollbar-track {
-  border-right: 2px solid #000000 !important;
-  border-left: 2px solid #000000 !important;
-}
-
-#calc-select-list::-webkit-scrollbar-thumb,
-.neo-select-content::-webkit-scrollbar-thumb,
-.neo-modal::-webkit-scrollbar-thumb {
-  border: 1px solid #000000 !important;
+  background-color: #b6ace4;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #000000;
 }
