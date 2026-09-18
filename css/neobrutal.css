@@ -302,7 +302,7 @@ input[type="number"] {
 .ticker-wrap {
   overflow: hidden;
   background: var(--color-lemon);
-  border-top: var(--neo-border);
+  border-top: none;
   border-bottom: var(--neo-border);
   box-shadow: none;
   white-space: nowrap;
@@ -388,7 +388,7 @@ header.neo-box {
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(151, 238, 136, 0); }
 }
 
-/* Custom Scrollbar - Official neobrutalui.live Style */
+/* Custom Scrollbar - Containers & Menus (Neobrutal Style) */
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
@@ -422,4 +422,35 @@ header.neo-box {
 ::-webkit-scrollbar-thumb:horizontal {
   background: #b6ace4;
   border: 2px solid #000000;
+}
+
+/* Main Page Viewport Scrollbar - Remove right border touching window edge */
+:root::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  border-right: none;
+  border-left: 2px solid #000000;
+}
+
+:root::-webkit-scrollbar-thumb,
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  border-right: none;
+  border-left: 2px solid #000000;
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+}
+
+/* Ensure inner menus, selects, and modals preserve full borders */
+#calc-select-list::-webkit-scrollbar-track,
+.neo-select-content::-webkit-scrollbar-track,
+.neo-modal::-webkit-scrollbar-track {
+  border-right: 2px solid #000000 !important;
+  border-left: 2px solid #000000 !important;
+}
+
+#calc-select-list::-webkit-scrollbar-thumb,
+.neo-select-content::-webkit-scrollbar-thumb,
+.neo-modal::-webkit-scrollbar-thumb {
+  border: 2px solid #000000 !important;
 }
