@@ -338,14 +338,14 @@ document.addEventListener('DOMContentLoaded', () => {
           changeBadgeHtml = `
             <span class="neo-badge neo-badge-green font-bold text-xs">
               <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
-              <span class="font-num font-black">${changePercent}%+</span>
+              <span class="font-num font-black">${changePercent.toLocaleString('fa-IR')}%+</span>
             </span>
           `;
         } else if (isNegative) {
           changeBadgeHtml = `
             <span class="neo-badge neo-badge-red font-bold text-xs">
               <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
-              <span class="font-num font-black">${Math.abs(changePercent)}%-</span>
+              <span class="font-num font-black">${Math.abs(changePercent).toLocaleString('fa-IR')}%-</span>
             </span>
           `;
         } else {
@@ -358,16 +358,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Determine Category Tag Color & SVG Icon
-        let categoryColor = 'bg-[#7DD3FC] text-sky-950'; // Sky Blue
+        let categoryColor = 'bg-[#88c5ee] text-black'; // Sky Blue
         let categoryName = 'ارز فیات';
         let categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`;
 
         if (item.type === 'gold') {
-          categoryColor = 'bg-[#FED170] text-amber-950'; // Sunny Lemon Gold
+          categoryColor = 'bg-[#fed170] text-black'; // Sunny Lemon Gold
           categoryName = 'طلا و سکه';
           categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>`;
         } else if (item.type === 'crypto') {
-          categoryColor = 'bg-[#C4B5FD] text-purple-950'; // Soft Purple
+          categoryColor = 'bg-[#b6ace4] text-black'; // Soft Lilac
           categoryName = 'رمزارز';
           categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5M9.5 6v12M12 6v2M12 16v2"/></svg>`;
         }
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             ${tomanVal ? `
-              <div class="flex items-baseline justify-between gap-1 text-xs font-bold text-gray-800 bg-gray-50 px-2 py-1 border border-black/20 rounded-md">
+              <div class="flex items-baseline justify-between gap-1 text-xs font-bold text-gray-800 bg-gray-50 px-2 py-1 border border-black/20 rounded-[5px]">
                 <span class="text-gray-500 text-[11px]">معادل تومانی:</span>
                 <div class="flex items-baseline gap-1">
                   <span class="font-num font-black text-black">${tomanVal}</span>
@@ -441,9 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let bubbleBadge = '';
         if (item.bubble_per !== undefined && item.bubble_per !== null && item.bubble_per !== 0) {
           bubbleBadge = `
-            <span class="neo-badge bg-[#FED170] text-[10px] font-bold text-amber-950" title="حباب سکه">
+            <span class="neo-badge bg-[#fed170] text-[10px] font-bold text-amber-950" title="حباب سکه">
               <svg class="w-3 h-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              حباب: <span class="font-num font-black">${item.bubble_per}%</span>
+              حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
             </span>
           `;
         }
@@ -452,6 +452,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const starSvg = isFav
           ? `<svg class="w-5 h-5 text-amber-500 fill-amber-300 stroke-black stroke-2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
           : `<svg class="w-5 h-5 text-gray-400 fill-white stroke-black stroke-2 hover:fill-amber-100" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+
+        // 6. Currency Icon URL
+        const iconSlug = (item.slug || key).toUpperCase();
+        const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
+        const fallbackIcon = item.icon || '';
 
         const card = document.createElement('div');
         card.className = 'neo-card flex flex-col justify-between cursor-pointer bg-white';
@@ -463,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${categoryIcon}
                   <span>${categoryName}</span>
                 </span>
-                <span class="font-mono font-black text-xs px-2 py-0.5 border-2 border-black rounded-md bg-white">${(item.slug || key).toUpperCase()}</span>
+                <span class="font-mono font-black text-xs px-2 py-0.5 border-2 border-black rounded-[5px] bg-white shadow-[1px_1px_0px_#000]">${(item.slug || key).toUpperCase()}</span>
                 ${bubbleBadge}
               </div>
               <button class="fav-star-btn p-1 transition-transform hover:scale-125 focus:outline-none" data-key="${key}" title="علاقه‌مندی">
@@ -471,9 +476,15 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
             </div>
 
-            <div class="mb-4">
-              <h3 class="text-lg font-black text-black leading-tight">${item.fa_name || key}</h3>
-              <div class="text-xs font-bold text-gray-500 font-mono mt-0.5">${item.en_name || ''}</div>
+            <!-- Currency Official Icon & Title -->
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-11 h-11 rounded-[5px] border-2 border-black bg-white shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center flex-shrink-0">
+                <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base sm:text-lg font-black text-black leading-tight truncate">${item.fa_name || key}</h3>
+                <div class="text-xs font-bold text-gray-500 font-mono truncate mt-0.5">${item.en_name || ''}</div>
+              </div>
             </div>
           </div>
 
@@ -536,15 +547,18 @@ document.addEventListener('DOMContentLoaded', () => {
           displayPrice = `${this.formatPrice(p)} ${unit}`;
         }
 
+        const iconSlug = (item.slug || k).toUpperCase();
+        const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
         const changePercent = parseFloat(item.change_24h ?? item.dayChangePer ?? 0);
         const changeSign = changePercent > 0 ? '+' : '';
-        const color = changePercent > 0 ? 'text-green-800' : (changePercent < 0 ? 'text-red-700' : 'text-gray-800');
+        const color = changePercent > 0 ? 'text-emerald-900' : (changePercent < 0 ? 'text-rose-900' : 'text-gray-900');
 
         html += `
           <div class="ticker-item">
+            <img src="${iconSrc}" alt="" class="w-4 h-4 inline-block ml-1.5 align-text-bottom" onerror="this.style.display='none';" />
             <span class="font-black text-black">${item.fa_name || k}:</span>
             <span class="font-num font-black text-black">${displayPrice}</span>
-            <span class="font-num text-xs font-black ${color}">(${changeSign}${changePercent}%)</span>
+            <span class="font-num text-xs font-black ${color}">(${changeSign}${Math.abs(changePercent).toLocaleString('fa-IR')}%)</span>
             <span class="w-1.5 h-1.5 bg-black border border-black inline-block mx-2.5"></span>
           </div>
         `;
@@ -561,7 +575,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const modalTitle = document.getElementById('modal-title');
       const modalSubtitle = document.getElementById('modal-subtitle');
       const modalSlug = document.getElementById('modal-slug');
+      const modalIcon = document.getElementById('modal-icon');
       const modalContent = document.getElementById('modal-details-body');
+
+      const iconSlug = (item.slug || key).toUpperCase();
+      const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
+      if (modalIcon) {
+        modalIcon.src = iconSrc;
+        modalIcon.alt = item.fa_name || key;
+        modalIcon.onerror = function() {
+          this.onerror = null;
+          if (item.icon) this.src = item.icon;
+        };
+      }
 
       if (modalTitle) modalTitle.textContent = item.fa_name || key;
       if (modalSubtitle) modalSubtitle.textContent = item.en_name || '';
@@ -577,24 +603,25 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isCrypto) {
         const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#C4B5FD]">
-            <div class="text-xs font-bold text-gray-700 mb-1">قیمت دلاری:</div>
-            <div class="text-xl font-black font-mono tracking-tight">$ ${usdVal}</div>
-            ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
+          <div class="neo-box p-3 bg-[#b6ace4]">
+            <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری:</div>
+            <div class="text-xl font-black font-mono tracking-tight text-black">$ ${usdVal}</div>
+            ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black text-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
           </div>
         `;
       } else if (isDollarGold) {
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#7DD3FC]">
-            <div class="text-xs font-bold text-gray-700 mb-1">قیمت دلاری (انس):</div>
-            <div class="text-xl font-black font-mono tracking-tight">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
+          <div class="neo-box p-3 bg-[#88c5ee]">
+            <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری (انس):</div>
+            <div class="text-xl font-black font-mono tracking-tight text-black">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
           </div>
         `;
       } else {
         const p = item.price ?? item.sell ?? item.buy ?? 0;
+        const bgPriceColor = item.type === 'gold' ? 'bg-[#fed170]' : 'bg-[#88c5ee]';
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#FED170]">
-            <div class="text-xs font-bold text-gray-700 mb-1">قیمت فعلی:</div>
+          <div class="neo-box p-3 ${bgPriceColor}">
+            <div class="text-xs font-bold text-gray-800 mb-1">قیمت فعلی:</div>
             <div class="text-xl font-black text-black font-num">${this.formatPrice(p)} <span class="text-xs font-bold">${unit}</span></div>
           </div>
         `;
@@ -603,10 +630,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let detailsHtml = `
         <div class="grid grid-cols-2 gap-3 mb-4">
           ${priceBoxHtml}
-          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-[#97EE88]' : 'bg-[#FF8FAB]'}">
-            <div class="text-xs font-bold text-gray-700 mb-1">تغییرات ۲۴ ساعته:</div>
-            <div class="text-lg font-black font-num">${changePercent >= 0 ? '+' : ''}${changePercent}%</div>
-            ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-700">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
+          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-[#97ee88]' : 'bg-[#ff88a5]'}">
+            <div class="text-xs font-bold text-gray-800 mb-1">تغییرات ۲۴ ساعته:</div>
+            <div class="text-lg font-black font-num text-black">${changePercent >= 0 ? '+' : '-'}${Math.abs(changePercent).toLocaleString('fa-IR')}%</div>
+            ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-800">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
           </div>
         </div>
       `;
@@ -616,11 +643,11 @@ document.addEventListener('DOMContentLoaded', () => {
         detailsHtml += `
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div class="neo-box p-3 bg-white">
-              <div class="text-xs font-bold text-gray-500 mb-1">قیمت خرید:</div>
+              <div class="text-xs font-bold text-gray-600 mb-1">قیمت خرید:</div>
               <div class="text-base font-black font-num text-emerald-700">${item.buy ? this.formatPrice(item.buy) + ' ' + unit : 'نامشخص'}</div>
             </div>
             <div class="neo-box p-3 bg-white">
-              <div class="text-xs font-bold text-gray-500 mb-1">قیمت فروش:</div>
+              <div class="text-xs font-bold text-gray-600 mb-1">قیمت فروش:</div>
               <div class="text-base font-black font-num text-rose-700">${item.sell ? this.formatPrice(item.sell) + ' ' + unit : 'نامشخص'}</div>
             </div>
           </div>
@@ -630,14 +657,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // Coin bubble
       if (item.bubble !== undefined && item.bubble !== null && item.bubble !== 0) {
         detailsHtml += `
-          <div class="neo-box p-3 bg-[#FED170] mb-4">
+          <div class="neo-box p-3 bg-[#fed170] mb-4">
             <div class="flex justify-between items-center">
               <div>
                 <div class="text-xs font-black text-amber-950">حباب سکه:</div>
                 <div class="text-base font-black font-num mt-0.5">${this.formatPrice(item.bubble)} ${unit}</div>
               </div>
               <div class="neo-badge bg-white font-num font-black text-amber-950">
-                ${item.bubble_per || 0}% حباب
+                ${parseFloat(item.bubble_per || 0).toLocaleString('fa-IR')}% حباب
               </div>
             </div>
           </div>
@@ -647,9 +674,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Dollar rate
       if (item.dolar_rate) {
         detailsHtml += `
-          <div class="neo-box p-3 bg-[#7DD3FC] mb-4 flex justify-between items-center">
-            <span class="text-xs font-bold text-sky-950">نرخ دلار مبنای محاسبه:</span>
-            <span class="font-num font-black text-sky-950">${this.formatPrice(item.dolar_rate)} ${unit}</span>
+          <div class="neo-box p-3 bg-[#88c5ee] mb-4 flex justify-between items-center">
+            <span class="text-xs font-bold text-black">نرخ دلار مبنای محاسبه:</span>
+            <span class="font-num font-black text-black">${this.formatPrice(item.dolar_rate)} ${unit}</span>
           </div>
         `;
       }

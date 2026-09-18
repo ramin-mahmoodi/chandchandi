@@ -1,24 +1,24 @@
-/* Neobrutalism UI Styling - Official neobrutal-ui Design System */
+/* Neobrutalism UI Styling - Official neobrutal-ui Design System (neobrutalui.live) */
 
 :root {
-  --neo-border: 2.5px solid #000000;
-  --neo-border-thick: 3.5px solid #000000;
-  --neo-shadow-sm: 2px 2px 0px #000000;
-  --neo-shadow: 4px 4px 0px #000000;
-  --neo-shadow-md: 6px 6px 0px #000000;
-  --neo-shadow-lg: 8px 8px 0px #000000;
-  --neo-shadow-xl: 10px 10px 0px #000000;
-  --neo-radius: 12px;
+  --neo-border: 2px solid #000000;
+  --neo-border-thick: 3px solid #000000;
+  --neo-shadow-sm: 2px 2px 0px 0px #000000;
+  --neo-shadow: 4px 4px 0px 0px #000000;
+  --neo-shadow-md: 6px 6px 0px 0px #000000;
+  --neo-shadow-lg: 8px 8px 0px 0px #000000;
+  --neo-shadow-xl: 10px 10px 0px 0px #000000;
+  --neo-radius: 5px;
+  --neo-radius-sm: 3px;
 
-  /* Official Neobrutal-UI Theme Colors (neobrutalui.live) */
-  --color-page-bg: #DFE5F2;     /* Cool Periwinkle/Slate Canvas */
-  --color-card-bg: #FFFFFF;     /* Crisp Pure White for All Cards */
-  --color-main: #88AAEE;        /* Signature Neobrutal Main Accent */
-  --color-mint: #97EE88;        /* Fresh Mint for Positive Trends */
-  --color-lemon: #FED170;       /* Sunny Warm Gold for Coins/Gold */
-  --color-sky: #7DD3FC;         /* Crisp Sky Blue for FX */
-  --color-pink: #FF8FAB;        /* Energetic Soft Pink for Negative Trends */
-  --color-purple: #C4B5FD;      /* Soft Violet for Cryptos */
+  /* Official neobrutal-ui Color Tokens */
+  --color-page-bg: #f0eefc;     /* Official neobrutal-ui soft pastel lilac canvas */
+  --color-card-bg: #ffffff;     /* Pure crisp white cards */
+  --color-main: #b6ace4;        /* Official neobrutal-ui main lilac accent */
+  --color-mint: #97ee88;        /* Official neobrutal-ui fresh lime mint */
+  --color-lemon: #fed170;       /* Official neobrutal-ui sunny warm lemon */
+  --color-sky: #88c5ee;         /* Official neobrutal-ui sky blue */
+  --color-pink: #ff88a5;        /* Official neobrutal-ui hot pink */
 }
 
 body {
@@ -33,13 +33,13 @@ body {
   box-shadow: var(--neo-shadow);
   border-radius: var(--neo-radius);
   background-color: var(--color-card-bg);
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease;
 }
 
 .neo-box-sm {
   border: 2px solid #000;
   box-shadow: var(--neo-shadow-sm);
-  border-radius: 8px;
+  border-radius: var(--neo-radius-sm);
 }
 
 .neo-card {
@@ -47,14 +47,13 @@ body {
   box-shadow: var(--neo-shadow);
   border-radius: var(--neo-radius);
   background: #ffffff;
-  padding: 1.25rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  padding: 1.15rem;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
   position: relative;
-  overflow: hidden;
 }
 
 .neo-card:hover {
-  transform: translate(-3px, -3px);
+  transform: translate(-2px, -2px);
   box-shadow: var(--neo-shadow-md);
 }
 
@@ -66,7 +65,7 @@ body {
   border: var(--neo-border);
   box-shadow: var(--neo-shadow);
   border-radius: var(--neo-radius);
-  padding: 0.5rem 1.15rem;
+  padding: 0.5rem 1rem;
   font-weight: 800;
   cursor: pointer;
   background-color: #ffffff;
@@ -77,13 +76,13 @@ body {
 }
 
 .neo-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--neo-shadow-md);
+  transform: translate(1px, 1px);
+  box-shadow: var(--neo-shadow-sm);
 }
 
 .neo-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: var(--neo-shadow-sm);
+  transform: translate(3px, 3px);
+  box-shadow: none;
 }
 
 .neo-btn-primary {
@@ -103,7 +102,7 @@ body {
 
 .neo-btn-danger {
   background-color: var(--color-pink);
-  color: #881337;
+  color: #000000;
 }
 
 .neo-input {
@@ -131,28 +130,28 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.25rem 0.65rem;
+  padding: 0.2rem 0.55rem;
   border: 2px solid #000000;
-  box-shadow: 2px 2px 0px #000000;
-  border-radius: 999px;
+  box-shadow: 2px 2px 0px 0px #000000;
+  border-radius: var(--neo-radius);
   font-size: 0.75rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .neo-badge-green {
   background-color: var(--color-mint);
-  color: #064E3B;
+  color: #000000;
 }
 
 .neo-badge-red {
   background-color: var(--color-pink);
-  color: #881337;
+  color: #000000;
 }
 
 .neo-badge-gray {
-  background-color: #F1F5F9;
-  color: #1E293B;
+  background-color: #f1f5f9;
+  color: #000000;
 }
 
 .neo-tab {
@@ -162,7 +161,7 @@ body {
   border: var(--neo-border);
   box-shadow: var(--neo-shadow-sm);
   border-radius: var(--neo-radius);
-  padding: 0.5rem 1.1rem;
+  padding: 0.5rem 1rem;
   font-weight: 800;
   background-color: #ffffff;
   cursor: pointer;
@@ -171,14 +170,14 @@ body {
 }
 
 .neo-tab:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--neo-shadow);
+  transform: translate(1px, 1px);
+  box-shadow: var(--neo-shadow-sm);
 }
 
 .neo-tab.active {
   background-color: var(--color-main);
   box-shadow: var(--neo-shadow);
-  transform: translate(-2px, -2px);
+  transform: translate(-1px, -1px);
 }
 
 /* Marquee Ticker */
@@ -235,7 +234,7 @@ body {
   background: #ffffff;
   border: var(--neo-border-thick);
   box-shadow: var(--neo-shadow-xl);
-  border-radius: 14px;
+  border-radius: var(--neo-radius);
   width: 100%;
   max-width: 560px;
   max-height: 90vh;
@@ -254,17 +253,17 @@ body {
   display: inline-block;
   width: 9px;
   height: 9px;
-  background-color: #10B981;
+  background-color: var(--color-mint);
   border-radius: 50%;
   border: 1.5px solid #000;
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 0 0 rgba(151, 238, 136, 0.6);
   animation: neoPulse 1.8s infinite;
 }
 
 @keyframes neoPulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(151, 238, 136, 0.6); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(151, 238, 136, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(151, 238, 136, 0); }
 }
 
 /* Custom Scrollbar */
@@ -273,14 +272,14 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8F6F0;
+  background: var(--color-page-bg);
   border-left: 2px solid #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #C7D2FE;
+  background: var(--color-main);
   border: 2px solid #000;
-  border-radius: 4px;
+  border-radius: var(--neo-radius-sm);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #93C5FD;
+  background: var(--color-sky);
 }
