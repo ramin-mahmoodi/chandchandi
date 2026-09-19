@@ -40,7 +40,7 @@
   `full`
 - نشانی دریافت تصاویر نمادها (Assets CDN):
   `https://api.alanchand.com/assets/{type}/{SLUG}.png`
-  - نمونه فیات: `https://api.alanchand.com/assets/currency/USD.png`
+  - نمونه فیات: `https://api.alanchand.com/assets/fx/USD.png`
   - نمونه طلا و سکه: `https://api.alanchand.com/assets/gold/18AYAR.png`
   - نمونه رمزارز: `https://api.alanchand.com/assets/crypto/BTC.png`
 

@@ -142,7 +142,7 @@ class CurrencyCalculator {
 
       if (label) label.textContent = displayName;
       if (icon) {
-        icon.src = `assets/icons/${item.type || 'currency'}/${iconSlug}.png`;
+        icon.src = `assets/icons/${item.type || 'fx'}/${iconSlug}.png`;
         icon.style.display = '';
       }
     }
@@ -214,7 +214,7 @@ class CurrencyCalculator {
 
       itemDiv.innerHTML = `
         <div class="flex items-center gap-2 truncate pointer-events-none">
-          <img src="assets/icons/${item.type || 'currency'}/${iconSlug}.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
+          <img src="assets/icons/${item.type || 'fx'}/${iconSlug}.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
           <span class="truncate font-bold text-xs sm:text-sm">${displayName}</span>
         </div>
         <svg class="check-icon h-4 w-4 shrink-0 text-black stroke-[3] pointer-events-none ${isSelected ? '' : 'hidden'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
