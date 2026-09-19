@@ -21,6 +21,20 @@
   --color-pink: #ff88a5;        /* Official neobrutal-ui hot pink */
 }
 
+/* Neobrutal Unified Color Utility Classes */
+.bg-neoMain, .bg-neo-main { background-color: var(--color-main); }
+.bg-neoMint, .bg-neo-mint { background-color: var(--color-mint); }
+.bg-neoLemon, .bg-neo-lemon { background-color: var(--color-lemon); }
+.bg-neoSky, .bg-neo-sky { background-color: var(--color-sky); }
+.bg-neoPink, .bg-neo-pink { background-color: var(--color-pink); }
+.bg-neoBg, .bg-neo-bg { background-color: var(--color-page-bg); }
+
+.hover\:bg-neoMain:hover { background-color: var(--color-main); }
+.hover\:bg-neoMint:hover { background-color: var(--color-mint); }
+.hover\:bg-neoLemon:hover { background-color: var(--color-lemon); }
+.hover\:bg-neoSky:hover { background-color: var(--color-sky); }
+.hover\:bg-neoPink:hover { background-color: var(--color-pink); }
+
 body {
   background-color: var(--color-page-bg);
   color: #000000;

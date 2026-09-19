@@ -388,16 +388,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Determine Category Tag Color & SVG Icon
-        let categoryColor = 'bg-[#88c5ee] text-black'; // Sky Blue
+        let categoryColor = 'bg-neoSky text-black'; // Sky Blue
         let categoryName = 'ارز فیات';
         let categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`;
 
         if (item.type === 'gold') {
-          categoryColor = 'bg-[#fed170] text-black'; // Sunny Lemon Gold
+          categoryColor = 'bg-neoLemon text-black'; // Sunny Lemon Gold
           categoryName = 'طلا و سکه';
           categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>`;
         } else if (item.type === 'crypto') {
-          categoryColor = 'bg-[#b6ace4] text-black'; // Soft Lilac
+          categoryColor = 'bg-neoMain text-black'; // Soft Lilac
           categoryName = 'رمزارز';
           categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5M9.5 6v12M12 6v2M12 16v2"/></svg>`;
         }
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let bubbleBadge = '';
         if (item.bubble_per !== undefined && item.bubble_per !== null && item.bubble_per !== 0) {
           bubbleBadge = `
-            <span class="neo-badge bg-[#fed170] text-[10px] font-bold text-amber-950" title="حباب سکه">
+            <span class="neo-badge bg-neoLemon text-[10px] font-bold text-amber-950" title="حباب سکه">
               <svg class="w-3 h-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
               حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
             </span>
@@ -633,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isCrypto) {
         const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#b6ace4]">
+          <div class="neo-box p-3 bg-neoMain">
             <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری:</div>
             <div class="text-xl font-black font-mono tracking-tight text-black">$ ${usdVal}</div>
             ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black text-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
@@ -641,14 +641,14 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       } else if (isDollarGold) {
         priceBoxHtml = `
-          <div class="neo-box p-3 bg-[#88c5ee]">
+          <div class="neo-box p-3 bg-neoSky">
             <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری (انس):</div>
             <div class="text-xl font-black font-mono tracking-tight text-black">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
           </div>
         `;
       } else {
         const p = item.price ?? item.sell ?? item.buy ?? 0;
-        const bgPriceColor = item.type === 'gold' ? 'bg-[#fed170]' : 'bg-[#88c5ee]';
+        const bgPriceColor = item.type === 'gold' ? 'bg-neoLemon' : 'bg-neoSky';
         priceBoxHtml = `
           <div class="neo-box p-3 ${bgPriceColor}">
             <div class="text-xs font-bold text-gray-800 mb-1">قیمت فعلی:</div>
@@ -660,7 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let detailsHtml = `
         <div class="grid grid-cols-2 gap-3 mb-4">
           ${priceBoxHtml}
-          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-[#97ee88]' : 'bg-[#ff88a5]'}">
+          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-neoMint' : 'bg-neoPink'}">
             <div class="text-xs font-bold text-gray-800 mb-1">تغییرات ۲۴ ساعته:</div>
             <div class="text-lg font-black font-num text-black">${changePercent >= 0 ? '+' : '-'}${Math.abs(changePercent).toLocaleString('fa-IR')}%</div>
             ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-800">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
@@ -687,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Coin bubble
       if (item.bubble !== undefined && item.bubble !== null && item.bubble !== 0) {
         detailsHtml += `
-          <div class="neo-box p-3 bg-[#fed170] mb-4">
+          <div class="neo-box p-3 bg-neoLemon mb-4">
             <div class="flex justify-between items-center">
               <div>
                 <div class="text-xs font-black text-amber-950">حباب سکه:</div>
@@ -704,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Dollar rate
       if (item.dolar_rate) {
         detailsHtml += `
-          <div class="neo-box p-3 bg-[#88c5ee] mb-4 flex justify-between items-center">
+          <div class="neo-box p-3 bg-neoSky mb-4 flex justify-between items-center">
             <span class="text-xs font-bold text-black">نرخ دلار مبنای محاسبه:</span>
             <span class="font-num font-black text-black">${this.formatPrice(item.dolar_rate)} ${unit}</span>
           </div>

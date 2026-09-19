@@ -153,11 +153,11 @@ class CurrencyCalculator {
       const isSelected = el.getAttribute('data-value') === key;
       const checkIcon = el.querySelector('.check-icon');
       if (isSelected) {
-        el.classList.add('bg-[#b6ace4]', 'is-selected');
+        el.classList.add('bg-neoMain', 'is-selected');
         el.setAttribute('aria-selected', 'true');
         if (checkIcon) checkIcon.classList.remove('hidden');
       } else {
-        el.classList.remove('bg-[#b6ace4]', 'is-selected');
+        el.classList.remove('bg-neoMain', 'is-selected');
         el.setAttribute('aria-selected', 'false');
         if (checkIcon) checkIcon.classList.add('hidden');
       }
@@ -206,7 +206,7 @@ class CurrencyCalculator {
 
       // 2. Neobrutal dropdown item
       const itemDiv = document.createElement('div');
-      itemDiv.className = `calc-select-item neo-select-item ${isSelected ? 'bg-[#b6ace4] is-selected' : ''}`;
+      itemDiv.className = `calc-select-item neo-select-item ${isSelected ? 'bg-neoMain is-selected' : ''}`;
       itemDiv.setAttribute('data-value', k);
       itemDiv.setAttribute('data-search', `${item.fa_name || ''} ${item.slug || ''} ${k} ${displayName}`);
       itemDiv.setAttribute('role', 'option');
