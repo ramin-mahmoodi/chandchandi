@@ -428,6 +428,10 @@ header.neo-box {
 }
 
 /* Custom Scrollbar - Neobrutal Flush Style */
+html {
+  scrollbar-color: #b6ace4 #ffffff;
+}
+
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
@@ -452,20 +456,6 @@ header.neo-box {
 
 ::-webkit-scrollbar-corner {
   background: #000000;
-}
-
-::-webkit-scrollbar-track:horizontal {
-  background: #ffffff;
-  border-top: 2px solid #000000;
-  border-left: none;
-}
-
-::-webkit-scrollbar-thumb:horizontal {
-  background-color: #b6ace4;
-  border-top: 2px solid #000000;
-  border-left: 1px solid #000000;
-  border-right: 1px solid #000000;
-  border-bottom: none;
 }
 
 /* Symbol selector menu and inner containers - Full borders on all sides */
