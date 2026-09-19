@@ -428,10 +428,6 @@ header.neo-box {
 }
 
 /* Custom Scrollbar - Neobrutal Flush Style */
-html {
-  scrollbar-color: #b6ace4 #ffffff;
-}
-
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
