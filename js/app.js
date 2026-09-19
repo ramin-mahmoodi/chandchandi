@@ -114,6 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => this.closeModals());
       });
 
+      // Close modal when clicking on backdrop outside the modal box
+      const modalBackdrops = document.querySelectorAll('.neo-modal-backdrop');
+      modalBackdrops.forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) {
+            this.closeModals();
+          }
+        });
+      });
+
       // Settings Modal triggers
       const openSettingsBtn = document.getElementById('open-settings-btn');
       if (openSettingsBtn) {
