@@ -720,12 +720,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     openModal(modalId) {
       const modal = document.getElementById(modalId);
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden', 'is-closing');
+        const box = modal.querySelector('.neo-modal');
+        if (box) {
+          box.style.animation = 'none';
+          void box.offsetHeight; // force reflow so open animation always plays
+          box.style.animation = '';
+        }
+      }
     },
 
     closeModals() {
-      const modals = document.querySelectorAll('.neo-modal-backdrop');
-      modals.forEach(m => m.classList.add('hidden'));
+      const openModals = document.querySelectorAll('.neo-modal-backdrop:not(.hidden)');
+      if (!openModals.length) return;
+
+      openModals.forEach(m => {
+        if (m.classList.contains('is-closing')) return;
+        m.classList.add('is-closing');
+
+        let isDone = false;
+        const finish = () => {
+          if (isDone) return;
+          isDone = true;
+          m.classList.remove('is-closing');
+          m.classList.add('hidden');
+        };
+
+        const modalBox = m.querySelector('.neo-modal');
+        if (modalBox) {
+          modalBox.addEventListener('animationend', finish, { once: true });
+        }
+        // Safety timeout matching the 0.15s CSS exit animation
+        setTimeout(finish, 170);
+      });
     }
   };
 
