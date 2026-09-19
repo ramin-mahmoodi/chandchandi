@@ -96,7 +96,7 @@
           </button>
 
           <!-- Settings Button (Compact Square) -->
-          <button id="open-settings-btn" class="neo-btn bg-white hover:bg-neoLemon h-9 w-9 p-0 flex items-center justify-center shadow-[2px_2px_0px_#000] transition-colors" title="تنظیمات پروکسی و برنامه">
+          <button id="open-settings-btn" class="neo-btn bg-white hover:bg-neoLemon h-9 w-9 p-0 flex items-center justify-center shadow-[2px_2px_0px_#000] transition-colors" title="تنظیمات پروکسی و برنامه" aria-label="تنظیمات پروکسی و برنامه">
             <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
               <circle cx="12" cy="12" r="3"/>
@@ -137,21 +137,21 @@
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <div>
-              <label class="block text-xs font-black text-gray-700 mb-1">مقدار ارز:</label>
+              <label for="calc-amount-input" class="block text-xs font-black text-gray-700 mb-1">مقدار ارز:</label>
               <div class="relative flex items-center">
-                <input type="number" id="calc-amount-input" class="neo-input font-num font-bold text-left pl-10" value="1" min="0" step="any">
+                <input type="number" id="calc-amount-input" name="calc-amount" aria-label="مقدار ارز" class="neo-input font-num font-bold text-left pl-10" value="1" min="0" step="any">
                 <div class="absolute left-1.5 inset-y-1.5 flex flex-col justify-between z-10">
-                  <button type="button" id="calc-amount-up" class="neo-stepper-btn hover:!bg-neoMain" title="افزایش مقدار">
+                  <button type="button" id="calc-amount-up" class="neo-stepper-btn hover:!bg-neoMain" title="افزایش مقدار" aria-label="افزایش مقدار">
                     <svg class="w-2.5 h-2.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
                   </button>
-                  <button type="button" id="calc-amount-down" class="neo-stepper-btn hover:!bg-neoMain" title="کاهش مقدار">
+                  <button type="button" id="calc-amount-down" class="neo-stepper-btn hover:!bg-neoMain" title="کاهش مقدار" aria-label="کاهش مقدار">
                     <svg class="w-2.5 h-2.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
                   </button>
                 </div>
               </div>
             </div>
             <div>
-              <label class="block text-xs font-black text-gray-700 mb-1">انتخاب نماد:</label>
+              <label id="calc-symbol-label" for="calc-select-trigger" class="block text-xs font-black text-gray-700 mb-1">انتخاب نماد:</label>
               <div class="relative w-full z-40" id="calc-select-container">
                 <!-- Neobrutal Select Trigger -->
                 <button 
@@ -159,6 +159,7 @@
                   id="calc-select-trigger" 
                   aria-haspopup="listbox" 
                   aria-expanded="false" 
+                  aria-labelledby="calc-symbol-label calc-selected-label"
                   class="neo-select-trigger"
                 >
                   <div class="flex items-center gap-2 truncate pointer-events-none">
@@ -173,7 +174,7 @@
                 </button>
 
                 <!-- Hidden native select for form compatibility -->
-                <select id="calc-symbol-select" class="sr-only" tabindex="-1" aria-hidden="true">
+                <select id="calc-symbol-select" name="calc-symbol" aria-label="انتخاب نماد ارز یا طلا" class="sr-only" tabindex="-1" aria-hidden="true">
                   <option value="usd">دلار آمریکا (USD)</option>
                 </select>
 
@@ -187,12 +188,14 @@
                     <input 
                       type="text" 
                       id="calc-select-search" 
+                      name="calc-select-search"
+                      aria-label="جستجوی نماد در لیست"
                       placeholder="جستجوی نماد (دلار، تتر، طلا...)" 
                       class="w-full text-xs font-bold px-2.5 py-1.5 border-2 border-black rounded-[3px] bg-neoBg outline-none placeholder:text-gray-500 focus:bg-white"
                     >
                   </div>
                   <!-- Scrollable Options List -->
-                  <div id="calc-select-list" class="max-h-52 overflow-y-auto space-y-0.5" role="listbox"></div>
+                  <div id="calc-select-list" class="max-h-52 overflow-y-auto space-y-0.5" role="listbox" aria-label="لیست نمادهای بازار"></div>
                 </div>
               </div>
             </div>
@@ -213,14 +216,14 @@
             <span>محاسبه‌گر ارزش طلای ۱۸ عیار</span>
           </h3>
           <div class="mb-3">
-            <label class="block text-xs font-black text-gray-700 mb-1">وزن طلا به گرم:</label>
+            <label for="gold-weight-input" class="block text-xs font-black text-gray-700 mb-1">وزن طلا به گرم:</label>
             <div class="relative flex items-center">
-              <input type="number" id="gold-weight-input" class="neo-input font-num font-bold text-left pl-10" value="4.5" min="0" step="0.5" placeholder="مثلاً ۴.۵ گرم">
+              <input type="number" id="gold-weight-input" name="gold-weight" aria-label="وزن طلا به گرم" class="neo-input font-num font-bold text-left pl-10" value="4.5" min="0" step="0.5" placeholder="مثلاً ۴.۵ گرم">
               <div class="absolute left-1.5 inset-y-1.5 flex flex-col justify-between z-10">
-                <button type="button" id="gold-weight-up" class="neo-stepper-btn" title="افزایش وزن">
+                <button type="button" id="gold-weight-up" class="neo-stepper-btn" title="افزایش وزن" aria-label="افزایش وزن">
                   <svg class="w-2.5 h-2.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
                 </button>
-                <button type="button" id="gold-weight-down" class="neo-stepper-btn" title="کاهش وزن">
+                <button type="button" id="gold-weight-down" class="neo-stepper-btn" title="کاهش وزن" aria-label="کاهش وزن">
                   <svg class="w-2.5 h-2.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
               </div>
@@ -246,9 +249,12 @@
         
         <!-- Search Input -->
         <div class="relative w-full md:w-96">
+          <label for="search-input" class="sr-only">جستجوی نمادهای بازار</label>
           <input 
             type="text" 
             id="search-input" 
+            name="search"
+            aria-label="جستجوی نمادهای بازار"
             class="neo-input pr-10" 
             placeholder="جستجوی نام (مثلاً دلار، بیت کوین، تتر، سکه)..."
           >
@@ -336,7 +342,7 @@
             <div id="modal-subtitle" class="text-xs font-bold text-gray-500 font-mono">US Dollar</div>
           </div>
         </div>
-        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black" title="بستن">
+        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black" title="بستن" aria-label="بستن پنجره جزئیات">
           <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
@@ -360,17 +366,19 @@
           </svg>
           <span>تنظیمات اتصال و پروکسی</span>
         </h3>
-        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black" title="بستن">
+        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black" title="بستن" aria-label="بستن پنجره تنظیمات">
           <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
 
       <div class="space-y-4 mb-6">
         <div>
-          <label class="block text-xs font-black text-gray-700 mb-1">آدرس پروکسی CORS اختصاصی (اختیاری):</label>
+          <label for="settings-proxy-input" class="block text-xs font-black text-gray-700 mb-1">آدرس پروکسی CORS اختصاصی (اختیاری):</label>
           <input 
             type="text" 
             id="settings-proxy-input" 
+            name="settings-proxy"
+            aria-label="آدرس پروکسی CORS اختصاصی"
             class="neo-input font-mono text-left text-xs" 
             placeholder="مثال: https://my-alanchand-proxy.workers.dev/?url="
           >
@@ -413,6 +421,6 @@
   <script src="js/fallback-data.js"></script>
   <script src="js/api.js"></script>
   <script src="js/calculator.js?v=2"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>

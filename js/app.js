@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="font-mono font-black text-xs px-2 py-0.5 border-2 border-black rounded-[5px] bg-white shadow-[1px_1px_0px_#000]">${(item.slug || key).toUpperCase()}</span>
                 ${bubbleBadge}
               </div>
-              <button class="fav-star-btn p-1 transition-transform hover:scale-125 focus:outline-none" data-key="${key}" title="علاقه‌مندی">
+              <button class="fav-star-btn p-1 transition-transform hover:scale-125 focus:outline-none" data-key="${key}" title="علاقه‌مندی" aria-label="${isFav ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}">
                 ${starSvg}
               </button>
             </div>
