@@ -353,6 +353,13 @@ header.neo-box {
   100% { transform: translate3d(-50%, 0, 0); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .ticker-move,
+  .neo-pulse-dot {
+    animation: none;
+  }
+}
+
 /* Modal Neobrutalism */
 .neo-modal-backdrop {
   position: fixed;
