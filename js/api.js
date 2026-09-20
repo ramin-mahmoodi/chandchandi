@@ -202,7 +202,8 @@ class AlanchandApi {
       targetUrls.push(formatted);
     }
 
-    // Direct and proxies
+    // High-performance Cloudflare Worker proxy & fallbacks
+    targetUrls.push(`https://cors-get-proxy.sirjosh.workers.dev/?url=${encodeURIComponent(rawUrl)}`);
     targetUrls.push(rawUrl);
     targetUrls.push(`https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`);
     targetUrls.push(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`);
@@ -210,7 +211,7 @@ class AlanchandApi {
     for (const url of targetUrls) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         const resp = await fetch(url, {
           method: 'GET',
