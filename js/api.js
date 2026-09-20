@@ -202,11 +202,9 @@ class AlanchandApi {
       targetUrls.push(formatted);
     }
 
-    // High-performance Cloudflare Worker proxy & fallbacks
+    // High-performance Cloudflare Worker proxy & direct
     targetUrls.push(`https://cors-get-proxy.sirjosh.workers.dev/?url=${encodeURIComponent(rawUrl)}`);
     targetUrls.push(rawUrl);
-    targetUrls.push(`https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`);
-    targetUrls.push(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`);
 
     for (const url of targetUrls) {
       try {
