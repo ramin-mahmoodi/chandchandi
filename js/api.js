@@ -191,19 +191,94 @@ class AlanchandApi {
     return `${ALANCHAND_CONFIG.apiUrl}?${query}`;
   }
 
+  formatProxyUrl(proxy, targetUrl) {
+    const p = (proxy || '').trim();
+    if (!p) return targetUrl;
+    if (p.includes('{url}')) {
+      return p.replace('{url}', encodeURIComponent(targetUrl));
+    }
+    if (p.endsWith('=') || p.endsWith('?')) {
+      return p + encodeURIComponent(targetUrl);
+    }
+    return `${p.replace(/\/?$/, '/')}${encodeURIComponent(targetUrl)}`;
+  }
+
+  /**
+   * Tests a proxy endpoint by sending an authenticated, signed API request for USD to api.alanchand.com.
+   * This verifies true end-to-end API communication, proper CORS headers, and valid JSON response.
+   */
+  async testProxy(proxyUrl) {
+    const isCustom = Boolean((proxyUrl || '').trim());
+    const targetProxy = isCustom
+      ? proxyUrl.trim()
+      : 'https://cors-get-proxy.sirjosh.workers.dev/?url=';
+
+    const rawUrl = await this.buildSignedUrl('usd', 'full');
+    const finalUrl = this.formatProxyUrl(targetProxy, rawUrl);
+
+    const start = performance.now();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    try {
+      const resp = await fetch(finalUrl, {
+        method: 'GET',
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      clearTimeout(timeoutId);
+
+      const latency = Math.round(performance.now() - start);
+
+      if (!resp.ok) {
+        throw new Error(`پروکسی خطای سرور HTTP با کد وضعیت ${resp.status} ${resp.statusText || ''} برگرداند.`);
+      }
+
+      const text = await resp.text();
+      let json;
+      try {
+        json = JSON.parse(text);
+      } catch (e) {
+        throw new Error('پاسخ پروکسی فرمت استاندارد JSON نداشت (احتمالاً صفحه خطای فایروال یا HTML بازگشته است).');
+      }
+
+      if (json && json.status === 'success' && json.data && json.data.usd) {
+        const sellPrice = json.data.usd.sell;
+        return {
+          ok: true,
+          latency: latency,
+          price: sellPrice,
+          updatedAt: json.updated_at,
+          isDefault: !isCustom
+        };
+      } else {
+        throw new Error('پاسخ دریافت شد اما فاقد ساختار استاندارد داده‌های نماد بازار آلن‌چند بود.');
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      const latency = Math.round(performance.now() - start);
+      if (err.name === 'AbortError') {
+        throw new Error('تایم‌اوت اتصال: پروکسی در مدت ۸ ثانیه هیچ پاسخی از سرور آلن‌چند بازنگرداند.');
+      }
+      if (err.message && err.message.includes('Failed to fetch')) {
+        throw new Error('خطای امنیتی CORS یا فیلتر شبکه: مرورگر اتصال به این آدرس را به دلیل عدم وجود هدر مجوز Access-Control-Allow-Origin مسدود کرد.');
+      }
+      throw err;
+    }
+  }
+
   async fetchPrices(slug = ALANCHAND_CONFIG.defaultSlugs, requestType = 'full') {
     const rawUrl = await this.buildSignedUrl(slug, requestType);
     let targetUrls = [];
 
     if (this.customProxy) {
-      const formatted = this.customProxy.includes('{url}')
-        ? this.customProxy.replace('{url}', encodeURIComponent(rawUrl))
-        : `${this.customProxy.replace(/\/?$/, '/')}${encodeURIComponent(rawUrl)}`;
-      targetUrls.push(formatted);
+      targetUrls.push(this.formatProxyUrl(this.customProxy, rawUrl));
     }
 
     // High-performance Cloudflare Worker proxy & direct
-    targetUrls.push(`https://cors-get-proxy.sirjosh.workers.dev/?url=${encodeURIComponent(rawUrl)}`);
+    targetUrls.push(this.formatProxyUrl('https://cors-get-proxy.sirjosh.workers.dev/?url=', rawUrl));
     targetUrls.push(rawUrl);
 
     for (const url of targetUrls) {

@@ -132,7 +132,80 @@ document.addEventListener('DOMContentLoaded', () => {
           if (proxyInput) {
             proxyInput.value = window.alanchandApi.getCustomProxy();
           }
+          const resultBox = document.getElementById('proxy-test-result');
+          if (resultBox) {
+            resultBox.className = 'hidden mt-2 p-2.5 rounded-[5px] border-2 border-black text-xs font-bold transition-all';
+            resultBox.innerHTML = '';
+          }
           this.openModal('settings-modal');
+        });
+      }
+
+      // Test Proxy Connection via Real API Request
+      const testProxyBtn = document.getElementById('test-proxy-btn');
+      if (testProxyBtn) {
+        testProxyBtn.addEventListener('click', async () => {
+          const proxyInput = document.getElementById('settings-proxy-input');
+          const resultBox = document.getElementById('proxy-test-result');
+          const testLabel = document.getElementById('test-proxy-label');
+          const testIcon = document.getElementById('test-proxy-icon');
+          const proxyVal = proxyInput ? proxyInput.value.trim() : '';
+
+          testProxyBtn.disabled = true;
+          if (testLabel) testLabel.textContent = 'در حال استعلام...';
+          if (testIcon) testIcon.classList.add('animate-spin');
+
+          if (resultBox) {
+            resultBox.className = 'mt-2 p-2.5 rounded-[5px] border-2 border-black bg-white text-gray-700 text-xs font-bold block';
+            resultBox.innerHTML = `
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin shrink-0"></span>
+                <span>در حال ارسال درخواست امضاشده به api.alanchand.com از طریق پروکسی...</span>
+              </div>
+            `;
+          }
+
+          try {
+            const res = await window.alanchandApi.testProxy(proxyVal);
+            if (resultBox) {
+              const proxyTypeBadge = res.isDefault
+                ? '<span class="neo-badge bg-white text-[10px] px-1.5 py-0.5 border border-black">پروکسی پیش‌فرض سیستم</span>'
+                : '<span class="neo-badge bg-white text-[10px] px-1.5 py-0.5 border border-black">پروکسی اختصاصی شما</span>';
+
+              resultBox.className = 'mt-2 p-3 rounded-[5px] border-2 border-black bg-neoMint text-black text-xs font-bold flex flex-col gap-1.5 shadow-[2px_2px_0px_#000] block';
+              resultBox.innerHTML = `
+                <div class="flex items-center justify-between gap-2 border-b border-black pb-1.5">
+                  <div class="flex items-center gap-1.5 font-black text-green-950">
+                    <svg class="w-4 h-4 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>اتصال به API کاملاً موفق و سالم است!</span>
+                  </div>
+                  ${proxyTypeBadge}
+                </div>
+                <div class="text-[11px] leading-relaxed">
+                  نرخ زنده دلار دریافتی: <strong class="font-num font-black text-black">${res.price.toLocaleString('fa-IR')} تومان</strong>
+                  <br>
+                  زمان پاسخ‌دهی (Latency): <strong class="font-num font-black text-black">${res.latency.toLocaleString('fa-IR')} میلی‌ثانیه</strong>
+                  <br>
+                  وضعیت هدر CORS: <span class="font-mono font-bold text-green-900">Access-Control-Allow-Origin: *</span>
+                </div>
+              `;
+            }
+          } catch (err) {
+            if (resultBox) {
+              resultBox.className = 'mt-2 p-3 rounded-[5px] border-2 border-black bg-neoPink text-black text-xs font-bold flex flex-col gap-1.5 shadow-[2px_2px_0px_#000] block';
+              resultBox.innerHTML = `
+                <div class="flex items-center gap-1.5 font-black text-red-950 border-b border-black pb-1.5">
+                  <svg class="w-4 h-4 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                  <span>خطا در استعلام API از طریق پروکسی!</span>
+                </div>
+                <div class="text-[11px] leading-relaxed font-medium text-black">${err.message}</div>
+              `;
+            }
+          } finally {
+            testProxyBtn.disabled = false;
+            if (testLabel) testLabel.textContent = 'تست مجدد API';
+            if (testIcon) testIcon.classList.remove('animate-spin');
+          }
         });
       }
 
