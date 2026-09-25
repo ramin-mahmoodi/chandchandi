@@ -314,6 +314,66 @@ input[type="number"] {
   color: #000000;
 }
 
+/* Neobrutal Uniform 24h Change Badge (Consistent Size Across All Rows) */
+.neo-change-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 5.75rem;
+  height: 1.85rem;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  border-radius: var(--neo-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  direction: ltr;
+  white-space: nowrap;
+  box-sizing: border-box;
+  user-select: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+@media (max-width: 640px) {
+  .neo-change-badge {
+    width: 4.85rem;
+    height: 1.65rem;
+    font-size: 0.7rem;
+    box-shadow: 1.5px 1.5px 0px 0px #000000;
+  }
+}
+
+/* Interactive Table Row Hover Effects */
+.neo-table-row {
+  transition: background-color 0.12s ease-in-out;
+  cursor: pointer;
+  position: relative;
+}
+
+.neo-table-row:hover {
+  background-color: #f7f4ff !important;
+}
+
+.neo-table-row:hover td:first-child {
+  box-shadow: inset -4px 0 0 0 #000000;
+}
+
+.neo-table-row .symbol-icon-box {
+  transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.neo-table-row:hover .symbol-icon-box {
+  background-color: var(--color-lemon) !important;
+  transform: scale(1.06);
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.neo-table-row:hover .neo-change-badge {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
 .neo-tab {
   display: inline-flex;
   align-items: center;

@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (keys.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" class="py-12 text-center bg-white">
+            <td colspan="4" class="py-12 text-center bg-white">
               <div class="text-xl font-black mb-2 flex items-center justify-center gap-2">
                 <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
                 <span>در حال بارگذاری اطلاعات بازار...</span>
@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (filteredKeys.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" class="py-12 text-center bg-white">
+            <td colspan="4" class="py-12 text-center bg-white">
               <div class="text-lg font-black mb-2 flex items-center justify-center gap-2">
                 <svg class="w-6 h-6 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <span>موردی در این دسته‌بندی یافت نشد!</span>
@@ -444,22 +444,22 @@ document.addEventListener('DOMContentLoaded', () => {
         let changeBadgeHtml = '';
         if (isPositive) {
           changeBadgeHtml = `
-            <span class="neo-badge neo-badge-green font-bold text-xs px-2.5 py-0.5">
-              <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
-              <span class="font-num font-black">${changePercent.toLocaleString('fa-IR')}%+</span>
+            <span class="neo-change-badge neo-badge-green" title="افزایش نسبت به دیروز">
+              <svg class="w-3.5 h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
+              <span class="font-num font-black">+${changePercent.toLocaleString('fa-IR')}%</span>
             </span>
           `;
         } else if (isNegative) {
           changeBadgeHtml = `
-            <span class="neo-badge neo-badge-red font-bold text-xs px-2.5 py-0.5">
-              <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
-              <span class="font-num font-black">${Math.abs(changePercent).toLocaleString('fa-IR')}%-</span>
+            <span class="neo-change-badge neo-badge-red" title="کاهش نسبت به دیروز">
+              <svg class="w-3.5 h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
+              <span class="font-num font-black">-${Math.abs(changePercent).toLocaleString('fa-IR')}%</span>
             </span>
           `;
         } else {
           changeBadgeHtml = `
-            <span class="neo-badge neo-badge-gray font-bold text-xs px-2.5 py-0.5">
-              <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>
+            <span class="neo-change-badge neo-badge-gray" title="بدون تغییر">
+              <svg class="w-3.5 h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>
               <span class="font-num font-black">۰%</span>
             </span>
           `;
@@ -544,21 +544,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 4. Build Table Row (Fully Responsive for Mobile)
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-neoMain/15 transition-colors cursor-pointer group';
+        tr.className = 'neo-table-row group border-b border-black/10';
         tr.setAttribute('data-key', key);
+        tr.title = 'برای مشاهده نمودار و تاریخچه قیمت کلیک کنید';
         tr.innerHTML = `
           <!-- Col 1: Asset & Symbol -->
           <td class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 align-middle">
-            <div class="flex items-center gap-2 sm:gap-3">
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-[4px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] p-0.5 flex items-center justify-center shrink-0">
-                <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <div class="symbol-icon-box w-9 h-9 sm:w-10 sm:h-10 rounded-[6px] border-2 border-black bg-white shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center shrink-0">
+                <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
               </div>
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="font-black text-xs sm:text-base text-black group-hover:underline truncate">${item.fa_name || key}</span>
-                  <span class="font-mono font-black text-[10px] sm:text-[11px] px-1 sm:px-1.5 py-0.2 sm:py-0.5 border border-black rounded-[3px] bg-white shadow-[1px_1px_0px_#000]">${iconSlug}</span>
+              <div class="min-w-0 flex flex-col justify-center">
+                <span class="font-black text-xs sm:text-[15px] text-black group-hover:underline truncate leading-snug">
+                  ${item.fa_name || key}
+                </span>
+                <div class="flex items-center gap-1.5 mt-0.5" dir="ltr">
+                  <span class="font-mono font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-[4px] border border-black bg-white text-black leading-none shrink-0 shadow-[1px_1px_0px_#000]">
+                    ${iconSlug}
+                  </span>
+                  ${item.en_name && item.en_name.toUpperCase() !== iconSlug ? `
+                    <span class="text-[10px] sm:text-[11px] font-bold text-gray-500 truncate max-w-[120px] sm:max-w-[190px] font-sans leading-none">
+                      ${item.en_name}
+                    </span>
+                  ` : ''}
                 </div>
-                <div class="text-[10px] sm:text-[11px] font-bold text-gray-500 font-mono truncate hidden sm:block">${item.en_name || ''}</div>
               </div>
             </div>
           </td>
@@ -580,16 +589,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center align-middle">
             <div class="flex justify-center">
               ${changeBadgeHtml}
-            </div>
-          </td>
-
-          <!-- Col 5: Details Button (Desktop & Tablet) -->
-          <td class="hidden md:table-cell py-2.5 sm:py-3.5 px-3 text-center align-middle">
-            <div class="flex items-center justify-center">
-              <button type="button" class="neo-btn-sm bg-white hover:!bg-neoMain text-xs font-black py-1 px-3 border-2 border-black shadow-[1px_1px_0px_#000]" title="مشاهده جزئیات و نمودار">
-                <svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                <span>نمودار</span>
-              </button>
             </div>
           </td>
         `;

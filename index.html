@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>چندچندی؟ | قیمت لحظه‌ای ارز، طلا و رمزارز (Neobrutalism)</title>
+  <title>چندچندی؟ | قیمت لحظه‌ای ارز، طلا و رمزارز</title>
   
   <!-- Meta tags for SEO & Social -->
-  <meta name="description" content="قیمت لحظه‌ای بازار ارزهای فیات، طلا، سکه و ارزهای دیجیتال با طراحی مدرن نئوبروتالیسم و دریافت زنده از API الان‌چند">
+  <meta name="description" content="قیمت لحظه‌ای بازار ارزهای فیات، طلا، سکه و ارزهای دیجیتال و دریافت زنده از API الان‌چند">
   <meta property="og:title" content="چندچندی؟ | نرخ لحظه‌ای ارز، طلا و رمزارز">
-  <meta property="og:description" content="داشبورد قیمت لحظه‌ای با سبک Neobrutalism و قابلیت میزبانی روی GitHub Pages">
+  <meta property="og:description" content="داشبورد قیمت لحظه‌ای و قابلیت میزبانی روی GitHub Pages">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +32,7 @@
   <!-- Custom Fonts & Neobrutal CSS -->
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/neobrutal.css?v=14">
+  <link rel="stylesheet" href="css/neobrutal.css?v=15">
 </head>
 <body class="bg-neoBg text-black min-h-screen flex flex-col selection:bg-neoMain selection:text-black">
 
@@ -64,7 +64,7 @@
               <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-black font-heading">چندچندی؟</h1>
             </div>
             <p class="text-xs sm:text-sm font-extrabold text-black/80 mt-0.5">
-              داشبورد زنده قیمت ارز، طلا و رمزارز • طراحی نئوبروتالیسم
+              داشبورد زنده قیمت لحظه‌ای ارز، طلا و رمزارز
             </p>
           </div>
         </div>
@@ -177,14 +177,13 @@
                 <th scope="col" class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 text-right">دارایی و نماد</th>
                 <th scope="col" class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 text-right">نرخ لحظه‌ای</th>
                 <th scope="col" class="hidden sm:table-cell py-2.5 sm:py-3.5 px-3 sm:px-4 text-right">نرخ خرید / جهانی</th>
-                <th scope="col" class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center">تغییر ۲۴س</th>
-                <th scope="col" class="hidden md:table-cell py-2.5 sm:py-3.5 px-3 text-center">نمودار و جزئیات</th>
+                <th scope="col" class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">تغییرات ۲۴ ساعته</th>
               </tr>
             </thead>
             <tbody id="price-table-body" class="divide-y-2 divide-black/10">
               <!-- Injected dynamically by app.js -->
               <tr>
-                <td colspan="5" class="py-12 text-center bg-white">
+                <td colspan="4" class="py-12 text-center bg-white">
                   <div class="text-xl font-black mb-2 flex items-center justify-center gap-2">
                     <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
                     <span>در حال بارگذاری اطلاعات بازار...</span>
