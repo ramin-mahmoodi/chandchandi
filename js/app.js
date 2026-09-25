@@ -431,8 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
           colMainHeader.textContent = 'قیمت فروش';
           colSubHeader.textContent = 'قیمت خرید';
         } else if (this.currentCategory === 'gold') {
-          colMainHeader.textContent = 'قیمت فروش / روز';
-          colSubHeader.textContent = 'قیمت خرید / جهانی';
+          colMainHeader.textContent = 'قیمت لحظه‌ای';
+          colSubHeader.textContent = 'حباب سکه و طلا';
         } else if (this.currentCategory === 'crypto') {
           colMainHeader.textContent = 'قیمت تومانی';
           colSubHeader.textContent = 'قیمت دلاری ($)';
@@ -444,6 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filteredKeys.forEach(key => {
         const item = this.data[key];
         const isCrypto = item.type === 'crypto';
+        const isGold = item.type === 'gold';
         const isDollarGold = item.is_dolar === 1;
 
         // 1. Calculate Change Percentage
@@ -510,45 +511,59 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
           }
-        } else if (isDollarGold) {
-          const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
-          mainPriceHtml = `
-            <div class="flex items-baseline gap-1">
-              <span class="text-sm sm:text-lg font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
-            </div>
-          `;
-          subPriceHtml = `<span class="text-xs font-bold text-gray-500">انس جهانی</span>`;
+        } else if (isGold) {
+          // Gold & Coins: Benchmark Live Price & Coin Bubble
+          if (isDollarGold) {
+            const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+            mainPriceHtml = `
+              <div class="flex items-baseline gap-1">
+                <span class="text-sm sm:text-lg font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
+              </div>
+            `;
+            subPriceHtml = `<span class="text-xs font-bold text-gray-500">انس جهانی</span>`;
+          } else {
+            const mainPrice = item.price ?? 0;
+            mainPriceHtml = `
+              <div class="flex items-baseline gap-1">
+                <span class="text-sm sm:text-lg font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
+                <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
+              </div>
+            `;
+
+            if (item.bubble_per !== undefined && item.bubble_per !== null && item.bubble_per !== 0) {
+              const bubblePer = parseFloat(item.bubble_per);
+              const isNegativeBubble = bubblePer < 0;
+              const bubbleBadgeColor = isNegativeBubble ? 'bg-neoPink text-rose-950' : 'bg-neoLemon text-amber-950';
+              subPriceHtml = `
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="neo-badge ${bubbleBadgeColor} text-[10px] sm:text-[11px] font-bold py-0.5 px-1.5 border border-black shadow-[1px_1px_0px_#000]" title="حباب">
+                    حباب: <span class="font-num font-black">${bubblePer.toLocaleString('fa-IR')}%</span>
+                  </span>
+                  ${item.bubble ? `<span class="text-[10px] sm:text-[11px] font-num font-bold text-gray-600 hidden md:inline">(${this.formatPrice(item.bubble)} ${unit})</span>` : ''}
+                </div>
+              `;
+            } else {
+              subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
+            }
+          }
         } else {
-          const mainPrice = item.price ?? item.sell ?? item.buy ?? 0;
-          const sellPrefix = item.type === 'fx' ? '<span class="text-[10px] font-bold text-gray-500 sm:hidden ml-0.5">فروش:</span>' : '';
+          // Fiat Currencies (fx): Official Sell and Buy Prices
+          const sellPrice = item.sell ?? item.price ?? 0;
           mainPriceHtml = `
             <div class="flex items-baseline gap-1">
-              ${sellPrefix}
-              <span class="text-sm sm:text-lg font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
+              <span class="text-[10px] font-bold text-gray-500 sm:hidden ml-0.5">فروش:</span>
+              <span class="text-sm sm:text-lg font-black text-black font-num">${this.formatPrice(sellPrice)}</span>
               <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
             </div>
           `;
 
           if (item.buy) {
             subPriceHtml = `
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <div class="flex items-baseline gap-1 text-xs">
-                  <span class="text-gray-500 font-bold sm:hidden">خرید:</span>
-                  <span class="font-num font-black text-black">${this.formatPrice(item.buy)}</span>
-                  <span class="text-[10px] font-bold text-gray-500">${unit}</span>
-                </div>
-                ${item.bubble_per ? `
-                  <span class="neo-badge bg-neoLemon text-[10px] font-bold text-amber-950 py-0.5 px-1.5 border border-black shadow-none" title="حباب سکه">
-                    حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
-                  </span>
-                ` : ''}
+              <div class="flex items-baseline gap-1 text-xs">
+                <span class="text-gray-500 font-bold sm:hidden">خرید:</span>
+                <span class="font-num font-black text-black">${this.formatPrice(item.buy)}</span>
+                <span class="text-[10px] font-bold text-gray-500">${unit}</span>
               </div>
-            `;
-          } else if (item.bubble_per) {
-            subPriceHtml = `
-              <span class="neo-badge bg-neoLemon text-[10px] font-bold text-amber-950 py-0.5 px-1.5 border border-black shadow-none" title="حباب سکه">
-                حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
-              </span>
             `;
           } else {
             subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
@@ -727,9 +742,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         const p = item.price ?? item.sell ?? item.buy ?? 0;
         const bgPriceColor = item.type === 'gold' ? 'bg-neoLemon' : 'bg-neoSky';
+        const priceLabel = item.type === 'gold' ? 'قیمت لحظه‌ای:' : (item.type === 'fx' ? 'قیمت فروش:' : 'قیمت فعلی:');
         priceBoxHtml = `
           <div class="neo-box p-3 ${bgPriceColor}">
-            <div class="text-xs font-bold text-gray-800 mb-1">قیمت فعلی:</div>
+            <div class="text-xs font-bold text-gray-800 mb-1">${priceLabel}</div>
             <div class="text-xl font-black text-black font-num">${this.formatPrice(p)} <span class="text-xs font-bold">${unit}</span></div>
           </div>
         `;
