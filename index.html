@@ -10,16 +10,29 @@
   <meta property="og:title" content="چندچندی؟ | نرخ لحظه‌ای ارز، طلا و رمزارز">
   <meta property="og:description" content="داشبورد قیمت لحظه‌ای و قابلیت میزبانی روی GitHub Pages">
   
-  <!-- Content Security Policy (Defense-in-depth protection against XSS) -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https://api.alanchand.com https://alanchand.com; connect-src *;">
-
-  <!-- Pre-built Minified Tailwind CSS -->
-  <link rel="stylesheet" href="css/tailwind.min.css?v=1">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neoMain: 'var(--color-main, #b6ace4)',
+            neoMint: 'var(--color-mint, #97ee88)',
+            neoLemon: 'var(--color-lemon, #fed170)',
+            neoSky: 'var(--color-sky, #88c5ee)',
+            neoPink: 'var(--color-pink, #ff88a5)',
+            neoBg: 'var(--color-page-bg, #f0eefc)',
+          }
+        }
+      }
+    }
+  </script>
 
   <!-- Custom Fonts & Neobrutal CSS -->
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/neobrutal.css?v=22">
+  <link rel="stylesheet" href="css/neobrutal.css?v=23">
 </head>
 <body class="bg-neoBg text-black min-h-screen flex flex-col selection:bg-neoMain selection:text-black">
 
