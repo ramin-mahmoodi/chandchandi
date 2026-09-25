@@ -737,57 +737,68 @@ document.addEventListener('DOMContentLoaded', () => {
       let changePercent = parseFloat(isCrypto ? (item.change_24h ?? item.toman24hchange ?? 0) : (item.dayChangePer ?? 0));
       let changeAmount = item.dayChange !== undefined ? item.dayChange : (item.changeAmount || 0);
 
-      let priceBoxHtml = '';
-      if (isCrypto) {
-        const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
-        priceBoxHtml = `
-          <div class="neo-box p-3 bg-neoMain">
-            <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری:</div>
-            <div class="text-xl font-black font-mono tracking-tight text-black">$ ${usdVal}</div>
-            ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black text-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
-          </div>
-        `;
-      } else if (isDollarGold) {
-        priceBoxHtml = `
-          <div class="neo-box p-3 bg-neoSky">
-            <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری (انس):</div>
-            <div class="text-xl font-black font-mono tracking-tight text-black">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
-          </div>
-        `;
-      } else {
-        const p = item.price ?? item.sell ?? item.buy ?? 0;
-        const bgPriceColor = item.type === 'gold' ? 'bg-neoLemon' : 'bg-neoSky';
-        const priceLabel = item.type === 'gold' ? 'قیمت لحظه‌ای:' : (item.type === 'fx' ? 'قیمت فروش:' : 'قیمت فعلی:');
-        priceBoxHtml = `
-          <div class="neo-box p-3 ${bgPriceColor}">
-            <div class="text-xs font-bold text-gray-800 mb-1">${priceLabel}</div>
-            <div class="text-xl font-black text-black font-num">${this.formatPrice(p)} <span class="text-xs font-bold">${unit}</span></div>
-          </div>
-        `;
-      }
+      let detailsHtml = '';
 
-      let detailsHtml = `
-        <div class="grid grid-cols-2 gap-3 mb-4">
-          ${priceBoxHtml}
-          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-neoMint' : 'bg-neoPink'}">
-            <div class="text-xs font-bold text-gray-800 mb-1">تغییرات ۲۴ ساعته:</div>
-            <div class="text-lg font-black font-num text-black" dir="ltr"><span class="font-sans font-bold">${changePercent > 0 ? '+' : (changePercent < 0 ? '-' : '')}</span>${Math.abs(changePercent).toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%</div>
-            ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-800">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
-          </div>
-        </div>
-      `;
-
-      // Buy & Sell (if available)
-      if (item.buy || item.sell) {
+      if (item.type === 'fx') {
         detailsHtml += `
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div class="neo-box p-3 bg-white">
               <div class="text-xs font-bold text-gray-600 mb-1">قیمت خرید:</div>
-              <div class="text-base font-black font-num text-emerald-700">${item.buy ? this.formatPrice(item.buy) + ' ' + unit : 'نامشخص'}</div>
+              <div class="text-base sm:text-lg font-black font-num text-emerald-700">${item.buy ? this.formatPrice(item.buy) + ' ' + unit : 'نامشخص'}</div>
             </div>
             <div class="neo-box p-3 bg-white">
               <div class="text-xs font-bold text-gray-600 mb-1">قیمت فروش:</div>
-              <div class="text-base font-black font-num text-rose-700">${item.sell ? this.formatPrice(item.sell) + ' ' + unit : 'نامشخص'}</div>
+              <div class="text-base sm:text-lg font-black font-num text-rose-700">${item.sell ? this.formatPrice(item.sell) + ' ' + unit : 'نامشخص'}</div>
+            </div>
+          </div>
+          <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-neoMint' : 'bg-neoPink'} mb-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <div class="text-xs font-bold text-gray-800">تغییرات ۲۴ ساعته:</div>
+                ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-800 mt-0.5">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
+              </div>
+              <div class="text-lg font-black font-num text-black" dir="ltr">
+                <span class="font-sans font-bold">${changePercent > 0 ? '+' : (changePercent < 0 ? '-' : '')}</span>${Math.abs(changePercent).toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        let priceBoxHtml = '';
+        if (isCrypto) {
+          const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
+          priceBoxHtml = `
+            <div class="neo-box p-3 bg-neoMain">
+              <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری:</div>
+              <div class="text-xl font-black font-mono tracking-tight text-black">$ ${usdVal}</div>
+              ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black text-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
+            </div>
+          `;
+        } else if (isDollarGold) {
+          priceBoxHtml = `
+            <div class="neo-box p-3 bg-neoSky">
+              <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری (انس):</div>
+              <div class="text-xl font-black font-mono tracking-tight text-black">$ ${parseFloat(item.price || 0).toLocaleString('en-US')}</div>
+            </div>
+          `;
+        } else {
+          const p = item.price ?? item.sell ?? item.buy ?? 0;
+          const bgPriceColor = item.type === 'gold' ? 'bg-neoLemon' : 'bg-neoSky';
+          priceBoxHtml = `
+            <div class="neo-box p-3 ${bgPriceColor}">
+              <div class="text-xs font-bold text-gray-800 mb-1">قیمت لحظه‌ای:</div>
+              <div class="text-xl font-black text-black font-num">${this.formatPrice(p)} <span class="text-xs font-bold">${unit}</span></div>
+            </div>
+          `;
+        }
+
+        detailsHtml += `
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            ${priceBoxHtml}
+            <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-neoMint' : 'bg-neoPink'}">
+              <div class="text-xs font-bold text-gray-800 mb-1">تغییرات ۲۴ ساعته:</div>
+              <div class="text-lg font-black font-num text-black" dir="ltr"><span class="font-sans font-bold">${changePercent > 0 ? '+' : (changePercent < 0 ? '-' : '')}</span>${Math.abs(changePercent).toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%</div>
+              ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-800">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
             </div>
           </div>
         `;
