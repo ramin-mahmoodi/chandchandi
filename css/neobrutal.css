@@ -396,10 +396,16 @@ header.neo-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 0.75rem;
   z-index: 999;
   backdrop-filter: blur(3px);
   animation: backdropFadeIn 0.18s ease-out;
+}
+
+@media (min-width: 640px) {
+  .neo-modal-backdrop {
+    padding: 1.5rem;
+  }
 }
 
 .neo-modal-backdrop.is-closing {
@@ -413,8 +419,8 @@ header.neo-box {
   box-shadow: var(--neo-shadow-xl);
   border-radius: var(--neo-radius);
   width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
+  max-width: 640px;
+  max-height: 92vh;
   overflow-y: auto;
   position: relative;
   animation: modalPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);

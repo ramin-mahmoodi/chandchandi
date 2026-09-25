@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     countdown: 30,
     timerId: null,
     isLoading: false,
+    currentChart: null,
+    activeDetailKey: null,
+    activeChartPeriod: 'month',
 
     init() {
       // 1. Instantly load full 93 symbols data
@@ -539,41 +542,53 @@ document.addEventListener('DOMContentLoaded', () => {
         const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
         const fallbackIcon = item.icon || '';
 
-        // 4. Build Table Row
+        // 4. Build Table Row (Fully Responsive for Mobile)
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-neoMain/15 transition-colors cursor-pointer group';
         tr.setAttribute('data-key', key);
         tr.innerHTML = `
-          <td class="py-3 px-4">
-            <div class="flex items-center gap-2.5 sm:gap-3">
-              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] p-1 flex items-center justify-center shrink-0">
+          <!-- Col 1: Asset & Symbol -->
+          <td class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 align-middle">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-[4px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] p-0.5 flex items-center justify-center shrink-0">
                 <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
               </div>
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="font-black text-sm sm:text-base text-black group-hover:underline truncate">${item.fa_name || key}</span>
-                  <span class="font-mono font-black text-[11px] px-1.5 py-0.5 border border-black rounded-[4px] bg-white shadow-[1px_1px_0px_#000]">${iconSlug}</span>
+                  <span class="font-black text-xs sm:text-base text-black group-hover:underline truncate">${item.fa_name || key}</span>
+                  <span class="font-mono font-black text-[10px] sm:text-[11px] px-1 sm:px-1.5 py-0.2 sm:py-0.5 border border-black rounded-[3px] bg-white shadow-[1px_1px_0px_#000]">${iconSlug}</span>
                 </div>
-                <div class="text-[11px] font-bold text-gray-500 font-mono truncate">${item.en_name || ''}</div>
+                <div class="text-[10px] sm:text-[11px] font-bold text-gray-500 font-mono truncate hidden sm:block">${item.en_name || ''}</div>
               </div>
             </div>
           </td>
-          <td class="py-3 px-4">
+
+          <!-- Col 2: Live Rate (and sub-rate on mobile) -->
+          <td class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 align-middle">
             ${mainPriceHtml}
+            <div class="sm:hidden mt-0.5">
+              ${subPriceHtml}
+            </div>
           </td>
-          <td class="py-3 px-4">
+
+          <!-- Col 3: Buy / USD rate (Desktop & Tablet) -->
+          <td class="hidden sm:table-cell py-2.5 sm:py-3.5 px-3 sm:px-4 align-middle">
             ${subPriceHtml}
           </td>
-          <td class="py-3 px-4 text-center">
+
+          <!-- Col 4: 24h Change Badge -->
+          <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center align-middle">
             <div class="flex justify-center">
               ${changeBadgeHtml}
             </div>
           </td>
-          <td class="py-3 px-4 text-center">
+
+          <!-- Col 5: Details Button (Desktop & Tablet) -->
+          <td class="hidden md:table-cell py-2.5 sm:py-3.5 px-3 text-center align-middle">
             <div class="flex items-center justify-center">
               <button type="button" class="neo-btn-sm bg-white hover:!bg-neoMain text-xs font-black py-1 px-3 border-2 border-black shadow-[1px_1px_0px_#000]" title="مشاهده جزئیات و نمودار">
                 <svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                <span>جزئیات</span>
+                <span>نمودار</span>
               </button>
             </div>
           </td>
@@ -757,11 +772,225 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
+      // 5. Chart Section
+      const chartData = item.chart;
+      const hasChart = chartData && (
+        (chartData.month && chartData.month.length > 0) ||
+        (chartData.year && chartData.year.length > 0) ||
+        (chartData.all && chartData.all.length > 0)
+      );
+
+      if (hasChart) {
+        detailsHtml += `
+          <div class="mt-4 pt-4 border-t-2 border-black border-dashed">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-1.5 font-black text-sm text-black">
+                <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span>نمودار روند تغییرات قیمت</span>
+              </div>
+              <div class="flex items-center gap-1 bg-neoBg p-1 border-2 border-black rounded-[5px]" id="chart-period-tabs">
+                <button type="button" class="chart-period-btn active text-xs font-black py-1 px-3 rounded-[3px] border border-black bg-neoMain shadow-[1px_1px_0px_#000]" data-period="month">۳۰ روزه</button>
+                <button type="button" class="chart-period-btn text-xs font-black py-1 px-3 rounded-[3px] border border-transparent hover:border-black hover:bg-white" data-period="year">۱ ساله</button>
+                <button type="button" class="chart-period-btn text-xs font-black py-1 px-3 rounded-[3px] border border-transparent hover:border-black hover:bg-white" data-period="all">کل دوره</button>
+              </div>
+            </div>
+
+            <!-- Stats Bar (High, Low, Return) -->
+            <div id="chart-stats-bar" class="grid grid-cols-3 gap-2 mb-3">
+              <!-- Injected by renderModalChart -->
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative w-full h-56 sm:h-64 bg-white p-2 border-2 border-black rounded-[5px] shadow-[2px_2px_0px_#000]">
+              <canvas id="modal-chart-canvas"></canvas>
+            </div>
+          </div>
+        `;
+      } else {
+        detailsHtml += `
+          <div class="mt-4 pt-4 border-t-2 border-black border-dashed">
+            <div class="p-4 bg-neoBg border-2 border-black rounded-[5px] text-center text-xs font-bold text-gray-600">
+              داده‌های تاریخی نموداری برای این نماد ثبت نشده است.
+            </div>
+          </div>
+        `;
+      }
+
       if (modalContent) {
         modalContent.innerHTML = detailsHtml;
       }
 
       this.openModal('detail-modal');
+
+      if (hasChart) {
+        this.activeDetailKey = key;
+        this.activeChartPeriod = 'month';
+
+        const periodBtns = modalContent.querySelectorAll('.chart-period-btn');
+        periodBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            periodBtns.forEach(b => {
+              b.classList.remove('active', 'bg-neoMain', 'shadow-[1px_1px_0px_#000]');
+              b.classList.add('border-transparent');
+            });
+            btn.classList.add('active', 'bg-neoMain', 'shadow-[1px_1px_0px_#000]');
+            btn.classList.remove('border-transparent');
+            this.activeChartPeriod = btn.dataset.period;
+            this.renderModalChart(key, this.activeChartPeriod);
+          });
+        });
+
+        // Initialize chart after modal DOM layout renders
+        setTimeout(() => {
+          this.renderModalChart(key, 'month');
+        }, 60);
+      }
+    },
+
+    renderModalChart(key, period) {
+      const item = this.data[key];
+      if (!item || !item.chart) return;
+
+      const canvas = document.getElementById('modal-chart-canvas');
+      const statsBar = document.getElementById('chart-stats-bar');
+      if (!canvas) return;
+
+      if (this.currentChart) {
+        this.currentChart.destroy();
+        this.currentChart = null;
+      }
+
+      const points = item.chart[period] || [];
+      if (points.length === 0) {
+        if (statsBar) {
+          statsBar.innerHTML = '<div class="col-span-3 text-center text-xs font-bold text-gray-500">اطلاعاتی برای این بازه زمانی وجود ندارد.</div>';
+        }
+        return;
+      }
+
+      const unit = this.getUnitLabel();
+      const isCrypto = item.type === 'crypto';
+      const values = points.map(pt => parseFloat(pt.v) || 0);
+      const minVal = Math.min(...values);
+      const maxVal = Math.max(...values);
+      const firstVal = values[0];
+      const lastVal = values[values.length - 1];
+      const changeVal = lastVal - firstVal;
+      const changePer = firstVal !== 0 ? ((changeVal / firstVal) * 100) : 0;
+      const isPositive = changePer >= 0;
+
+      let minDisplay = isCrypto ? '$' + minVal.toLocaleString('en-US') : this.formatPrice(minVal) + ' ' + unit;
+      let maxDisplay = isCrypto ? '$' + maxVal.toLocaleString('en-US') : this.formatPrice(maxVal) + ' ' + unit;
+
+      if (statsBar) {
+        statsBar.innerHTML = `
+          <div class="p-2 border-2 border-black rounded-[4px] bg-white shadow-[1px_1px_0px_#000] text-center">
+            <div class="text-[10px] font-bold text-gray-500 mb-0.5">کمترین:</div>
+            <div class="font-num font-black text-xs sm:text-sm text-black truncate">${minDisplay}</div>
+          </div>
+          <div class="p-2 border-2 border-black rounded-[4px] bg-white shadow-[1px_1px_0px_#000] text-center">
+            <div class="text-[10px] font-bold text-gray-500 mb-0.5">بیشترین:</div>
+            <div class="font-num font-black text-xs sm:text-sm text-black truncate">${maxDisplay}</div>
+          </div>
+          <div class="p-2 border-2 border-black rounded-[4px] ${isPositive ? 'bg-neoMint' : 'bg-neoPink'} shadow-[1px_1px_0px_#000] text-center">
+            <div class="text-[10px] font-bold text-black mb-0.5">تغییر بازه:</div>
+            <div class="font-num font-black text-xs sm:text-sm text-black">${isPositive ? '+' : ''}${changePer.toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%</div>
+          </div>
+        `;
+      }
+
+      const labels = points.map(pt => {
+        const d = new Date(pt.l * 1000);
+        if (period === 'month') {
+          return d.toLocaleDateString('fa-IR', { month: 'numeric', day: 'numeric' });
+        } else if (period === 'year') {
+          return d.toLocaleDateString('fa-IR', { year: '2-digit', month: 'short' });
+        } else {
+          return d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'short' });
+        }
+      });
+
+      const ctx = canvas.getContext('2d');
+      const lineColor = isPositive ? '#16a34a' : '#e11d48';
+      const fillColor = isPositive ? 'rgba(151, 238, 136, 0.28)' : 'rgba(255, 136, 165, 0.28)';
+
+      if (typeof Chart === 'undefined') return;
+
+      this.currentChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: item.fa_name || key,
+            data: values,
+            borderColor: lineColor,
+            borderWidth: 2.5,
+            backgroundColor: fillColor,
+            fill: true,
+            tension: 0.2,
+            pointRadius: points.length > 40 ? 0 : 2.5,
+            pointHoverRadius: 6,
+            pointBackgroundColor: '#000000',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 1.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              rtl: true,
+              backgroundColor: '#000000',
+              titleColor: '#ffffff',
+              bodyColor: '#ffffff',
+              titleFont: { family: 'Vazirmatn', size: 11, weight: 'bold' },
+              bodyFont: { family: 'Vazirmatn', size: 12, weight: 'bold' },
+              padding: 8,
+              cornerRadius: 4,
+              displayColors: false,
+              callbacks: {
+                label: (c) => {
+                  const val = c.parsed.y;
+                  if (isCrypto) return 'نرخ: $' + val.toLocaleString('en-US');
+                  return 'نرخ: ' + app.formatPrice(val) + ' ' + unit;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { family: 'Vazirmatn', size: 10, weight: 'bold' },
+                color: '#555',
+                maxRotation: 0,
+                autoSkip: true,
+                maxTicksLimit: 6
+              }
+            },
+            y: {
+              position: 'right',
+              grid: { color: 'rgba(0, 0, 0, 0.07)' },
+              ticks: {
+                font: { family: 'Vazirmatn', size: 10, weight: 'bold' },
+                color: '#555',
+                callback: (val) => {
+                  if (isCrypto) return '$' + val.toLocaleString('en-US');
+                  if (val >= 1000000) return (val / 1000000).toLocaleString('fa-IR') + ' م';
+                  if (val >= 1000) return (val / 1000).toLocaleString('fa-IR') + ' هـ';
+                  return val.toLocaleString('fa-IR');
+                }
+              }
+            }
+          }
+        }
+      });
     },
 
     openModal(modalId) {
@@ -778,6 +1007,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     closeModals() {
+      if (this.currentChart) {
+        this.currentChart.destroy();
+        this.currentChart = null;
+      }
       const openModals = document.querySelectorAll('.neo-modal-backdrop:not(.hidden)');
       if (!openModals.length) return;
 

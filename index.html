@@ -167,18 +167,18 @@
         </div>
       </section>
 
-      <!-- Neobrutalism Price Table -->
-      <section class="neo-box bg-white overflow-hidden shadow-[4px_4px_0px_#000]">
-        <div class="overflow-x-auto">
-          <table class="w-full text-right border-collapse min-w-[680px]" id="price-table">
+      <!-- Neobrutalism Price Table (Fully Responsive) -->
+      <section class="neo-box bg-white overflow-hidden shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+        <div class="w-full overflow-x-auto">
+          <table class="w-full text-right border-collapse" id="price-table">
             <caption class="sr-only">جدول نرخ‌های زنده بازار ارز، طلا و رمزارز</caption>
             <thead>
               <tr class="bg-neoBg/90 border-b-2 border-black text-xs font-black text-black select-none">
-                <th scope="col" class="py-3.5 px-4 text-right">دارایی / نماد</th>
-                <th scope="col" class="py-3.5 px-4 text-right">نرخ لحظه‌ای (فروش)</th>
-                <th scope="col" class="py-3.5 px-4 text-right">نرخ خرید / نرخ جهانی</th>
-                <th scope="col" class="py-3.5 px-4 text-center">تغییر ۲۴ ساعته</th>
-                <th scope="col" class="py-3.5 px-4 text-center">جزئیات و نمودار</th>
+                <th scope="col" class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 text-right">دارایی و نماد</th>
+                <th scope="col" class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 text-right">نرخ لحظه‌ای</th>
+                <th scope="col" class="hidden sm:table-cell py-2.5 sm:py-3.5 px-3 sm:px-4 text-right">نرخ خرید / جهانی</th>
+                <th scope="col" class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center">تغییر ۲۴س</th>
+                <th scope="col" class="hidden md:table-cell py-2.5 sm:py-3.5 px-3 text-center">نمودار و جزئیات</th>
               </tr>
             </thead>
             <tbody id="price-table-body" class="divide-y-2 divide-black/10">
@@ -436,9 +436,10 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="js/chart.min.js"></script>
   <script src="js/fallback-data.js?v=2"></script>
   <script src="js/api.js?v=3"></script>
   <script src="js/calculator.js?v=2"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/app.js?v=7"></script>
 </body>
 </html>
