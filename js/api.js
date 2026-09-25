@@ -295,6 +295,7 @@ class AlanchandApi {
         if (resp.ok) {
           const data = await resp.json();
           if (data && data.status === 'success' && data.data) {
+            this.sanitizeChartData(data.data);
             try {
               localStorage.setItem('alanchand_cached_data', JSON.stringify({
                 timestamp: Date.now(),
@@ -314,6 +315,9 @@ class AlanchandApi {
       const cached = localStorage.getItem('alanchand_cached_data');
       if (cached) {
         const parsed = JSON.parse(cached);
+        if (parsed.data && parsed.data.data) {
+          this.sanitizeChartData(parsed.data.data);
+        }
         return { source: 'cache', data: parsed.data, cachedAt: parsed.timestamp };
       }
     } catch (e) {}
@@ -331,6 +335,34 @@ class AlanchandApi {
     }
 
     throw new Error('All data sources unavailable');
+  }
+
+  /**
+   * Self-healing: Resolves Alanchand API bug where gold/coin items have 30-day month chart copied into year chart.
+   * Extracts authentic 1-year data from 'all' history series when duplicate/short year series is detected.
+   */
+  sanitizeChartData(data) {
+    if (!data || typeof data !== 'object') return;
+    for (const k of Object.keys(data)) {
+      const it = data[k];
+      if (it && it.chart && it.chart.month && it.chart.year && it.chart.all) {
+        const mPts = it.chart.month;
+        const yPts = it.chart.year;
+        const aPts = it.chart.all;
+        const isDuplicateYear = (
+          (mPts.length === yPts.length && mPts[0]?.l === yPts[0]?.l) ||
+          ((yPts[yPts.length - 1]?.l - yPts[0]?.l) < 55 * 86400)
+        );
+        if (isDuplicateYear && aPts.length >= 3) {
+          const latestTs = aPts[aPts.length - 1]?.l || Math.floor(Date.now() / 1000);
+          const oneYearAgoTs = latestTs - (370 * 86400);
+          const oneYearPoints = aPts.filter(pt => pt.l >= oneYearAgoTs);
+          if (oneYearPoints.length >= 3) {
+            it.chart.year = oneYearPoints;
+          }
+        }
+      }
+    }
   }
 }
 

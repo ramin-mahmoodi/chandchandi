@@ -904,7 +904,31 @@ document.addEventListener('DOMContentLoaded', () => {
         this.currentChart = null;
       }
 
-      const points = item.chart[period] || [];
+      let points = (item.chart && item.chart[period]) ? [...item.chart[period]] : [];
+
+      // Intelligent resolution if API returned 30-day month data for 1-year chart (Alanchand gold bug)
+      if (period === 'year' && item.chart) {
+        const yearPts = item.chart.year || [];
+        const monthPts = item.chart.month || [];
+        const allPts = item.chart.all || [];
+
+        const isDuplicateYear = yearPts.length > 0 && (
+          (monthPts.length > 0 && (
+            (yearPts.length === monthPts.length && yearPts[0].l === monthPts[0].l) ||
+            ((yearPts[yearPts.length - 1].l - yearPts[0].l) < 55 * 86400)
+          ))
+        );
+
+        if (isDuplicateYear && allPts.length >= 3) {
+          const latestTs = allPts[allPts.length - 1].l || Math.floor(Date.now() / 1000);
+          const oneYearAgoTs = latestTs - (370 * 86400);
+          const extractedYear = allPts.filter(pt => pt.l >= oneYearAgoTs);
+          if (extractedYear.length >= 3) {
+            points = extractedYear;
+          }
+        }
+      }
+
       if (points.length === 0) {
         if (statsBar) {
           statsBar.innerHTML = '<div class="col-span-3 text-center text-xs font-bold text-gray-500">اطلاعاتی برای این بازه زمانی وجود ندارد.</div>';
