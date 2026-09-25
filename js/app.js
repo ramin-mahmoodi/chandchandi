@@ -583,7 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.title = 'برای مشاهده نمودار و تاریخچه قیمت کلیک کنید';
         tr.innerHTML = `
           <!-- Col 1: Asset & Symbol -->
-          <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
+          <td class="w-[48%] sm:w-[36%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
             <div class="flex items-center gap-2 sm:gap-3">
               <div class="symbol-icon-box w-8 h-8 sm:w-10 sm:h-10 rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] sm:shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center shrink-0">
                 <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 2: Live Rate (and sub-rate on mobile) -->
-          <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
+          <td class="w-[34%] sm:w-[24%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
             ${mainPriceHtml}
             <div class="sm:hidden mt-0.5">
               ${subPriceHtml}
@@ -615,12 +615,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 3: Buy / USD rate (Desktop & Tablet) -->
-          <td class="hidden sm:table-cell py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
+          <td class="hidden sm:table-cell sm:w-[24%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
             ${subPriceHtml}
           </td>
 
           <!-- Col 4: 24h Change Badge -->
-          <td class="py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle">
+          <td class="w-[18%] sm:w-[16%] py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle">
             <div class="flex justify-center">
               ${changeBadgeHtml}
             </div>
