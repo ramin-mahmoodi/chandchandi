@@ -810,14 +810,14 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
-      // Forex Cross Rate to USD (Only for foreign currencies other than USD itself)
+      // Dollar cross rate (for foreign currencies other than USD itself)
       if (item.type === 'fx' && key !== 'usd' && item.dolar_rate && Number(item.dolar_rate) !== 1) {
         const rateFormatted = parseFloat(item.dolar_rate).toLocaleString('en-US', { maximumFractionDigits: 4 });
-        const currencySlug = (item.slug || key).toUpperCase();
+        const currencyTitle = item.fa_name || (item.slug || key).toUpperCase();
         detailsHtml += `
           <div class="neo-box p-3 bg-neoSky mb-4 flex justify-between items-center">
-            <span class="text-xs font-bold text-black">نرخ برابری جهانی با دلار (Forex):</span>
-            <span class="font-mono font-black text-xs sm:text-sm text-black" dir="ltr">1 USD = ${rateFormatted} ${currencySlug}</span>
+            <span class="text-xs font-bold text-black">نرخ دلار آمریکا به ${currencyTitle}:</span>
+            <span class="font-mono font-black text-xs sm:text-sm text-black" dir="ltr">${rateFormatted}</span>
           </div>
         `;
       }
