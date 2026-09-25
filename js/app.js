@@ -111,6 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (calcSelect) calcSelect.addEventListener('change', () => window.currencyCalculator.recalculate());
       if (goldWeight) goldWeight.addEventListener('input', () => window.currencyCalculator.recalculateGold());
 
+      const gramBtn = document.getElementById('gold-unit-gram');
+      const sootBtn = document.getElementById('gold-unit-soot');
+      if (gramBtn) gramBtn.addEventListener('click', () => window.currencyCalculator?.setGoldUnit('gram'));
+      if (sootBtn) sootBtn.addEventListener('click', () => window.currencyCalculator?.setGoldUnit('soot'));
+
       // Modal close handlers
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') this.closeModals();

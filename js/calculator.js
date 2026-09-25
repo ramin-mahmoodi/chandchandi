@@ -8,6 +8,7 @@ class CurrencyCalculator {
     this.symbolsData = {};
     this.currencyMode = 'toman'; // 'toman' or 'rial'
     this.selectedSymbol = 'usd';
+    this.goldUnit = 'gram'; // 'gram' or 'soot'
     this.hasInitializedSelect = false;
   }
 
@@ -35,6 +36,7 @@ class CurrencyCalculator {
     this.hasInitializedSelect = true;
 
     this.initSteppers();
+    this.initGoldUnitToggle();
 
     const trigger = document.getElementById('calc-select-trigger');
     const searchInput = document.getElementById('calc-select-search');
@@ -300,12 +302,79 @@ class CurrencyCalculator {
     this.recalculateGold();
   }
 
+  initGoldUnitToggle() {
+    const gramBtn = document.getElementById('gold-unit-gram');
+    const sootBtn = document.getElementById('gold-unit-soot');
+
+    if (gramBtn) {
+      gramBtn.onclick = (e) => {
+        e.preventDefault();
+        this.setGoldUnit('gram');
+      };
+    }
+
+    if (sootBtn) {
+      sootBtn.onclick = (e) => {
+        e.preventDefault();
+        this.setGoldUnit('soot');
+      };
+    }
+  }
+
+  setGoldUnit(unit) {
+    if (this.goldUnit === unit) return;
+    this.goldUnit = unit;
+
+    const weightInput = document.getElementById('gold-weight-input');
+    const gramBtn = document.getElementById('gold-unit-gram');
+    const sootBtn = document.getElementById('gold-unit-soot');
+    const weightLabel = document.getElementById('gold-weight-label');
+
+    if (unit === 'soot') {
+      if (gramBtn) {
+        gramBtn.className = 'gold-unit-btn flex-1 h-full py-1.5 font-bold text-xs sm:text-sm rounded-[4px] border-2 border-transparent transition-all bg-transparent text-gray-700 hover:text-black hover:bg-black/5 flex items-center justify-center select-none';
+      }
+      if (sootBtn) {
+        sootBtn.className = 'gold-unit-btn flex-1 h-full py-1.5 font-black text-xs sm:text-sm rounded-[4px] border-2 border-black transition-all bg-neoMain text-black shadow-[1px_1px_0px_#000] flex items-center justify-center select-none';
+      }
+      if (weightLabel) weightLabel.textContent = 'وزن طلا (سوت):';
+      if (weightInput) {
+        weightInput.setAttribute('placeholder', 'مثلاً ۴۵۰۰');
+        weightInput.setAttribute('aria-label', 'وزن طلا به سوت');
+        weightInput.setAttribute('step', '100');
+        const currentVal = parseFloat(weightInput.value);
+        if (!isNaN(currentVal) && currentVal > 0) {
+          weightInput.value = Math.round(currentVal * 1000);
+        }
+      }
+    } else {
+      if (gramBtn) {
+        gramBtn.className = 'gold-unit-btn flex-1 h-full py-1.5 font-black text-xs sm:text-sm rounded-[4px] border-2 border-black transition-all bg-neoMain text-black shadow-[1px_1px_0px_#000] flex items-center justify-center select-none';
+      }
+      if (sootBtn) {
+        sootBtn.className = 'gold-unit-btn flex-1 h-full py-1.5 font-bold text-xs sm:text-sm rounded-[4px] border-2 border-transparent transition-all bg-transparent text-gray-700 hover:text-black hover:bg-black/5 flex items-center justify-center select-none';
+      }
+      if (weightLabel) weightLabel.textContent = 'وزن طلا (گرم):';
+      if (weightInput) {
+        weightInput.setAttribute('placeholder', 'مثلاً ۴.۵');
+        weightInput.setAttribute('aria-label', 'وزن طلا به گرم');
+        weightInput.setAttribute('step', '0.5');
+        const currentVal = parseFloat(weightInput.value);
+        if (!isNaN(currentVal) && currentVal > 0) {
+          weightInput.value = parseFloat((currentVal / 1000).toFixed(4));
+        }
+      }
+    }
+    this.recalculateGold();
+  }
+
   recalculateGold() {
     const weightInput = document.getElementById('gold-weight-input');
     const goldResult = document.getElementById('gold-result-display');
+    const goldDetails = document.getElementById('gold-details-display');
     if (!weightInput || !goldResult) return;
 
-    const grams = parseFloat(weightInput.value) || 0;
+    const rawWeight = parseFloat(weightInput.value) || 0;
     const goldItem = this.symbolsData['18ayar'];
     if (!goldItem) return;
 
@@ -314,37 +383,52 @@ class CurrencyCalculator {
       pricePerGram = pricePerGram * 10;
     }
 
+    const grams = this.goldUnit === 'soot' ? (rawWeight / 1000) : rawWeight;
     const total = grams * pricePerGram;
     const unit = this.currencyMode === 'rial' ? 'ریال' : 'تومان';
     goldResult.textContent = `${Math.round(total).toLocaleString('fa-IR')} ${unit}`;
+
+    if (goldDetails) {
+      if (this.goldUnit === 'soot') {
+        const gramsFormatted = grams.toLocaleString('fa-IR', { maximumFractionDigits: 4 });
+        goldDetails.textContent = `* هر ۱ گرم = ۱۰۰۰ سوت (معادل ${gramsFormatted} گرم طلای ۱۸ عیار بدون اجرت و مالیات).`;
+      } else {
+        goldDetails.textContent = `* محاسبه بر مبنای نرخ لحظه‌ای ۱ گرم طلای ۱۸ عیار (بدون اجرت و مالیات).`;
+      }
+    }
   }
 
   initSteppers() {
-    const bindStepper = (inputId, upBtnId, downBtnId, step, min = 0) => {
+    const bindStepper = (inputId, upBtnId, downBtnId, stepArg, min = 0) => {
       const input = document.getElementById(inputId);
       const upBtn = document.getElementById(upBtnId);
       const downBtn = document.getElementById(downBtnId);
       if (!input || !upBtn || !downBtn) return;
 
-      const stepValue = (delta) => {
+      const getStep = () => typeof stepArg === 'function' ? stepArg() : stepArg;
+
+      const stepValue = (sign) => {
+        const step = getStep() * sign;
         let val = parseFloat(input.value) || 0;
-        let next = Math.max(min, Math.round((val + delta) * 100) / 100);
+        let next = Math.max(min, Math.round((val + step) * 10000) / 10000);
         input.value = next;
         input.dispatchEvent(new Event('input', { bubbles: true }));
       };
 
       upBtn.onclick = (e) => {
         e.preventDefault();
-        stepValue(step);
+        stepValue(1);
       };
 
       downBtn.onclick = (e) => {
         e.preventDefault();
-        stepValue(-step);
+        stepValue(-1);
       };
     };
 
-    bindStepper('gold-weight-input', 'gold-weight-up', 'gold-weight-down', 0.5, 0);
+    bindStepper('gold-weight-input', 'gold-weight-up', 'gold-weight-down', () => {
+      return this.goldUnit === 'soot' ? 100 : 0.5;
+    }, 0);
     bindStepper('calc-amount-input', 'calc-amount-up', 'calc-amount-down', 1, 0);
   }
 }

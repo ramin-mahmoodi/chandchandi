@@ -348,6 +348,40 @@ input[type="number"] {
   }
 }
 
+/* Symbol Count Badge Next to Search - Exactly matches .neo-change-badge width */
+#filtered-count,
+.neo-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.75rem;
+  height: 2.35rem;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  border-radius: var(--neo-radius-sm);
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  user-select: none;
+  background-color: var(--color-page-bg);
+  color: #000000;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  #filtered-count,
+  .neo-count-badge {
+    width: 4.25rem;
+    height: 2.15rem;
+    font-size: 0.68rem;
+    box-shadow: 1.5px 1.5px 0px 0px #000000;
+    padding: 0 0.2rem;
+    flex-shrink: 0;
+  }
+}
+
 /* Table Layout Stability - Enforces identical column widths across all categories */
 #price-table {
   table-layout: fixed;
