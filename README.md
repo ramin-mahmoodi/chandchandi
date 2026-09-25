@@ -6,7 +6,7 @@
 
 <br />
 
-<img src="assets/preview.png?v=2" alt="ChandChandi Preview" width="100%" />
+<img src="assets/preview.png?v=3" alt="ChandChandi Preview" width="100%" />
 
 </div>
 
