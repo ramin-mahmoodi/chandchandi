@@ -428,13 +428,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const colSubHeader = document.getElementById('col-sub-header');
       if (colMainHeader && colSubHeader) {
         if (this.currentCategory === 'fx') {
-          colMainHeader.textContent = 'قیمت فروش';
+          colMainHeader.innerHTML = '<span class="sm:hidden">قیمت لحظه‌ای</span><span class="hidden sm:inline">قیمت فروش</span>';
           colSubHeader.textContent = 'قیمت خرید';
         } else if (this.currentCategory === 'gold') {
           colMainHeader.textContent = 'قیمت لحظه‌ای';
           colSubHeader.textContent = 'حباب سکه و طلا';
         } else if (this.currentCategory === 'crypto') {
-          colMainHeader.textContent = 'قیمت تومانی';
+          colMainHeader.innerHTML = '<span class="sm:hidden">قیمت لحظه‌ای</span><span class="hidden sm:inline">قیمت تومانی</span>';
           colSubHeader.textContent = 'قیمت دلاری ($)';
         }
       }
@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }
 
-        // 2. Format Prices
+        // 2. Format Prices (Uniform font size across columns, non-bold clean weight)
         let mainPriceHtml = '';
         let subPriceHtml = '';
 
@@ -493,23 +493,24 @@ document.addEventListener('DOMContentLoaded', () => {
           if (tomanVal) {
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-lg font-black text-black font-num">${tomanVal}</span>
-                <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
+                <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">تومان:</span>
+                <span class="text-sm sm:text-[15px] font-normal text-black font-num">${tomanVal}</span>
+                <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
               </div>
             `;
             subPriceHtml = `
-              <div class="flex items-center gap-1 text-xs">
-                <span class="text-gray-500 font-bold sm:hidden">دلاری:</span>
-                <span class="font-mono font-black text-black tracking-tight">$ ${formattedUsd}</span>
+              <div class="flex items-baseline gap-1">
+                <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">دلاری:</span>
+                <span class="text-sm sm:text-[15px] font-normal text-black font-mono tracking-tight">$ ${formattedUsd}</span>
               </div>
             `;
           } else {
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-lg font-black text-black font-mono tracking-tight">$ ${formattedUsd}</span>
+                <span class="text-sm sm:text-[15px] font-normal text-black font-mono tracking-tight">$ ${formattedUsd}</span>
               </div>
             `;
-            subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
+            subPriceHtml = `<span class="text-sm sm:text-[15px] font-normal text-gray-400">---</span>`;
           }
         } else if (isGold) {
           // Gold & Coins: Benchmark Live Price & Coin Bubble
@@ -517,16 +518,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-lg font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
+                <span class="text-sm sm:text-[15px] font-normal text-black font-mono tracking-tight">$ ${usdVal}</span>
               </div>
             `;
-            subPriceHtml = `<span class="text-xs font-bold text-gray-500">انس جهانی</span>`;
+            subPriceHtml = `<span class="text-xs sm:text-[13px] font-normal text-gray-600">انس جهانی</span>`;
           } else {
             const mainPrice = item.price ?? 0;
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-lg font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
-                <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
+                <span class="text-sm sm:text-[15px] font-normal text-black font-num">${this.formatPrice(mainPrice)}</span>
+                <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
               </div>
             `;
 
@@ -536,14 +537,14 @@ document.addEventListener('DOMContentLoaded', () => {
               const bubbleBadgeColor = isNegativeBubble ? 'bg-neoPink text-rose-950' : 'bg-neoLemon text-amber-950';
               subPriceHtml = `
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="neo-badge ${bubbleBadgeColor} text-[10px] sm:text-[11px] font-bold py-0.5 px-1.5 border border-black shadow-[1px_1px_0px_#000]" title="حباب">
-                    حباب: <span class="font-num font-black">${bubblePer.toLocaleString('fa-IR')}%</span>
+                  <span class="neo-badge ${bubbleBadgeColor} text-[10px] sm:text-[11px] font-medium py-0.5 px-1.5 border border-black shadow-[1px_1px_0px_#000]" title="حباب">
+                    حباب: <span class="font-num font-bold">${bubblePer.toLocaleString('fa-IR')}%</span>
                   </span>
-                  ${item.bubble ? `<span class="text-[10px] sm:text-[11px] font-num font-bold text-gray-600 hidden md:inline">(${this.formatPrice(item.bubble)} ${unit})</span>` : ''}
+                  ${item.bubble ? `<span class="text-[11px] sm:text-xs font-num font-normal text-gray-500 hidden md:inline">(${this.formatPrice(item.bubble)} ${unit})</span>` : ''}
                 </div>
               `;
             } else {
-              subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
+              subPriceHtml = `<span class="text-sm sm:text-[15px] font-normal text-gray-400">---</span>`;
             }
           }
         } else {
@@ -551,22 +552,22 @@ document.addEventListener('DOMContentLoaded', () => {
           const sellPrice = item.sell ?? item.price ?? 0;
           mainPriceHtml = `
             <div class="flex items-baseline gap-1">
-              <span class="text-[10px] font-bold text-gray-500 sm:hidden ml-0.5">فروش:</span>
-              <span class="text-sm sm:text-lg font-black text-black font-num">${this.formatPrice(sellPrice)}</span>
-              <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
+              <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">فروش:</span>
+              <span class="text-sm sm:text-[15px] font-normal text-black font-num">${this.formatPrice(sellPrice)}</span>
+              <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
             </div>
           `;
 
           if (item.buy) {
             subPriceHtml = `
-              <div class="flex items-baseline gap-1 text-xs">
-                <span class="text-gray-500 font-bold sm:hidden">خرید:</span>
-                <span class="font-num font-black text-black">${this.formatPrice(item.buy)}</span>
-                <span class="text-[10px] font-bold text-gray-500">${unit}</span>
+              <div class="flex items-baseline gap-1">
+                <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">خرید:</span>
+                <span class="text-sm sm:text-[15px] font-normal text-black font-num">${this.formatPrice(item.buy)}</span>
+                <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
               </div>
             `;
           } else {
-            subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
+            subPriceHtml = `<span class="text-sm sm:text-[15px] font-normal text-gray-400">---</span>`;
           }
         }
 
