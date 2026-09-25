@@ -504,28 +504,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isCrypto) {
           const formattedUsd = this.formatCryptoUsd(item.price, item.dec_round);
-          const tomanVal = item.toman ? this.formatPrice(item.toman) : null;
+          
+          // Reference USDT rate to calculate Toman price if API didn't provide a direct Rial/Toman pair
+          const usdtItem = this.data['usdt'];
+          const usdtRate = (usdtItem && (usdtItem.toman || (usdtItem.price > 1000 ? usdtItem.price : 0))) || (this.data['usd'] && (this.data['usd'].sell || this.data['usd'].price)) || 0;
+          
+          let tomanVal = null;
+          let isEstimatedToman = false;
+
+          if (item.toman && item.toman > 0) {
+            tomanVal = this.formatPrice(item.toman);
+          } else if (item.price && usdtRate > 0) {
+            const calculatedToman = Math.round(item.price * usdtRate);
+            tomanVal = this.formatPrice(calculatedToman);
+            isEstimatedToman = true;
+          }
 
           if (tomanVal) {
             mainPriceHtml = `
-              <div class="flex items-baseline gap-1">
+              <div class="flex items-baseline gap-1" ${isEstimatedToman ? 'title="محاسبه‌شده بر مبنای نرخ تتر"' : ''}>
                 <span class="text-xs sm:text-[15px] font-normal text-black font-num whitespace-nowrap">${tomanVal}</span>
                 <span class="text-[10px] sm:text-xs font-normal text-gray-500 whitespace-nowrap">${unit}</span>
-              </div>
-            `;
-            subPriceHtml = `
-              <div class="flex items-baseline gap-1">
-                <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${formattedUsd}</span>
+                ${isEstimatedToman ? '<span class="text-[9px] text-gray-400 font-bold" title="محاسبه‌شده بر مبنای نرخ تتر">*</span>' : ''}
               </div>
             `;
           } else {
-            mainPriceHtml = `
-              <div class="flex items-baseline gap-1">
-                <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${formattedUsd}</span>
-              </div>
-            `;
-            subPriceHtml = `<span class="text-xs sm:text-[15px] font-normal text-gray-400">---</span>`;
+            mainPriceHtml = `<span class="text-xs sm:text-[15px] font-normal text-gray-400">---</span>`;
           }
+
+          subPriceHtml = `
+            <div class="flex items-baseline gap-1">
+              <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${formattedUsd}</span>
+            </div>
+          `;
         } else if (isGold) {
           // Gold & Coins: Benchmark Live Price & Coin Bubble
           if (isDollarGold) {
@@ -675,8 +686,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item.type === 'crypto') {
           const formattedUsd = this.formatCryptoUsd(item.price, item.dec_round);
           displayPrice = `$${formattedUsd}`;
-          if (item.toman) {
-            displayPrice += ` (${this.formatPrice(item.toman)} ${unit})`;
+          const usdtItem = this.data['usdt'];
+          const usdtRate = (usdtItem && (usdtItem.toman || (usdtItem.price > 1000 ? usdtItem.price : 0))) || (this.data['usd'] && (this.data['usd'].sell || this.data['usd'].price)) || 0;
+          const cryptoToman = (item.toman && item.toman > 0) ? item.toman : (item.price && usdtRate > 0 ? Math.round(item.price * usdtRate) : 0);
+          if (cryptoToman) {
+            displayPrice += ` (${this.formatPrice(cryptoToman)} ${unit})`;
           }
         } else if (item.is_dolar === 1) {
           displayPrice = `$${parseFloat(item.price || 0).toLocaleString('en-US')}`;
@@ -767,11 +781,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let priceBoxHtml = '';
         if (isCrypto) {
           const usdVal = this.formatCryptoUsd(item.price, item.dec_round);
+          const usdtItem = this.data['usdt'];
+          const usdtRate = (usdtItem && (usdtItem.toman || (usdtItem.price > 1000 ? usdtItem.price : 0))) || (this.data['usd'] && (this.data['usd'].sell || this.data['usd'].price)) || 0;
+          const cryptoToman = (item.toman && item.toman > 0) ? item.toman : (item.price && usdtRate > 0 ? Math.round(item.price * usdtRate) : 0);
+
           priceBoxHtml = `
             <div class="neo-box p-3 bg-neoMain">
               <div class="text-xs font-bold text-gray-800 mb-1">قیمت دلاری:</div>
               <div class="text-xl font-black font-mono tracking-tight text-black">$ ${usdVal}</div>
-              ${item.toman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black text-black">${this.formatPrice(item.toman)}</span> ${unit}</div>` : ''}
+              ${cryptoToman ? `<div class="text-xs font-bold text-gray-800 mt-1">معادل: <span class="font-num font-black text-black">${this.formatPrice(cryptoToman)}</span> ${unit} ${!item.toman ? '<span class="text-[10px] text-gray-600 font-normal">(محاسبه بر مبنای تتر)</span>' : ''}</div>` : ''}
             </div>
           `;
         } else if (isDollarGold) {
