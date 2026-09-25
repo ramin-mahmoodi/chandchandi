@@ -493,24 +493,23 @@ document.addEventListener('DOMContentLoaded', () => {
           if (tomanVal) {
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">تومان:</span>
-                <span class="text-sm sm:text-[15px] font-normal text-black font-num">${tomanVal}</span>
-                <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
+                <span class="text-xs sm:text-[15px] font-normal text-black font-num whitespace-nowrap">${tomanVal}</span>
+                <span class="text-[10px] sm:text-xs font-normal text-gray-500 whitespace-nowrap">${unit}</span>
               </div>
             `;
             subPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">دلاری:</span>
-                <span class="text-sm sm:text-[15px] font-normal text-black font-mono tracking-tight">$ ${formattedUsd}</span>
+                <span class="text-[10px] sm:text-xs font-normal text-gray-500 sm:hidden">دلاری:</span>
+                <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${formattedUsd}</span>
               </div>
             `;
           } else {
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-[15px] font-normal text-black font-mono tracking-tight">$ ${formattedUsd}</span>
+                <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${formattedUsd}</span>
               </div>
             `;
-            subPriceHtml = `<span class="text-sm sm:text-[15px] font-normal text-gray-400">---</span>`;
+            subPriceHtml = `<span class="text-xs sm:text-[15px] font-normal text-gray-400">---</span>`;
           }
         } else if (isGold) {
           // Gold & Coins: Benchmark Live Price & Coin Bubble
@@ -518,16 +517,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-[15px] font-normal text-black font-mono tracking-tight">$ ${usdVal}</span>
+                <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${usdVal}</span>
               </div>
             `;
-            subPriceHtml = `<span class="text-xs sm:text-[13px] font-normal text-gray-600">انس جهانی</span>`;
+            subPriceHtml = `<span class="text-[11px] sm:text-[13px] font-normal text-gray-600 whitespace-nowrap">انس جهانی</span>`;
           } else {
             const mainPrice = item.price ?? 0;
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-sm sm:text-[15px] font-normal text-black font-num">${this.formatPrice(mainPrice)}</span>
-                <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
+                <span class="text-xs sm:text-[15px] font-normal text-black font-num whitespace-nowrap">${this.formatPrice(mainPrice)}</span>
+                <span class="text-[10px] sm:text-xs font-normal text-gray-500 whitespace-nowrap">${unit}</span>
               </div>
             `;
 
@@ -537,14 +536,14 @@ document.addEventListener('DOMContentLoaded', () => {
               const bubbleBadgeColor = isNegativeBubble ? 'bg-neoPink text-rose-950' : 'bg-neoLemon text-amber-950';
               subPriceHtml = `
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="neo-badge ${bubbleBadgeColor} text-[10px] sm:text-[11px] font-medium py-0.5 px-1.5 border border-black shadow-[1px_1px_0px_#000]" title="حباب">
+                  <span class="neo-badge ${bubbleBadgeColor} text-[10px] sm:text-[11px] font-medium py-0.5 px-1.5 border border-black shadow-[1px_1px_0px_#000] whitespace-nowrap" title="حباب">
                     حباب: <span class="font-num font-bold">${bubblePer.toLocaleString('fa-IR')}%</span>
                   </span>
-                  ${item.bubble ? `<span class="text-[11px] sm:text-xs font-num font-normal text-gray-500 hidden md:inline">(${this.formatPrice(item.bubble)} ${unit})</span>` : ''}
+                  ${item.bubble ? `<span class="text-[10px] sm:text-xs font-num font-normal text-gray-500 hidden md:inline">(${this.formatPrice(item.bubble)} ${unit})</span>` : ''}
                 </div>
               `;
             } else {
-              subPriceHtml = `<span class="text-sm sm:text-[15px] font-normal text-gray-400">---</span>`;
+              subPriceHtml = `<span class="text-xs sm:text-[15px] font-normal text-gray-400">---</span>`;
             }
           }
         } else {
@@ -552,22 +551,22 @@ document.addEventListener('DOMContentLoaded', () => {
           const sellPrice = item.sell ?? item.price ?? 0;
           mainPriceHtml = `
             <div class="flex items-baseline gap-1">
-              <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">فروش:</span>
-              <span class="text-sm sm:text-[15px] font-normal text-black font-num">${this.formatPrice(sellPrice)}</span>
-              <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
+              <span class="text-[10px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5 whitespace-nowrap">فروش:</span>
+              <span class="text-xs sm:text-[15px] font-normal text-black font-num whitespace-nowrap">${this.formatPrice(sellPrice)}</span>
+              <span class="text-[10px] sm:text-xs font-normal text-gray-500 whitespace-nowrap">${unit}</span>
             </div>
           `;
 
           if (item.buy) {
             subPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-[11px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5">خرید:</span>
-                <span class="text-sm sm:text-[15px] font-normal text-black font-num">${this.formatPrice(item.buy)}</span>
-                <span class="text-[11px] sm:text-xs font-normal text-gray-500">${unit}</span>
+                <span class="text-[10px] sm:text-xs font-normal text-gray-500 sm:hidden ml-0.5 whitespace-nowrap">خرید:</span>
+                <span class="text-xs sm:text-[15px] font-normal text-black font-num whitespace-nowrap">${this.formatPrice(item.buy)}</span>
+                <span class="text-[10px] sm:text-xs font-normal text-gray-500 whitespace-nowrap">${unit}</span>
               </div>
             `;
           } else {
-            subPriceHtml = `<span class="text-sm sm:text-[15px] font-normal text-gray-400">---</span>`;
+            subPriceHtml = `<span class="text-xs sm:text-[15px] font-normal text-gray-400">---</span>`;
           }
         }
 
@@ -583,21 +582,21 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.title = 'برای مشاهده نمودار و تاریخچه قیمت کلیک کنید';
         tr.innerHTML = `
           <!-- Col 1: Asset & Symbol -->
-          <td class="w-[48%] sm:w-[36%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
-            <div class="flex items-center gap-2 sm:gap-3">
-              <div class="symbol-icon-box w-8 h-8 sm:w-10 sm:h-10 rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] sm:shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center shrink-0">
+          <td class="w-[36%] sm:w-[36%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle overflow-hidden">
+            <div class="flex items-center gap-1.5 sm:gap-3">
+              <div class="symbol-icon-box w-7 h-7 sm:w-10 sm:h-10 rounded-[4px] sm:rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] sm:shadow-[2px_2px_0px_#000] p-0.5 sm:p-1 flex items-center justify-center shrink-0">
                 <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
               </div>
               <div class="min-w-0 flex flex-col justify-center">
                 <span class="font-black text-xs sm:text-[15px] text-black truncate leading-snug">
                   ${item.fa_name || key}
                 </span>
-                <div class="flex items-center gap-1.5 mt-0.5" dir="ltr">
-                  <span class="font-mono font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-[4px] border border-black bg-white text-black leading-none shrink-0 shadow-[1px_1px_0px_#000]">
+                <div class="flex items-center gap-1 sm:gap-1.5 mt-0.5" dir="ltr">
+                  <span class="font-mono font-black text-[9px] sm:text-[11px] px-1 sm:px-1.5 py-0.5 rounded-[3px] sm:rounded-[4px] border border-black bg-white text-black leading-none shrink-0 shadow-[1px_1px_0px_#000]">
                     ${iconSlug}
                   </span>
                   ${item.en_name && item.en_name.toUpperCase() !== iconSlug ? `
-                    <span class="text-[10px] sm:text-[11px] font-bold text-gray-500 truncate max-w-[85px] sm:max-w-[190px] font-sans leading-none">
+                    <span class="text-[9px] sm:text-[11px] font-bold text-gray-500 truncate max-w-[65px] sm:max-w-[190px] font-sans leading-none">
                       ${item.en_name}
                     </span>
                   ` : ''}
@@ -607,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 2: Live Rate (and sub-rate on mobile) -->
-          <td class="w-[34%] sm:w-[24%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
+          <td class="w-[46%] sm:w-[24%] py-2.5 sm:py-3.5 px-1.5 sm:px-4 align-middle overflow-hidden">
             ${mainPriceHtml}
             <div class="sm:hidden mt-0.5">
               ${subPriceHtml}
@@ -615,12 +614,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 3: Buy / USD rate (Desktop & Tablet) -->
-          <td class="hidden sm:table-cell sm:w-[24%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
+          <td class="hidden sm:table-cell sm:w-[24%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle overflow-hidden">
             ${subPriceHtml}
           </td>
 
           <!-- Col 4: 24h Change Badge -->
-          <td class="w-[18%] sm:w-[16%] py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle">
+          <td class="w-[18%] sm:w-[16%] py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle whitespace-nowrap">
             <div class="flex justify-center">
               ${changeBadgeHtml}
             </div>
