@@ -32,7 +32,7 @@
   <!-- Custom Fonts & Neobrutal CSS -->
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/neobrutal.css?v=15">
+  <link rel="stylesheet" href="css/neobrutal.css?v=16">
 </head>
 <body class="bg-neoBg text-black min-h-screen flex flex-col selection:bg-neoMain selection:text-black">
 
@@ -174,10 +174,13 @@
             <caption class="sr-only">جدول نرخ‌های زنده بازار ارز، طلا و رمزارز</caption>
             <thead>
               <tr class="bg-neoBg/90 border-b-2 border-black text-xs font-black text-black select-none">
-                <th scope="col" class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 text-right">دارایی و نماد</th>
-                <th scope="col" class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 text-right">نرخ لحظه‌ای</th>
-                <th scope="col" class="hidden sm:table-cell py-2.5 sm:py-3.5 px-3 sm:px-4 text-right">نرخ خرید / جهانی</th>
-                <th scope="col" class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">تغییرات ۲۴ ساعته</th>
+                <th scope="col" class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-right">دارایی و نماد</th>
+                <th scope="col" id="col-main-header" class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-right">قیمت فروش</th>
+                <th scope="col" id="col-sub-header" class="hidden sm:table-cell py-2.5 sm:py-3.5 px-2 sm:px-4 text-right">قیمت خرید</th>
+                <th scope="col" class="py-2.5 sm:py-3.5 px-1 sm:px-4 text-center whitespace-nowrap">
+                  <span class="sm:hidden">تغییر ۲۴س</span>
+                  <span class="hidden sm:inline">تغییرات ۲۴ ساعته</span>
+                </th>
               </tr>
             </thead>
             <tbody id="price-table-body" class="divide-y-2 divide-black/10">
@@ -330,29 +333,29 @@
 
   <!-- Detail Modal -->
   <div id="detail-modal" class="neo-modal-backdrop hidden">
-    <div class="neo-modal p-6">
+    <div class="neo-modal">
       
       <!-- Modal Header -->
-      <div class="flex items-start justify-between pb-3 mb-4 border-b-3 border-black">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-[5px] border-2 border-black bg-white shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center flex-shrink-0">
-            <img id="modal-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="آیکون نماد" class="w-full h-full object-contain" />
+      <div class="neo-modal-header flex items-center justify-between">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-[6px] border-2 border-black bg-white shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center shrink-0">
+            <img id="modal-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="آیکون نماد" class="w-full h-full object-contain pointer-events-none" />
           </div>
-          <div>
-            <div class="flex items-center gap-2 mb-1">
-              <h3 id="modal-title" class="text-xl font-black text-black">عنوان نماد</h3>
-              <span id="modal-slug" class="neo-badge bg-neoMain font-mono font-black text-xs">USD</span>
+          <div class="min-w-0 flex flex-col justify-center">
+            <h3 id="modal-title" class="text-base sm:text-lg font-black text-black leading-snug truncate">عنوان نماد</h3>
+            <div class="flex items-center gap-1.5 mt-0.5" dir="ltr">
+              <span id="modal-slug" class="font-mono font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-[4px] border border-black bg-white shadow-[1px_1px_0px_#000] leading-none shrink-0">USD</span>
+              <span id="modal-subtitle" class="text-[11px] sm:text-xs font-bold text-gray-500 font-sans leading-none truncate">US Dollar</span>
             </div>
-            <div id="modal-subtitle" class="text-xs font-bold text-gray-500 font-mono">US Dollar</div>
           </div>
         </div>
-        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black" title="بستن" aria-label="بستن پنجره جزئیات">
+        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black shadow-[2px_2px_0px_#000] shrink-0" title="بستن" aria-label="بستن پنجره جزئیات">
           <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
 
       <!-- Modal Body -->
-      <div id="modal-details-body">
+      <div id="modal-details-body" class="neo-modal-body">
         <!-- Injected dynamically -->
       </div>
 
@@ -361,62 +364,64 @@
 
   <!-- Settings Modal -->
   <div id="settings-modal" class="neo-modal-backdrop hidden">
-    <div class="neo-modal p-6">
-      <div class="flex items-center justify-between pb-3 mb-4 border-b-3 border-black">
-        <h3 class="text-xl font-black text-black flex items-center gap-2">
+    <div class="neo-modal">
+      <div class="neo-modal-header flex items-center justify-between">
+        <h3 class="text-base sm:text-lg font-black text-black flex items-center gap-2">
           <svg class="w-5 h-5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
           <span>تنظیمات اتصال و پروکسی</span>
         </h3>
-        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black" title="بستن" aria-label="بستن پنجره تنظیمات">
+        <button data-close-modal class="neo-btn bg-neoPink hover:bg-rose-300 text-black p-1.5 text-xs font-black shadow-[2px_2px_0px_#000]" title="بستن" aria-label="بستن پنجره تنظیمات">
           <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div class="space-y-4 mb-6">
-        <div>
-          <label for="settings-proxy-input" class="block text-xs font-black text-gray-700 mb-1">آدرس پروکسی CORS اختصاصی (اختیاری):</label>
-          <div class="flex items-center gap-2">
-            <input 
-              type="text" 
-              id="settings-proxy-input" 
-              name="settings-proxy"
-              aria-label="آدرس پروکسی CORS اختصاصی"
-              class="neo-input font-mono text-left text-xs flex-1" 
-              placeholder="مثال: https://my-proxy.workers.dev/?url="
-            >
-            <button 
-              type="button" 
-              id="test-proxy-btn" 
-              class="neo-btn bg-neoSky hover:bg-sky-200 text-black text-xs py-2 px-3 font-black whitespace-nowrap flex items-center gap-1.5 shrink-0"
-              title="بررسی صحت اتصال پروکسی با ارسال درخواست واقعی به API آلن‌چند"
-              aria-label="تست اتصال پروکسی با API"
-            >
-              <svg id="test-proxy-icon" class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span id="test-proxy-label">تست اتصال API</span>
-            </button>
+      <div class="neo-modal-body">
+        <div class="space-y-4 mb-5">
+          <div>
+            <label for="settings-proxy-input" class="block text-xs font-black text-gray-700 mb-1">آدرس پروکسی CORS اختصاصی (اختیاری):</label>
+            <div class="flex items-center gap-2">
+              <input 
+                type="text" 
+                id="settings-proxy-input" 
+                name="settings-proxy"
+                aria-label="آدرس پروکسی CORS اختصاصی"
+                class="neo-input font-mono text-left text-xs flex-1" 
+                placeholder="مثال: https://my-proxy.workers.dev/?url="
+              >
+              <button 
+                type="button" 
+                id="test-proxy-btn" 
+                class="neo-btn bg-neoSky hover:bg-sky-200 text-black text-xs py-2 px-3 font-black whitespace-nowrap flex items-center gap-1.5 shrink-0 shadow-[2px_2px_0px_#000]"
+                title="بررسی صحت اتصال پروکسی با ارسال درخواست واقعی به API آلن‌چند"
+                aria-label="تست اتصال پروکسی با API"
+              >
+                <svg id="test-proxy-icon" class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span id="test-proxy-label">تست اتصال API</span>
+              </button>
+            </div>
+            <div id="proxy-test-result" class="hidden mt-2 p-2.5 rounded-[5px] border-2 border-black text-xs font-bold transition-all"></div>
+            <p class="text-[11px] font-bold text-gray-500 mt-1">
+              با زدن دکمه «تست اتصال API»، یک استعلام واقعی و امضاشده به سرور آلن‌چند ارسال شده و صحت دریافت نرخ دلار، هدرهای CORS و زمان پاسخ‌دهی پروکسی بررسی می‌شود.
+            </p>
           </div>
-          <div id="proxy-test-result" class="hidden mt-2 p-2.5 rounded-[5px] border-2 border-black text-xs font-bold transition-all"></div>
-          <p class="text-[11px] font-bold text-gray-500 mt-1">
-            با زدن دکمه «تست اتصال API»، یک استعلام واقعی و امضاشده به سرور آلن‌چند ارسال شده و صحت دریافت نرخ دلار، هدرهای CORS و زمان پاسخ‌دهی پروکسی بررسی می‌شود.
-          </p>
+
+          <div class="neo-box p-3 bg-neoBg text-xs font-bold text-gray-700 flex items-start gap-2">
+            <svg class="w-4 h-4 mt-0.5 shrink-0 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+            <div>این وب‌سایت کاملاً ایستا (Static) است و بدون نیاز به هیچ سرور خارجی روی <strong>GitHub Pages</strong> کار می‌کند. امضای امنیتی به شکل خودکار توسط الگوریتم رمزنگاری کلاینت‌ساید تولید می‌گردد.</div>
+          </div>
         </div>
 
-        <div class="neo-box p-3 bg-neoBg text-xs font-bold text-gray-700 flex items-start gap-2">
-          <svg class="w-4 h-4 mt-0.5 shrink-0 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
-          <div>این وب‌سایت کاملاً ایستا (Static) است و بدون نیاز به هیچ سرور خارجی روی <strong>GitHub Pages</strong> کار می‌کند. امضای امنیتی به شکل خودکار توسط الگوریتم رمزنگاری کلاینت‌ساید تولید می‌گردد.</div>
+        <div class="pt-3 border-t-2 border-black border-dashed flex items-center justify-between">
+          <button id="save-settings-btn" class="neo-btn neo-btn-mint text-xs py-1.5 px-4 font-black shadow-[2px_2px_0px_#000]">
+            ذخیره و بارگذاری مجدد
+          </button>
+          <button data-close-modal class="neo-btn bg-white hover:bg-gray-100 text-xs py-1.5 px-3 font-black shadow-[2px_2px_0px_#000]">
+            انصراف
+          </button>
         </div>
-      </div>
-
-      <div class="pt-4 border-t-2 border-black border-dashed flex items-center justify-between">
-        <button id="save-settings-btn" class="neo-btn neo-btn-mint text-xs py-1.5 px-4 font-black">
-          ذخیره و بارگذاری مجدد
-        </button>
-        <button data-close-modal class="neo-btn bg-white hover:bg-gray-100 text-xs py-1.5 px-3 font-black">
-          انصراف
-        </button>
       </div>
     </div>
   </div>

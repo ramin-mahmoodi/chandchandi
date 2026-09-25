@@ -337,9 +337,9 @@ input[type="number"] {
 
 @media (max-width: 640px) {
   .neo-change-badge {
-    width: 4.85rem;
-    height: 1.65rem;
-    font-size: 0.7rem;
+    width: 4.4rem;
+    height: 1.6rem;
+    font-size: 0.68rem;
     box-shadow: 1.5px 1.5px 0px 0px #000000;
   }
 }
@@ -353,10 +353,6 @@ input[type="number"] {
 
 .neo-table-row:hover {
   background-color: #f7f4ff !important;
-}
-
-.neo-table-row:hover td:first-child {
-  box-shadow: inset -4px 0 0 0 #000000;
 }
 
 .neo-table-row .symbol-icon-box {
@@ -448,7 +444,7 @@ header.neo-box {
   }
 }
 
-/* Modal Neobrutalism */
+/* Modal Neobrutalism (Refined Shadow, 2px border, Interior Scrollbar, Fast Performance) */
 .neo-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -458,8 +454,7 @@ header.neo-box {
   justify-content: center;
   padding: 0.75rem;
   z-index: 999;
-  backdrop-filter: blur(3px);
-  animation: backdropFadeIn 0.18s ease-out;
+  animation: backdropFadeIn 0.15s ease-out;
 }
 
 @media (min-width: 640px) {
@@ -470,24 +465,92 @@ header.neo-box {
 
 .neo-modal-backdrop.is-closing {
   pointer-events: none;
-  animation: backdropFadeOut 0.15s ease-in forwards;
+  animation: backdropFadeOut 0.12s ease-in forwards;
 }
 
 .neo-modal {
   background: #ffffff;
-  border: var(--neo-border-thick);
-  box-shadow: var(--neo-shadow-xl);
+  border: var(--neo-border);
+  box-shadow: 4px 4px 0px 0px #000000;
   border-radius: var(--neo-radius);
   width: 100%;
-  max-width: 640px;
-  max-height: 92vh;
-  overflow-y: auto;
+  max-width: 580px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   position: relative;
-  animation: modalPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: modalPop 0.15s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@media (min-width: 640px) {
+  .neo-modal {
+    box-shadow: 6px 6px 0px 0px #000000;
+  }
 }
 
 .neo-modal-backdrop.is-closing .neo-modal {
-  animation: modalPopOut 0.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: modalPopOut 0.12s ease-in forwards;
+}
+
+.neo-modal-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid #000000;
+  background-color: #ffffff;
+  flex-shrink: 0;
+}
+
+.neo-modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 1.25rem;
+}
+
+/* Interior Sleek Neobrutal Scrollbar */
+.neo-modal-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+.neo-modal-body::-webkit-scrollbar-track {
+  background: #f0eefc;
+  border-left: 1px solid #000000;
+}
+
+.neo-modal-body::-webkit-scrollbar-thumb {
+  background-color: #b6ace4;
+  border: 1px solid #000000;
+  border-radius: 3px;
+}
+
+.neo-modal-body::-webkit-scrollbar-thumb:hover {
+  background-color: #9e93db;
+}
+
+/* Chart Period Buttons (No white ghost borders, perfect alignment) */
+.chart-period-btn {
+  border: 2px solid transparent;
+  background-color: transparent;
+  color: #374151;
+  border-radius: 4px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+  outline: none;
+}
+
+.chart-period-btn:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #000000;
+}
+
+.chart-period-btn.active {
+  background-color: var(--color-main) !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+  box-shadow: 2px 2px 0px 0px #000000 !important;
 }
 
 @keyframes backdropFadeIn {
@@ -501,13 +564,13 @@ header.neo-box {
 }
 
 @keyframes modalPop {
-  0% { transform: scale(0.92); opacity: 0; }
+  0% { transform: scale(0.95); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes modalPopOut {
   0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
 }
 
 /* Pulse animation for live dot */

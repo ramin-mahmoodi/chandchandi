@@ -423,6 +423,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return aOrder - bOrder;
       });
 
+      // Dynamic Column Headers based on active category
+      const colMainHeader = document.getElementById('col-main-header');
+      const colSubHeader = document.getElementById('col-sub-header');
+      if (colMainHeader && colSubHeader) {
+        if (this.currentCategory === 'fx') {
+          colMainHeader.textContent = 'قیمت فروش';
+          colSubHeader.textContent = 'قیمت خرید';
+        } else if (this.currentCategory === 'gold') {
+          colMainHeader.textContent = 'قیمت فروش / روز';
+          colSubHeader.textContent = 'قیمت خرید / جهانی';
+        } else if (this.currentCategory === 'crypto') {
+          colMainHeader.textContent = 'قیمت تومانی';
+          colSubHeader.textContent = 'قیمت دلاری ($)';
+        }
+      }
+
       const unit = this.getUnitLabel();
 
       filteredKeys.forEach(key => {
@@ -476,20 +492,20 @@ document.addEventListener('DOMContentLoaded', () => {
           if (tomanVal) {
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-base sm:text-lg font-black text-black font-num">${tomanVal}</span>
-                <span class="text-xs font-black text-gray-700">${unit}</span>
+                <span class="text-sm sm:text-lg font-black text-black font-num">${tomanVal}</span>
+                <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
               </div>
             `;
             subPriceHtml = `
-              <div class="flex items-center gap-1.5 text-xs">
-                <span class="text-gray-500 font-bold">قیمت دلاری:</span>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-gray-500 font-bold sm:hidden">دلاری:</span>
                 <span class="font-mono font-black text-black tracking-tight">$ ${formattedUsd}</span>
               </div>
             `;
           } else {
             mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-base sm:text-lg font-black text-black font-mono tracking-tight">$ ${formattedUsd}</span>
+                <span class="text-sm sm:text-lg font-black text-black font-mono tracking-tight">$ ${formattedUsd}</span>
               </div>
             `;
             subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
@@ -498,24 +514,26 @@ document.addEventListener('DOMContentLoaded', () => {
           const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
           mainPriceHtml = `
             <div class="flex items-baseline gap-1">
-              <span class="text-base sm:text-lg font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
+              <span class="text-sm sm:text-lg font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
             </div>
           `;
           subPriceHtml = `<span class="text-xs font-bold text-gray-500">انس جهانی</span>`;
         } else {
           const mainPrice = item.price ?? item.sell ?? item.buy ?? 0;
+          const sellPrefix = item.type === 'fx' ? '<span class="text-[10px] font-bold text-gray-500 sm:hidden ml-0.5">فروش:</span>' : '';
           mainPriceHtml = `
             <div class="flex items-baseline gap-1">
-              <span class="text-base sm:text-lg font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
-              <span class="text-xs font-black text-gray-700">${unit}</span>
+              ${sellPrefix}
+              <span class="text-sm sm:text-lg font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
+              <span class="text-[10px] sm:text-xs font-black text-gray-700">${unit}</span>
             </div>
           `;
 
           if (item.buy) {
             subPriceHtml = `
-              <div class="flex items-center gap-2 flex-wrap">
+              <div class="flex items-center gap-1.5 flex-wrap">
                 <div class="flex items-baseline gap-1 text-xs">
-                  <span class="text-gray-500 font-bold">خرید:</span>
+                  <span class="text-gray-500 font-bold sm:hidden">خرید:</span>
                   <span class="font-num font-black text-black">${this.formatPrice(item.buy)}</span>
                   <span class="text-[10px] font-bold text-gray-500">${unit}</span>
                 </div>
@@ -542,20 +560,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
         const fallbackIcon = item.icon || '';
 
-        // 4. Build Table Row (Fully Responsive for Mobile)
+        // 4. Build Table Row (Fully Responsive for Mobile - Zero Horizontal Overflow)
         const tr = document.createElement('tr');
         tr.className = 'neo-table-row group border-b border-black/10';
         tr.setAttribute('data-key', key);
         tr.title = 'برای مشاهده نمودار و تاریخچه قیمت کلیک کنید';
         tr.innerHTML = `
           <!-- Col 1: Asset & Symbol -->
-          <td class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 align-middle">
-            <div class="flex items-center gap-2.5 sm:gap-3">
-              <div class="symbol-icon-box w-9 h-9 sm:w-10 sm:h-10 rounded-[6px] border-2 border-black bg-white shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center shrink-0">
+          <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <div class="symbol-icon-box w-8 h-8 sm:w-10 sm:h-10 rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] sm:shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center shrink-0">
                 <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
               </div>
               <div class="min-w-0 flex flex-col justify-center">
-                <span class="font-black text-xs sm:text-[15px] text-black group-hover:underline truncate leading-snug">
+                <span class="font-black text-xs sm:text-[15px] text-black truncate leading-snug">
                   ${item.fa_name || key}
                 </span>
                 <div class="flex items-center gap-1.5 mt-0.5" dir="ltr">
@@ -563,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${iconSlug}
                   </span>
                   ${item.en_name && item.en_name.toUpperCase() !== iconSlug ? `
-                    <span class="text-[10px] sm:text-[11px] font-bold text-gray-500 truncate max-w-[120px] sm:max-w-[190px] font-sans leading-none">
+                    <span class="text-[10px] sm:text-[11px] font-bold text-gray-500 truncate max-w-[85px] sm:max-w-[190px] font-sans leading-none">
                       ${item.en_name}
                     </span>
                   ` : ''}
@@ -573,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 2: Live Rate (and sub-rate on mobile) -->
-          <td class="py-2.5 sm:py-3.5 px-2.5 sm:px-4 align-middle">
+          <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
             ${mainPriceHtml}
             <div class="sm:hidden mt-0.5">
               ${subPriceHtml}
@@ -581,12 +599,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 3: Buy / USD rate (Desktop & Tablet) -->
-          <td class="hidden sm:table-cell py-2.5 sm:py-3.5 px-3 sm:px-4 align-middle">
+          <td class="hidden sm:table-cell py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle">
             ${subPriceHtml}
           </td>
 
           <!-- Col 4: 24h Change Badge -->
-          <td class="py-2.5 sm:py-3.5 px-2 sm:px-4 text-center align-middle">
+          <td class="py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle">
             <div class="flex justify-center">
               ${changeBadgeHtml}
             </div>
@@ -788,9 +806,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>نمودار روند تغییرات قیمت</span>
               </div>
               <div class="flex items-center gap-1 bg-neoBg p-1 border-2 border-black rounded-[5px]" id="chart-period-tabs">
-                <button type="button" class="chart-period-btn active text-xs font-black py-1 px-3 rounded-[3px] border border-black bg-neoMain shadow-[1px_1px_0px_#000]" data-period="month">۳۰ روزه</button>
-                <button type="button" class="chart-period-btn text-xs font-black py-1 px-3 rounded-[3px] border border-transparent hover:border-black hover:bg-white" data-period="year">۱ ساله</button>
-                <button type="button" class="chart-period-btn text-xs font-black py-1 px-3 rounded-[3px] border border-transparent hover:border-black hover:bg-white" data-period="all">کل دوره</button>
+                <button type="button" class="chart-period-btn active" data-period="month">۳۰ روزه</button>
+                <button type="button" class="chart-period-btn" data-period="year">۱ ساله</button>
+                <button type="button" class="chart-period-btn" data-period="all">کل دوره</button>
               </div>
             </div>
 
@@ -828,21 +846,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const periodBtns = modalContent.querySelectorAll('.chart-period-btn');
         periodBtns.forEach(btn => {
           btn.addEventListener('click', () => {
-            periodBtns.forEach(b => {
-              b.classList.remove('active', 'bg-neoMain', 'shadow-[1px_1px_0px_#000]');
-              b.classList.add('border-transparent');
-            });
-            btn.classList.add('active', 'bg-neoMain', 'shadow-[1px_1px_0px_#000]');
-            btn.classList.remove('border-transparent');
+            periodBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             this.activeChartPeriod = btn.dataset.period;
             this.renderModalChart(key, this.activeChartPeriod);
           });
         });
 
-        // Initialize chart after modal DOM layout renders
+        // Instant chart render after modal display
         setTimeout(() => {
           this.renderModalChart(key, 'month');
-        }, 60);
+        }, 30);
       }
     },
 
@@ -923,20 +937,23 @@ document.addEventListener('DOMContentLoaded', () => {
             label: item.fa_name || key,
             data: values,
             borderColor: lineColor,
-            borderWidth: 2.5,
+            borderWidth: 2,
             backgroundColor: fillColor,
             fill: true,
-            tension: 0.2,
-            pointRadius: points.length > 40 ? 0 : 2.5,
-            pointHoverRadius: 6,
+            tension: 0.15,
+            pointRadius: 0,
+            pointHoverRadius: 5,
             pointBackgroundColor: '#000000',
             pointBorderColor: '#ffffff',
-            pointBorderWidth: 1.5
+            pointBorderWidth: 1.5,
+            normalized: true
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          resizeDelay: 60,
+          animation: false,
           interaction: {
             mode: 'index',
             intersect: false
