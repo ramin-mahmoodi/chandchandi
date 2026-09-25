@@ -501,6 +501,10 @@ header.neo-box {
   animation: backdropFadeIn 0.15s ease-out;
 }
 
+.neo-modal-backdrop.hidden {
+  display: none !important;
+}
+
 @media (min-width: 640px) {
   .neo-modal-backdrop {
     padding: 1.5rem;

@@ -3,6 +3,17 @@
  * Handles 93 symbols, USD/Crypto display, Toman/Rial conversion, and Neobrutalism UI.
  */
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+window.escapeHtml = escapeHtml;
+
 document.addEventListener('DOMContentLoaded', () => {
   const app = {
     data: {},
@@ -596,10 +607,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // 3. Asset icon and slug
+        // 3. Asset icon and slug (sanitized for safe DOM injection)
         const iconSlug = (item.slug || key).toUpperCase();
         const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
         const fallbackIcon = item.icon || '';
+        const safeFaName = escapeHtml(item.fa_name || key);
+        const safeIconSlug = escapeHtml(iconSlug);
+        const safeEnName = escapeHtml(item.en_name || '');
 
         // 4. Build Table Row (Fully Responsive for Mobile - Zero Horizontal Overflow)
         const tr = document.createElement('tr');
@@ -611,19 +625,19 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="w-[34%] sm:w-[36%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle overflow-hidden">
             <div class="flex items-center gap-1.5 sm:gap-3">
               <div class="symbol-icon-box w-7 h-7 sm:w-10 sm:h-10 rounded-[4px] sm:rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] sm:shadow-[2px_2px_0px_#000] p-0.5 sm:p-1 flex items-center justify-center shrink-0">
-                <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
+                <img src="${iconSrc}" alt="${safeFaName}" class="w-full h-full object-contain pointer-events-none" loading="lazy" />
               </div>
               <div class="min-w-0 flex flex-col justify-center">
                 <span class="font-black text-xs sm:text-[15px] text-black truncate leading-snug">
-                  ${item.fa_name || key}
+                  ${safeFaName}
                 </span>
                 <div class="flex items-center gap-1 sm:gap-1.5 mt-0.5" dir="ltr">
                   <span class="font-mono font-black text-[9px] sm:text-[11px] px-1 sm:px-1.5 py-0.5 rounded-[3px] sm:rounded-[4px] border border-black bg-white text-black leading-none shrink-0 shadow-[1px_1px_0px_#000]">
-                    ${iconSlug}
+                    ${safeIconSlug}
                   </span>
                   ${item.en_name && item.en_name.toUpperCase() !== iconSlug ? `
                     <span class="text-[9px] sm:text-[11px] font-bold text-gray-500 truncate max-w-[65px] sm:max-w-[190px] font-sans leading-none">
-                      ${item.en_name}
+                      ${safeEnName}
                     </span>
                   ` : ''}
                 </div>
@@ -651,6 +665,19 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </td>
         `;
+
+        // Safe error handling for symbol icon without inline JS
+        const symbolImg = tr.querySelector('.symbol-icon-box img');
+        if (symbolImg) {
+          symbolImg.addEventListener('error', function() {
+            this.onerror = null;
+            if (fallbackIcon) {
+              this.src = fallbackIcon;
+            } else {
+              this.style.display = 'none';
+            }
+          }, { once: true });
+        }
 
         tr.addEventListener('click', () => {
           this.openDetailModal(key);
@@ -705,10 +732,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const changeSign = changePercent > 0 ? '+' : '';
         const color = changePercent > 0 ? 'text-emerald-900' : (changePercent < 0 ? 'text-rose-900' : 'text-gray-900');
 
+        const safeFaName = escapeHtml(item.fa_name || k);
         html += `
           <div class="ticker-item">
-            <img src="${iconSrc}" alt="" class="w-4 h-4 inline-block ml-1.5 align-text-bottom" onerror="this.style.display='none';" />
-            <span class="font-black text-black">${item.fa_name || k}:</span>
+            <img src="${iconSrc}" alt="" class="ticker-icon w-4 h-4 inline-block ml-1.5 align-text-bottom" />
+            <span class="font-black text-black">${safeFaName}:</span>
             <span class="font-num font-black text-black">${displayPrice}</span>
             <span class="font-num text-xs font-black ${color}" dir="ltr">(${changeSign}${Math.abs(changePercent).toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%)</span>
             <span class="w-1.5 h-1.5 bg-black border border-black inline-block mx-2.5"></span>
@@ -717,6 +745,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       tickerContainer.innerHTML = html + html;
+
+      tickerContainer.querySelectorAll('.ticker-icon').forEach(img => {
+        img.addEventListener('error', function() {
+          this.style.display = 'none';
+        }, { once: true });
+      });
     },
 
     openDetailModal(key) {
@@ -842,7 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Dollar cross rate (for foreign currencies other than USD itself)
       if (item.type === 'fx' && key !== 'usd' && item.dolar_rate && Number(item.dolar_rate) !== 1) {
         const rateFormatted = parseFloat(item.dolar_rate).toLocaleString('en-US', { maximumFractionDigits: 4 });
-        const currencyTitle = item.fa_name || (item.slug || key).toUpperCase();
+        const currencyTitle = escapeHtml(item.fa_name || (item.slug || key).toUpperCase());
         detailsHtml += `
           <div class="neo-box p-3 bg-neoSky mb-4 flex justify-between items-center">
             <span class="text-xs font-bold text-black">نرخ دلار آمریکا به ${currencyTitle}:</span>

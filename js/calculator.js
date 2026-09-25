@@ -3,6 +3,19 @@
  * Follows neobrutalui.live select component behavior
  */
 
+function escapeHtml(str) {
+  if (typeof window !== 'undefined' && window.escapeHtml) {
+    return window.escapeHtml(str);
+  }
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 class CurrencyCalculator {
   constructor() {
     this.symbolsData = {};
@@ -37,6 +50,13 @@ class CurrencyCalculator {
 
     this.initSteppers();
     this.initGoldUnitToggle();
+
+    const selectedIcon = document.getElementById('calc-selected-icon');
+    if (selectedIcon) {
+      selectedIcon.addEventListener('error', function() {
+        this.style.display = 'none';
+      });
+    }
 
     const trigger = document.getElementById('calc-select-trigger');
     const searchInput = document.getElementById('calc-select-search');
@@ -214,15 +234,26 @@ class CurrencyCalculator {
       itemDiv.setAttribute('role', 'option');
       itemDiv.setAttribute('aria-selected', isSelected ? 'true' : 'false');
 
+      const safeType = escapeHtml(item.type || 'fx');
+      const safeIconSlug = escapeHtml(iconSlug);
+      const safeDisplayName = escapeHtml(displayName);
+
       itemDiv.innerHTML = `
         <div class="flex items-center gap-2 truncate pointer-events-none">
-          <img src="assets/icons/${item.type || 'fx'}/${iconSlug}.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
-          <span class="truncate font-bold text-xs sm:text-sm">${displayName}</span>
+          <img src="assets/icons/${safeType}/${safeIconSlug}.png" class="calc-item-icon w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="">
+          <span class="truncate font-bold text-xs sm:text-sm">${safeDisplayName}</span>
         </div>
         <svg class="check-icon h-4 w-4 shrink-0 text-black stroke-[3] pointer-events-none ${isSelected ? '' : 'hidden'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       `;
+
+      const itemImg = itemDiv.querySelector('.calc-item-icon');
+      if (itemImg) {
+        itemImg.addEventListener('error', function() {
+          this.style.display = 'none';
+        }, { once: true });
+      }
 
       itemDiv.addEventListener('click', (e) => {
         e.preventDefault();

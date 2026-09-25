@@ -10,29 +10,16 @@
   <meta property="og:title" content="چندچندی؟ | نرخ لحظه‌ای ارز، طلا و رمزارز">
   <meta property="og:description" content="داشبورد قیمت لحظه‌ای و قابلیت میزبانی روی GitHub Pages">
   
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            neoMain: 'var(--color-main, #b6ace4)',
-            neoMint: 'var(--color-mint, #97ee88)',
-            neoLemon: 'var(--color-lemon, #fed170)',
-            neoSky: 'var(--color-sky, #88c5ee)',
-            neoPink: 'var(--color-pink, #ff88a5)',
-            neoBg: 'var(--color-page-bg, #f0eefc)',
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Content Security Policy (Defense-in-depth protection against XSS) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https://api.alanchand.com https://alanchand.com; connect-src *;">
+
+  <!-- Pre-built Minified Tailwind CSS -->
+  <link rel="stylesheet" href="css/tailwind.min.css?v=1">
 
   <!-- Custom Fonts & Neobrutal CSS -->
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/neobrutal.css?v=21">
+  <link rel="stylesheet" href="css/neobrutal.css?v=22">
 </head>
 <body class="bg-neoBg text-black min-h-screen flex flex-col selection:bg-neoMain selection:text-black">
 
@@ -255,7 +242,7 @@
                     class="neo-select-trigger h-11"
                   >
                     <span class="flex items-center gap-2 truncate pointer-events-none">
-                      <img id="calc-selected-icon" src="assets/icons/fx/USD.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="" onerror="this.style.display='none'">
+                      <img id="calc-selected-icon" src="assets/icons/fx/USD.png" class="w-5 h-5 rounded-full border border-black shrink-0 object-contain bg-white" alt="">
                       <span id="calc-selected-label" class="truncate font-black">دلار آمریکا (USD)</span>
                     </span>
                     <span aria-hidden="true" class="shrink-0 mr-1 text-black opacity-70 pointer-events-none">
@@ -467,7 +454,7 @@
   <script src="js/chart.min.js"></script>
   <script src="js/fallback-data.js?v=3"></script>
   <script src="js/api.js?v=4"></script>
-  <script src="js/calculator.js?v=3"></script>
-  <script src="js/app.js?v=20"></script>
+  <script src="js/calculator.js?v=4"></script>
+  <script src="js/app.js?v=21"></script>
 </body>
 </html>
