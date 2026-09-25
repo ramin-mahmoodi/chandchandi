@@ -119,6 +119,34 @@ body {
   color: #000000;
 }
 
+.neo-btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  border-radius: var(--neo-radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-weight: 800;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #000000;
+  text-decoration: none;
+  user-select: none;
+  transition: all 0.1s ease;
+}
+
+.neo-btn-sm:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.neo-btn-sm:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
 .neo-input {
   border: var(--neo-border);
   box-shadow: var(--neo-shadow-sm);

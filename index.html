@@ -113,7 +113,93 @@
       </div>
     </header>
 
-    <!-- Quick Converter & Gold Calculator Section -->
+    <!-- Market Price Table Section (Main) -->
+    <main class="mb-8">
+      
+      <!-- Top Box: Search, Tabs & Counter -->
+      <section class="neo-box bg-white p-4 sm:p-5 mb-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          
+          <!-- Category Tabs (3 Sections Only: FX, Gold, Crypto) -->
+          <div class="flex flex-wrap items-center gap-2" role="tablist" aria-label="دسته‌بندی نمادهای بازار">
+            <button type="button" class="neo-tab category-tab active" data-category="fx" role="tab" aria-selected="true">
+              <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>
+              </svg>
+              <span>ارزهای فیات</span>
+            </button>
+            <button type="button" class="neo-tab category-tab" data-category="gold" role="tab" aria-selected="false">
+              <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>
+              </svg>
+              <span>طلا و مسکوکات</span>
+            </button>
+            <button type="button" class="neo-tab category-tab" data-category="crypto" role="tab" aria-selected="false">
+              <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5M9.5 6v12M12 6v2M12 16v2"/>
+              </svg>
+              <span>رمزارزها</span>
+            </button>
+          </div>
+
+          <!-- Search Input & Counter Badge -->
+          <div class="flex items-center gap-3 w-full lg:w-auto">
+            <div class="relative flex-1 lg:w-80">
+              <label for="search-input" class="sr-only">جستجوی نمادهای بازار</label>
+              <input 
+                type="text" 
+                id="search-input" 
+                name="search"
+                aria-label="جستجوی نمادهای بازار"
+                class="neo-input pr-10 text-xs sm:text-sm py-2" 
+                placeholder="جستجو (دلار، بیت‌کوین، سکه)..."
+              >
+              <svg class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 pointer-events-none stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+            </div>
+            <div class="shrink-0 flex items-center gap-1.5">
+              <span id="filtered-count" class="neo-badge bg-neoBg font-num font-black text-xs py-1.5 px-3">-- نماد</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Neobrutalism Price Table -->
+      <section class="neo-box bg-white overflow-hidden shadow-[4px_4px_0px_#000]">
+        <div class="overflow-x-auto">
+          <table class="w-full text-right border-collapse min-w-[680px]" id="price-table">
+            <caption class="sr-only">جدول نرخ‌های زنده بازار ارز، طلا و رمزارز</caption>
+            <thead>
+              <tr class="bg-neoBg/90 border-b-2 border-black text-xs font-black text-black select-none">
+                <th scope="col" class="py-3.5 px-4 text-right">دارایی / نماد</th>
+                <th scope="col" class="py-3.5 px-4 text-right">نرخ لحظه‌ای (فروش)</th>
+                <th scope="col" class="py-3.5 px-4 text-right">نرخ خرید / نرخ جهانی</th>
+                <th scope="col" class="py-3.5 px-4 text-center">تغییر ۲۴ ساعته</th>
+                <th scope="col" class="py-3.5 px-4 text-center">جزئیات و نمودار</th>
+              </tr>
+            </thead>
+            <tbody id="price-table-body" class="divide-y-2 divide-black/10">
+              <!-- Injected dynamically by app.js -->
+              <tr>
+                <td colspan="5" class="py-12 text-center bg-white">
+                  <div class="text-xl font-black mb-2 flex items-center justify-center gap-2">
+                    <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                    <span>در حال بارگذاری اطلاعات بازار...</span>
+                  </div>
+                  <p class="text-sm font-bold text-gray-700">داده‌های بازار در حال واکشی و اعتبارسنجی هستند.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Quick Converter & Gold Calculator Section (Placed below Price Table) -->
     <section class="neo-box bg-white p-5 mb-8">
       <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-black">
         <h2 class="text-lg sm:text-xl font-black flex items-center gap-2">
@@ -240,87 +326,6 @@
 
       </div>
     </section>
-
-    <!-- Filters, Tabs & Search Section -->
-    <section class="mb-6">
-      
-      <!-- Top Row: Search & Count -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-        
-        <!-- Search Input -->
-        <div class="relative w-full md:w-96">
-          <label for="search-input" class="sr-only">جستجوی نمادهای بازار</label>
-          <input 
-            type="text" 
-            id="search-input" 
-            name="search"
-            aria-label="جستجوی نمادهای بازار"
-            class="neo-input pr-10" 
-            placeholder="جستجوی نام (مثلاً دلار، بیت کوین، تتر، سکه)..."
-          >
-          <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 pointer-events-none stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </svg>
-        </div>
-
-        <!-- Counter Badge -->
-        <div class="flex items-center gap-2 self-start md:self-auto">
-          <span class="text-xs font-black text-gray-700">تعداد در حال نمایش:</span>
-          <span id="filtered-count" class="neo-badge bg-white font-num font-black text-sm">-- نماد</span>
-        </div>
-      </div>
-
-      <!-- Category Filter Tabs -->
-      <div class="flex flex-wrap items-center gap-2">
-        <button class="neo-tab category-tab active" data-category="all">
-          <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/>
-            <rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
-          </svg>
-          <span>همه نمادها</span>
-        </button>
-        <button class="neo-tab category-tab" data-category="fav">
-          <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-          <span>نشان‌شده‌ها</span>
-        </button>
-        <button class="neo-tab category-tab" data-category="gold">
-          <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>
-          </svg>
-          <span>طلا و مسکوکات</span>
-        </button>
-        <button class="neo-tab category-tab" data-category="fx">
-          <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>
-          </svg>
-          <span>ارزهای فیات</span>
-        </button>
-        <button class="neo-tab category-tab" data-category="crypto">
-          <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5M9.5 6v12M12 6v2M12 16v2"/>
-          </svg>
-          <span>رمزارزها</span>
-        </button>
-      </div>
-
-    </section>
-
-    <!-- Price Cards Grid -->
-    <main>
-      <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-        <!-- Cards injected dynamically by app.js -->
-        <div class="col-span-full neo-card text-center p-8 bg-white">
-          <div class="text-2xl font-black mb-2 flex items-center justify-center gap-2">
-            <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-            <span>در حال بارگذاری...</span>
-          </div>
-          <p class="text-sm font-bold text-gray-700">داده‌های بازار در حال واکشی و اعتبارسنجی هستند.</p>
-        </div>
-      </div>
-    </main>
 
   </div>
 

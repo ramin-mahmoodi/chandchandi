@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const app = {
     data: {},
-    currentCategory: 'all',
+    currentCategory: 'fx',
     searchQuery: '',
     currencyMode: localStorage.getItem('alanchand_currency_mode') || 'toman',
     favorites: new Set(JSON.parse(localStorage.getItem('alanchand_favs') || '["usd", "18ayar", "sekkeh", "btc", "usdt"]')),
@@ -65,8 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const tabs = document.querySelectorAll('.category-tab');
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
+          tabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+          });
           tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
           this.currentCategory = tab.dataset.category;
           this.renderGrid();
         });
@@ -343,10 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     renderGrid() {
-      const container = document.getElementById('cards-grid');
+      const tbody = document.getElementById('price-table-body');
       const countDisplay = document.getElementById('filtered-count');
       const totalCountDisplay = document.getElementById('total-symbols-count');
-      if (!container) return;
+      if (!tbody) return;
 
       const keys = Object.keys(this.data);
       if (totalCountDisplay && keys.length > 0) {
@@ -354,26 +358,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (keys.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full neo-card text-center p-8 bg-white">
-            <div class="text-2xl font-black mb-2 flex items-center justify-center gap-2">
-              <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-              <span>در حال بارگذاری...</span>
-            </div>
-            <p class="text-gray-700 font-bold">داده‌های بازار در حال واکشی هستند.</p>
-          </div>
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-12 text-center bg-white">
+              <div class="text-xl font-black mb-2 flex items-center justify-center gap-2">
+                <svg class="w-6 h-6 animate-spin stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                <span>در حال بارگذاری اطلاعات بازار...</span>
+              </div>
+              <p class="text-gray-700 font-bold text-xs">داده‌های بازار در حال واکشی هستند.</p>
+            </td>
+          </tr>
         `;
         return;
       }
 
-      container.innerHTML = '';
+      tbody.innerHTML = '';
 
-      // Filter
+      // Filter by category (fx, gold, crypto) and search query
       const filteredKeys = keys.filter(key => {
         const item = this.data[key];
-        const isFav = this.favorites.has(key);
 
-        if (this.currentCategory === 'fav' && !isFav) return false;
         if (this.currentCategory === 'gold' && item.type !== 'gold') return false;
         if (this.currentCategory === 'fx' && item.type !== 'fx') return false;
         if (this.currentCategory === 'crypto' && item.type !== 'crypto') return false;
@@ -395,23 +399,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (filteredKeys.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full neo-card text-center p-8 bg-white">
-            <div class="text-xl sm:text-2xl font-black mb-2 flex items-center justify-center gap-2">
-              <svg class="w-6 h-6 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-              <span>موردی یافت نشد!</span>
-            </div>
-            <p class="text-gray-700 font-bold text-sm">با عبارت جستجوی وارد شده یا فیلتر فعلی نمادی پیدا نشد.</p>
-          </div>
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-12 text-center bg-white">
+              <div class="text-lg font-black mb-2 flex items-center justify-center gap-2">
+                <svg class="w-6 h-6 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <span>موردی در این دسته‌بندی یافت نشد!</span>
+              </div>
+              <p class="text-gray-700 font-bold text-xs">با عبارت جستجوی وارد شده در این دسته‌بندی نمادی پیدا نشد.</p>
+            </td>
+          </tr>
         `;
         return;
       }
 
-      // Sort favorites first, then by app_order
+      // Sort by official app_order
       filteredKeys.sort((a, b) => {
-        const aFav = this.favorites.has(a) ? 1 : 0;
-        const bFav = this.favorites.has(b) ? 1 : 0;
-        if (aFav !== bFav) return bFav - aFav;
         const aOrder = this.data[a].app_order ?? 999;
         const bOrder = this.data[b].app_order ?? 999;
         return aOrder - bOrder;
@@ -421,9 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       filteredKeys.forEach(key => {
         const item = this.data[key];
-        const isFav = this.favorites.has(key);
         const isCrypto = item.type === 'crypto';
-        const isDollarGold = item.is_dolar === 1; // Ounces: usd_xau, xag
+        const isDollarGold = item.is_dolar === 1;
 
         // 1. Calculate Change Percentage
         let changePercent = 0;
@@ -439,178 +441,149 @@ document.addEventListener('DOMContentLoaded', () => {
         let changeBadgeHtml = '';
         if (isPositive) {
           changeBadgeHtml = `
-            <span class="neo-badge neo-badge-green font-bold text-xs">
+            <span class="neo-badge neo-badge-green font-bold text-xs px-2.5 py-0.5">
               <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
               <span class="font-num font-black">${changePercent.toLocaleString('fa-IR')}%+</span>
             </span>
           `;
         } else if (isNegative) {
           changeBadgeHtml = `
-            <span class="neo-badge neo-badge-red font-bold text-xs">
+            <span class="neo-badge neo-badge-red font-bold text-xs px-2.5 py-0.5">
               <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
               <span class="font-num font-black">${Math.abs(changePercent).toLocaleString('fa-IR')}%-</span>
             </span>
           `;
         } else {
           changeBadgeHtml = `
-            <span class="neo-badge neo-badge-gray font-bold text-xs">
+            <span class="neo-badge neo-badge-gray font-bold text-xs px-2.5 py-0.5">
               <svg class="w-3.5 h-3.5 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>
               <span class="font-num font-black">۰%</span>
             </span>
           `;
         }
 
-        // 2. Determine Category Tag Color & SVG Icon
-        let categoryColor = 'bg-neoSky text-black'; // Sky Blue
-        let categoryName = 'ارز فیات';
-        let categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`;
+        // 2. Format Prices
+        let mainPriceHtml = '';
+        let subPriceHtml = '';
 
-        if (item.type === 'gold') {
-          categoryColor = 'bg-neoLemon text-black'; // Sunny Lemon Gold
-          categoryName = 'طلا و سکه';
-          categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>`;
-        } else if (item.type === 'crypto') {
-          categoryColor = 'bg-neoMain text-black'; // Soft Lilac
-          categoryName = 'رمزارز';
-          categoryIcon = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.5 8h4a2 2 0 0 1 0 4h-4m0 0h4.5a2 2 0 0 1 0 4H9.5M9.5 6v12M12 6v2M12 16v2"/></svg>`;
-        }
-
-        // 3. Build Price Display Block
-        let priceHtml = '';
         if (isCrypto) {
-          // Crypto: Main price is in USD ($)
           const formattedUsd = this.formatCryptoUsd(item.price, item.dec_round);
           const tomanVal = item.toman ? this.formatPrice(item.toman) : null;
 
-          priceHtml = `
-            <div class="flex items-baseline justify-between gap-1 mb-1">
-              <span class="text-xs font-bold text-gray-600">قیمت (دلار):</span>
+          if (tomanVal) {
+            mainPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-xl font-black text-black font-mono tracking-tight">$ ${formattedUsd}</span>
+                <span class="text-base sm:text-lg font-black text-black font-num">${tomanVal}</span>
+                <span class="text-xs font-black text-gray-700">${unit}</span>
               </div>
-            </div>
-            ${tomanVal ? `
-              <div class="flex items-baseline justify-between gap-1 text-xs font-bold text-gray-800 bg-gray-50 px-2 py-1 border border-black/20 rounded-[5px]">
-                <span class="text-gray-500 text-[11px]">معادل تومانی:</span>
-                <div class="flex items-baseline gap-1">
-                  <span class="font-num font-black text-black">${tomanVal}</span>
-                  <span class="text-[11px] font-bold text-gray-600">${unit}</span>
-                </div>
+            `;
+            subPriceHtml = `
+              <div class="flex items-center gap-1.5 text-xs">
+                <span class="text-gray-500 font-bold">قیمت دلاری:</span>
+                <span class="font-mono font-black text-black tracking-tight">$ ${formattedUsd}</span>
               </div>
-            ` : ''}
-          `;
+            `;
+          } else {
+            mainPriceHtml = `
+              <div class="flex items-baseline gap-1">
+                <span class="text-base sm:text-lg font-black text-black font-mono tracking-tight">$ ${formattedUsd}</span>
+              </div>
+            `;
+            subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
+          }
         } else if (isDollarGold) {
-          // Ounces in USD ($)
           const usdVal = parseFloat(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
-          priceHtml = `
-            <div class="flex items-baseline justify-between gap-1 mb-1">
-              <span class="text-xs font-bold text-gray-600">قیمت دلاری (انس):</span>
-              <div class="flex items-baseline gap-1">
-                <span class="text-xl font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
-              </div>
+          mainPriceHtml = `
+            <div class="flex items-baseline gap-1">
+              <span class="text-base sm:text-lg font-black text-black font-mono tracking-tight">$ ${usdVal}</span>
             </div>
           `;
+          subPriceHtml = `<span class="text-xs font-bold text-gray-500">انس جهانی</span>`;
         } else {
-          // Fiat FX & Iranian Gold/Coins in Toman/Rial
           const mainPrice = item.price ?? item.sell ?? item.buy ?? 0;
-          priceHtml = `
-            <div class="flex items-baseline justify-between gap-1 mb-1">
-              <span class="text-xs font-bold text-gray-600">قیمت:</span>
-              <div class="flex items-baseline gap-1">
-                <span class="text-xl font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
-                <span class="text-xs font-black text-black">${unit}</span>
-              </div>
+          mainPriceHtml = `
+            <div class="flex items-baseline gap-1">
+              <span class="text-base sm:text-lg font-black text-black font-num">${this.formatPrice(mainPrice)}</span>
+              <span class="text-xs font-black text-gray-700">${unit}</span>
             </div>
           `;
 
-          // If buy & sell available (e.g. FX)
-          if (item.buy && item.sell) {
-            priceHtml += `
-              <div class="flex items-center justify-between text-xs font-bold text-gray-700 px-1 pt-1 border-t border-black/10">
-                <span class="flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5 text-emerald-700 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m19 5-14 14m0 0h10m-10 0V9"/></svg>
-                  خرید: <strong class="font-num font-black text-black">${this.formatPrice(item.buy)}</strong>
-                </span>
-                <span class="flex items-center gap-1">
-                  <svg class="w-3.5 h-3.5 text-rose-700 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 19 19 5m0 0H9m10 0v10"/></svg>
-                  فروش: <strong class="font-num font-black text-black">${this.formatPrice(item.sell)}</strong>
-                </span>
+          if (item.buy) {
+            subPriceHtml = `
+              <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-baseline gap-1 text-xs">
+                  <span class="text-gray-500 font-bold">خرید:</span>
+                  <span class="font-num font-black text-black">${this.formatPrice(item.buy)}</span>
+                  <span class="text-[10px] font-bold text-gray-500">${unit}</span>
+                </div>
+                ${item.bubble_per ? `
+                  <span class="neo-badge bg-neoLemon text-[10px] font-bold text-amber-950 py-0.5 px-1.5 border border-black shadow-none" title="حباب سکه">
+                    حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
+                  </span>
+                ` : ''}
               </div>
             `;
+          } else if (item.bubble_per) {
+            subPriceHtml = `
+              <span class="neo-badge bg-neoLemon text-[10px] font-bold text-amber-950 py-0.5 px-1.5 border border-black shadow-none" title="حباب سکه">
+                حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
+              </span>
+            `;
+          } else {
+            subPriceHtml = `<span class="text-xs font-bold text-gray-400">---</span>`;
           }
         }
 
-        // 4. Coin Bubble Badge (if exists)
-        let bubbleBadge = '';
-        if (item.bubble_per !== undefined && item.bubble_per !== null && item.bubble_per !== 0) {
-          bubbleBadge = `
-            <span class="neo-badge bg-neoLemon text-[10px] font-bold text-amber-950" title="حباب سکه">
-              <svg class="w-3 h-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              حباب: <span class="font-num font-black">${parseFloat(item.bubble_per).toLocaleString('fa-IR')}%</span>
-            </span>
-          `;
-        }
-
-        // 5. Star SVG Icon
-        const starSvg = isFav
-          ? `<svg class="w-5 h-5 text-amber-500 fill-amber-300 stroke-black stroke-2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
-          : `<svg class="w-5 h-5 text-gray-400 fill-white stroke-black stroke-2 hover:fill-amber-100" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-
-        // 6. Currency Icon URL
+        // 3. Asset icon and slug
         const iconSlug = (item.slug || key).toUpperCase();
         const iconSrc = `assets/icons/${item.type}/${iconSlug}.png`;
         const fallbackIcon = item.icon || '';
 
-        const card = document.createElement('div');
-        card.className = 'neo-card flex flex-col justify-between cursor-pointer bg-white';
-        card.innerHTML = `
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="neo-badge ${categoryColor} font-extrabold flex items-center gap-1">
-                  ${categoryIcon}
-                  <span>${categoryName}</span>
-                </span>
-                <span class="font-mono font-black text-xs px-2 py-0.5 border-2 border-black rounded-[5px] bg-white shadow-[1px_1px_0px_#000]">${(item.slug || key).toUpperCase()}</span>
-                ${bubbleBadge}
-              </div>
-              <button class="fav-star-btn p-1 transition-transform hover:scale-125 focus:outline-none" data-key="${key}" title="علاقه‌مندی" aria-label="${isFav ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}">
-                ${starSvg}
-              </button>
-            </div>
-
-            <!-- Currency Official Icon & Title -->
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-11 h-11 rounded-[5px] border-2 border-black bg-white shadow-[2px_2px_0px_#000] p-1 flex items-center justify-center flex-shrink-0">
+        // 4. Build Table Row
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-neoMain/15 transition-colors cursor-pointer group';
+        tr.setAttribute('data-key', key);
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] p-1 flex items-center justify-center shrink-0">
                 <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
               </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="text-base sm:text-lg font-black text-black leading-tight truncate">${item.fa_name || key}</h3>
-                <div class="text-xs font-bold text-gray-500 font-mono truncate mt-0.5">${item.en_name || ''}</div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-black text-sm sm:text-base text-black group-hover:underline truncate">${item.fa_name || key}</span>
+                  <span class="font-mono font-black text-[11px] px-1.5 py-0.5 border border-black rounded-[4px] bg-white shadow-[1px_1px_0px_#000]">${iconSlug}</span>
+                </div>
+                <div class="text-[11px] font-bold text-gray-500 font-mono truncate">${item.en_name || ''}</div>
               </div>
             </div>
-          </div>
-
-          <div class="pt-3 border-t-2 border-black border-dashed">
-            ${priceHtml}
-
-            <div class="flex items-center justify-between text-xs font-bold mt-2 pt-1 border-t border-black/10">
-              <span class="text-gray-500">تغییر ۲۴س:</span>
+          </td>
+          <td class="py-3 px-4">
+            ${mainPriceHtml}
+          </td>
+          <td class="py-3 px-4">
+            ${subPriceHtml}
+          </td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex justify-center">
               ${changeBadgeHtml}
             </div>
-          </div>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center">
+              <button type="button" class="neo-btn-sm bg-white hover:!bg-neoMain text-xs font-black py-1 px-3 border-2 border-black shadow-[1px_1px_0px_#000]" title="مشاهده جزئیات و نمودار">
+                <svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span>جزئیات</span>
+              </button>
+            </div>
+          </td>
         `;
 
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('.fav-star-btn')) {
-            e.stopPropagation();
-            this.toggleFavorite(key);
-            return;
-          }
+        tr.addEventListener('click', () => {
           this.openDetailModal(key);
         });
 
-        container.appendChild(card);
+        tbody.appendChild(tr);
       });
     },
 
