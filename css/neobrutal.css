@@ -643,36 +643,26 @@ header.neo-box {
   background: #000000;
 }
 
-/* Symbol selector menu, dropdowns, and modal body - Unified Neobrutal scrollbar */
-#calc-select-list,
-.neo-select-content,
-.neo-modal-body {
-  scrollbar-color: #b6ace4 #ffffff;
-}
-
-#calc-select-list::-webkit-scrollbar,
-.neo-select-content::-webkit-scrollbar,
-.neo-modal-body::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
-}
-
+/* Symbol selector menu and inner containers - Full borders on all sides */
 #calc-select-list::-webkit-scrollbar-track,
 .neo-select-content::-webkit-scrollbar-track,
-.neo-modal-body::-webkit-scrollbar-track {
+.neo-modal-body::-webkit-scrollbar-track,
+.neo-modal::-webkit-scrollbar-track {
   border: 2px solid #000000;
   background: #ffffff;
 }
 
 #calc-select-list::-webkit-scrollbar-thumb,
 .neo-select-content::-webkit-scrollbar-thumb,
-.neo-modal-body::-webkit-scrollbar-thumb {
+.neo-modal-body::-webkit-scrollbar-thumb,
+.neo-modal::-webkit-scrollbar-thumb {
   border: 2px solid #000000;
   background-color: #b6ace4;
 }
 
 #calc-select-list::-webkit-scrollbar-thumb:hover,
 .neo-select-content::-webkit-scrollbar-thumb:hover,
-.neo-modal-body::-webkit-scrollbar-thumb:hover {
+.neo-modal-body::-webkit-scrollbar-thumb:hover,
+.neo-modal::-webkit-scrollbar-thumb:hover {
   background-color: #9e93db;
 }
