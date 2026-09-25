@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isGold = item.type === 'gold';
         const isDollarGold = item.is_dolar === 1;
 
-        // 1. Calculate Change Percentage
+        // 1. Calculate Change Percentage (Standard 2-decimal financial precision)
         let changePercent = 0;
         if (isCrypto) {
           changePercent = item.change_24h ?? item.toman24hchange ?? 0;
@@ -462,28 +462,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         changePercent = parseFloat(changePercent) || 0;
 
-        const isPositive = changePercent > 0;
-        const isNegative = changePercent < 0;
+        // Round to 2 decimal places to prevent overflow and absurd precision like 0.004%
+        const roundedChange = Math.round(changePercent * 100) / 100;
+        const absChange = Math.abs(roundedChange);
+
+        const isPositive = roundedChange > 0;
+        const isNegative = roundedChange < 0;
+
+        const formattedPercent = absChange.toLocaleString('fa-IR', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        });
+
         let changeBadgeHtml = '';
         if (isPositive) {
           changeBadgeHtml = `
-            <span class="neo-change-badge neo-badge-green" title="افزایش نسبت به دیروز">
-              <svg class="w-3.5 h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
-              <span class="font-num font-black">+${changePercent.toLocaleString('fa-IR')}%</span>
+            <span class="neo-change-badge neo-badge-green" title="افزایش نسبت به دیروز: ${formattedPercent}٪">
+              <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m18 15-6-6-6 6"/></svg>
+              <span class="font-num font-black leading-none">${formattedPercent}%</span>
             </span>
           `;
         } else if (isNegative) {
           changeBadgeHtml = `
-            <span class="neo-change-badge neo-badge-red" title="کاهش نسبت به دیروز">
-              <svg class="w-3.5 h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
-              <span class="font-num font-black">-${Math.abs(changePercent).toLocaleString('fa-IR')}%</span>
+            <span class="neo-change-badge neo-badge-red" title="کاهش نسبت به دیروز: ${formattedPercent}٪">
+              <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 9 6 6 6-6"/></svg>
+              <span class="font-num font-black leading-none">${formattedPercent}%</span>
             </span>
           `;
         } else {
           changeBadgeHtml = `
             <span class="neo-change-badge neo-badge-gray" title="بدون تغییر">
-              <svg class="w-3.5 h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>
-              <span class="font-num font-black">۰%</span>
+              <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/></svg>
+              <span class="font-num font-black leading-none">۰%</span>
             </span>
           `;
         }
@@ -686,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <img src="${iconSrc}" alt="" class="w-4 h-4 inline-block ml-1.5 align-text-bottom" onerror="this.style.display='none';" />
             <span class="font-black text-black">${item.fa_name || k}:</span>
             <span class="font-num font-black text-black">${displayPrice}</span>
-            <span class="font-num text-xs font-black ${color}">(${changeSign}${Math.abs(changePercent).toLocaleString('fa-IR')}%)</span>
+            <span class="font-num text-xs font-black ${color}" dir="ltr">(${changeSign}${Math.abs(changePercent).toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%)</span>
             <span class="w-1.5 h-1.5 bg-black border border-black inline-block mx-2.5"></span>
           </div>
         `;
@@ -761,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${priceBoxHtml}
           <div class="neo-box p-3 ${changePercent >= 0 ? 'bg-neoMint' : 'bg-neoPink'}">
             <div class="text-xs font-bold text-gray-800 mb-1">تغییرات ۲۴ ساعته:</div>
-            <div class="text-lg font-black font-num text-black">${changePercent >= 0 ? '+' : '-'}${Math.abs(changePercent).toLocaleString('fa-IR')}%</div>
+            <div class="text-lg font-black font-num text-black" dir="ltr"><span class="font-sans font-bold">${changePercent > 0 ? '+' : (changePercent < 0 ? '-' : '')}</span>${Math.abs(changePercent).toLocaleString('fa-IR', { maximumFractionDigits: 2 })}%</div>
             ${changeAmount ? `<div class="text-xs font-num font-bold text-gray-800">${this.formatPrice(changeAmount)} ${unit}</div>` : ''}
           </div>
         </div>
