@@ -434,7 +434,8 @@ document.addEventListener('DOMContentLoaded', () => {
           colMainHeader.textContent = 'قیمت لحظه‌ای';
           colSubHeader.textContent = 'حباب سکه و طلا';
         } else if (this.currentCategory === 'crypto') {
-          colMainHeader.innerHTML = '<span class="sm:hidden">قیمت لحظه‌ای</span><span class="hidden sm:inline">قیمت تومانی</span>';
+          const cryptoPriceHeader = this.currencyMode === 'rial' ? 'قیمت ریالی' : 'قیمت تومانی';
+          colMainHeader.innerHTML = `<span class="sm:hidden">قیمت لحظه‌ای</span><span class="hidden sm:inline">${cryptoPriceHeader}</span>`;
           colSubHeader.textContent = 'قیمت دلاری ($)';
         }
       }
@@ -499,7 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             subPriceHtml = `
               <div class="flex items-baseline gap-1">
-                <span class="text-[10px] sm:text-xs font-normal text-gray-500 sm:hidden">دلاری:</span>
                 <span class="text-xs sm:text-[15px] font-normal text-black font-mono tracking-tight whitespace-nowrap">$ ${formattedUsd}</span>
               </div>
             `;
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.title = 'برای مشاهده نمودار و تاریخچه قیمت کلیک کنید';
         tr.innerHTML = `
           <!-- Col 1: Asset & Symbol -->
-          <td class="w-[36%] sm:w-[36%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle overflow-hidden">
+          <td class="w-[35%] sm:w-[36%] py-2.5 sm:py-3.5 px-2 sm:px-4 align-middle overflow-hidden">
             <div class="flex items-center gap-1.5 sm:gap-3">
               <div class="symbol-icon-box w-7 h-7 sm:w-10 sm:h-10 rounded-[4px] sm:rounded-[5px] border-2 border-black bg-white shadow-[1px_1px_0px_#000] sm:shadow-[2px_2px_0px_#000] p-0.5 sm:p-1 flex items-center justify-center shrink-0">
                 <img src="${iconSrc}" alt="${item.fa_name || key}" class="w-full h-full object-contain pointer-events-none" onerror="this.onerror=null; if('${fallbackIcon}') { this.src='${fallbackIcon}'; } else { this.style.display='none'; }" loading="lazy" />
@@ -606,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 2: Live Rate (and sub-rate on mobile) -->
-          <td class="w-[46%] sm:w-[24%] py-2.5 sm:py-3.5 px-1.5 sm:px-4 align-middle overflow-hidden">
+          <td class="w-[43%] sm:w-[24%] py-2.5 sm:py-3.5 px-1.5 sm:px-4 align-middle overflow-hidden">
             ${mainPriceHtml}
             <div class="sm:hidden mt-0.5">
               ${subPriceHtml}
@@ -619,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
 
           <!-- Col 4: 24h Change Badge -->
-          <td class="w-[18%] sm:w-[16%] py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle whitespace-nowrap">
+          <td class="w-[22%] sm:w-[16%] py-2.5 sm:py-3.5 px-1 sm:px-4 text-center align-middle whitespace-nowrap overflow-hidden">
             <div class="flex justify-center">
               ${changeBadgeHtml}
             </div>
