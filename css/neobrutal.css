@@ -1734,14 +1734,16 @@ section.grp > h2 small {
   align-items: center;
   gap: 8px;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .neo-dropdown-icon {
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
+  padding: 1px 2px 2px 1px;
 }
 
 .neo-dropdown-icon .av,
@@ -1750,26 +1752,31 @@ section.grp > h2 small {
   height: 22px;
   border-radius: 50%;
   border: 1.5px solid var(--line);
-  box-shadow: var(--neo-shadow-xs);
-  background: #ffffff;
+  box-shadow: 1.5px 1.5px 0 var(--shadow-color);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
+  flex-shrink: 0;
 }
 
 .neo-dropdown-icon .av img,
 .neo-dropdown-item .av img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  padding: 0;
+  background: transparent;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .neo-dropdown-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
   font-size: 0.88rem;
   font-weight: 800;
 }
@@ -2074,7 +2081,7 @@ section.grp > h2 small {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: var(--surface);
   border: 2px solid var(--line);
   box-shadow: 2px 2px 0 var(--shadow-color);
   overflow: hidden;
@@ -2091,22 +2098,23 @@ section.grp > h2 small {
   border: none;
   box-shadow: none;
   border-radius: 50%;
-  background: transparent;
+  background: var(--c, var(--gold));
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .tool-res-badge .av img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  padding: 3px;
-  object-fit: contain;
+  padding: 0;
+  object-fit: cover;
   position: absolute;
   inset: 0;
-  background: #ffffff;
+  background: transparent;
 }
 
 .tool-res-badge .av .g {
