@@ -131,8 +131,8 @@ html {
 
 /* Main Page Scrollbar: Clean & Solid, No Borders, Smooth Rounded Ends */
 ::-webkit-scrollbar {
-  width: 14px;
-  height: 14px;
+  width: 8px;
+  height: 8px;
 }
 
 /* Main Page Scrollbar Track */
@@ -145,7 +145,7 @@ html {
 ::-webkit-scrollbar-thumb {
   background: var(--sb-thumb);
   border: none;
-  border-radius: 7px;
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1802,6 +1802,16 @@ section.grp > h2 small {
   animation: neoDropIn 0.12s ease-out;
 }
 
+/* Invisible bridge preventing pointer drop across the gap */
+.neo-dropdown-panel::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 6px;
+}
+
 @keyframes neoDropIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -2229,6 +2239,8 @@ section.grp > h2 small {
   overflow-y: auto;
   box-sizing: border-box;
   direction: ltr; /* Sets vertical scrollbar to the RIGHT edge */
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) transparent;
   overscroll-behavior: contain;
 }
 
@@ -2237,20 +2249,20 @@ section.grp > h2 small {
 }
 
 .sheet-body::-webkit-scrollbar {
-  width: 16px; /* Full standard thickness */
-  height: 16px;
+  width: 7px;
+  height: 7px;
 }
 
 .sheet-body::-webkit-scrollbar-track {
   background: transparent;
   border: none;
-  margin: 0; /* No arbitrary gap from top and bottom */
+  margin: 6px 0;
 }
 
 .sheet-body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb);
   border: none;
-  border-radius: 7px; /* Matches inner radius of 10px box with 3px border */
+  border-radius: 999px;
 }
 
 .sheet-body::-webkit-scrollbar-thumb:hover {
@@ -2260,12 +2272,12 @@ section.grp > h2 small {
 
 @supports not selector(::-webkit-scrollbar) {
   html {
-    scrollbar-width: auto;
+    scrollbar-width: thin;
     scrollbar-color: var(--sb-thumb) var(--sb-track);
   }
   .sheet-body {
-    scrollbar-width: auto;
-    scrollbar-color: var(--sb-thumb) var(--surface);
+    scrollbar-width: thin;
+    scrollbar-color: var(--sb-thumb) transparent;
   }
 }
 
@@ -2760,12 +2772,13 @@ html.osb-on::-webkit-scrollbar { width: 0; height: 0; display: none; }
   top: 0;
   right: 0;
   bottom: 0;
-  width: 16px;
+  width: 12px;
   z-index: 60;
   direction: ltr;
   opacity: 0;
   transition: opacity 0.25s ease;
   pointer-events: none;
+  cursor: default;
 }
 .osb.show,
 .osb.drag { opacity: 1; }
@@ -2773,17 +2786,20 @@ html.osb-on::-webkit-scrollbar { width: 0; height: 0; display: none; }
 .osb-thumb {
   position: absolute;
   top: 0;
-  right: 3px;
+  right: 0;
   width: 7px;
   min-height: 36px;
   box-sizing: border-box;
-  border: 1.5px solid var(--line);
-  border-radius: 6px;
-  background: var(--accent);
-  cursor: grab;
-  transition: width 0.15s ease;
+  border: none;
+  border-radius: 999px;
+  background: var(--sb-thumb);
+  cursor: default;
+  transition: width 0.15s ease, background 0.15s ease;
   will-change: transform;
 }
 .osb:hover .osb-thumb,
-.osb.drag .osb-thumb { width: 10px; }
-.osb.drag .osb-thumb { cursor: grabbing; }
+.osb.drag .osb-thumb {
+  width: 9px;
+  background: var(--sb-thumb-hover);
+  cursor: default;
+}

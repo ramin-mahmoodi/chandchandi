@@ -577,8 +577,14 @@ function renderView0() {
   renderChips();
 
   if (S.tab === 'tools') {
-    v.innerHTML = toolsHTML();
-    bindTools();
+    if (!document.getElementById('c-sym-trigger')) {
+      v.innerHTML = toolsHTML();
+      bindTools();
+    } else {
+      if (typeof window._recalcTools === 'function') {
+        window._recalcTools();
+      }
+    }
     return;
   }
 
@@ -925,6 +931,11 @@ function bindTools() {
 
   calcC();
   calcG();
+
+  window._recalcTools = function() {
+    calcC();
+    calcG();
+  };
 }
 
 var _customDropdowns = {};
@@ -1086,10 +1097,11 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
     window._neoDropGlobalListener = true;
     document.addEventListener('click', function(e) {
       document.querySelectorAll('.neo-dropdown-panel:not([hidden])').forEach(function(p) {
-        if (!p.contains(e.target) && !p.previousElementSibling.contains(e.target)) {
-          p.hidden = true;
-          if (p.previousElementSibling) p.previousElementSibling.setAttribute('aria-expanded', 'false');
-        }
+        var wrap = p.closest('.neo-dropdown');
+        if (wrap && wrap.contains(e.target)) return;
+        p.hidden = true;
+        var trig = wrap ? wrap.querySelector('.neo-dropdown-trigger') : p.previousElementSibling;
+        if (trig) trig.setAttribute('aria-expanded', 'false');
       });
       document.querySelectorAll('.neo-dropdown.is-open').forEach(function(w) {
         if (!w.contains(e.target)) w.classList.remove('is-open');
@@ -1102,7 +1114,9 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
       if (e.key === 'Escape') {
         document.querySelectorAll('.neo-dropdown-panel:not([hidden])').forEach(function(p) {
           p.hidden = true;
-          if (p.previousElementSibling) p.previousElementSibling.setAttribute('aria-expanded', 'false');
+          var wrap = p.closest('.neo-dropdown');
+          var trig = wrap ? wrap.querySelector('.neo-dropdown-trigger') : p.previousElementSibling;
+          if (trig) trig.setAttribute('aria-expanded', 'false');
         });
         document.querySelectorAll('.neo-dropdown.is-open').forEach(function(w) { w.classList.remove('is-open'); });
         document.querySelectorAll('.tool-card.has-dropdown-open').forEach(function(c) { c.classList.remove('has-dropdown-open'); });
