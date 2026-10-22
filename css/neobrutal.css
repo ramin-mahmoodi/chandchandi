@@ -1954,13 +1954,21 @@ section.grp > h2 small {
 /* Sort Dropdown Component in Filter Bar */
 .sort-dropdown {
   position: relative;
-  flex: none;
+  flex: 0 0 auto;
+  width: auto;
 }
 
 .sort-dropdown .sort-btn {
+  width: auto;
   height: 36px;
   margin: 0;
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  white-space: nowrap;
 }
 
 .sort-dropdown-panel {
