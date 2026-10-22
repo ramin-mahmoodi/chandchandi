@@ -1665,7 +1665,10 @@ section.grp > h2 small {
   background-size: 14px 14px;
 }
 
-:root[data-theme="dark"] .tool-select,
+:root[data-theme="dark"] .tool-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.8' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .tool-select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.8' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
@@ -2281,7 +2284,10 @@ section.grp > h2 small {
   background-size: 14px 14px;
 }
 
-:root[data-theme="dark"] .sheet-body .f select,
+:root[data-theme="dark"] .sheet-body .f select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.8' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .sheet-body .f select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.8' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
@@ -2640,3 +2646,86 @@ section.grp > h2 small {
   background: #38bdf8;
   border-color: #000000;
 }
+
+
+/* ---- UI fixes ---- */
+
+/* Dark mode via OS preference (no explicit toggle yet) must match the toggled dark theme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .gh,
+  :root:not([data-theme="light"]) .grp .gh,
+  :root:not([data-theme="light"]) .grp.t-gold .gh,
+  :root:not([data-theme="light"]) .grp.t-fx .gh,
+  :root:not([data-theme="light"]) .grp.t-crypto .gh {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+  :root:not([data-theme="light"]) .gh::before { border-color: #000000; }
+  :root:not([data-theme="light"]) .hero.t-fx { background-color: #1a2a44; color: #f8fafc; }
+  :root:not([data-theme="light"]) .hero.t-gold { background-color: #382c16; color: #f8fafc; }
+}
+
+/* LTR fields (URLs) were forced to RTL by the global input rule */
+input[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+input[dir="ltr"]::placeholder {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Settings buttons: fill rows evenly instead of leaving an orphan button */
+.btns .btn {
+  flex: 1 1 auto;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Page scrollbar on the RIGHT edge: the viewport scrollbar follows the direction
+   of html/body, so both stay LTR and every top-level block is RTL instead. */
+html,
+body {
+  direction: ltr;
+}
+body > * {
+  direction: rtl;
+}
+
+/* Thin overlay page scrollbar (mouse devices). Native one is hidden so it takes no space. */
+html.osb-on { scrollbar-width: none; }
+html.osb-on::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+.osb {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  z-index: 60;
+  direction: ltr;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.osb.show,
+.osb.drag { opacity: 1; }
+.osb.show { pointer-events: auto; }
+.osb-thumb {
+  position: absolute;
+  top: 0;
+  right: 3px;
+  width: 7px;
+  min-height: 36px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  background: var(--accent);
+  cursor: grab;
+  transition: width 0.15s ease;
+  will-change: transform;
+}
+.osb:hover .osb-thumb,
+.osb.drag .osb-thumb { width: 10px; }
+.osb.drag .osb-thumb { cursor: grabbing; }
