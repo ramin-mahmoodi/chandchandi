@@ -927,13 +927,21 @@ function bindTools() {
   calcG();
 }
 
+var _customDropdowns = {};
+
+function updateCustomDropdown(idPrefix) {
+  if (_customDropdowns[idPrefix] && typeof _customDropdowns[idPrefix].update === 'function') {
+    _customDropdowns[idPrefix].update();
+  }
+}
+
 function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
   var sel = document.getElementById(idPrefix);
   var trig = document.getElementById(idPrefix + '-trigger');
   var panel = document.getElementById(idPrefix + '-panel');
   var optionsBox = document.getElementById(idPrefix + '-options');
   var searchInput = document.getElementById(idPrefix + '-search');
-  var selText = document.getElementById(idPrefix + '-sel-text');
+  var selText = document.getElementById(idPrefix + '-sel-text') || document.getElementById(idPrefix + '-cur');
   var selIcon = document.getElementById(idPrefix + '-sel-icon');
   if (!sel || !trig || !panel || !optionsBox) return;
 
@@ -977,6 +985,11 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
     }
   }
 
+  _customDropdowns[idPrefix] = {
+    render: renderOptions,
+    update: updateTriggerDisplay
+  };
+
   renderOptions();
   updateTriggerDisplay();
 
@@ -988,8 +1001,20 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
         if (t) t.setAttribute('aria-expanded', 'false');
       }
     });
+    document.querySelectorAll('.neo-dropdown.is-open').forEach(function(w) {
+      if (!w.contains(panel)) w.classList.remove('is-open');
+    });
+    document.querySelectorAll('.tool-card.has-dropdown-open').forEach(function(c) {
+      if (!c.contains(panel)) c.classList.remove('has-dropdown-open');
+    });
+
     panel.hidden = false;
     trig.setAttribute('aria-expanded', 'true');
+    var wrap = trig.closest('.neo-dropdown');
+    if (wrap) wrap.classList.add('is-open');
+    var card = trig.closest('.tool-card');
+    if (card) card.classList.add('has-dropdown-open');
+
     renderOptions();
     if (searchInput) {
       searchInput.value = '';
@@ -1001,6 +1026,10 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
   function closeDropdown() {
     panel.hidden = true;
     trig.setAttribute('aria-expanded', 'false');
+    var wrap = trig.closest('.neo-dropdown');
+    if (wrap) wrap.classList.remove('is-open');
+    var card = trig.closest('.tool-card');
+    if (card) card.classList.remove('has-dropdown-open');
   }
 
   trig.onclick = function(e) {
@@ -1062,6 +1091,12 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
           if (p.previousElementSibling) p.previousElementSibling.setAttribute('aria-expanded', 'false');
         }
       });
+      document.querySelectorAll('.neo-dropdown.is-open').forEach(function(w) {
+        if (!w.contains(e.target)) w.classList.remove('is-open');
+      });
+      document.querySelectorAll('.tool-card.has-dropdown-open').forEach(function(c) {
+        if (!c.contains(e.target)) c.classList.remove('has-dropdown-open');
+      });
     });
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
@@ -1069,6 +1104,8 @@ function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
           p.hidden = true;
           if (p.previousElementSibling) p.previousElementSibling.setAttribute('aria-expanded', 'false');
         });
+        document.querySelectorAll('.neo-dropdown.is-open').forEach(function(w) { w.classList.remove('is-open'); });
+        document.querySelectorAll('.tool-card.has-dropdown-open').forEach(function(c) { c.classList.remove('has-dropdown-open'); });
       }
     });
   }
@@ -1617,6 +1654,7 @@ var sheet = document.getElementById('sheet');
 function openSheet() {
   document.getElementById('proxy').value = S.proxy;
   document.getElementById('interval').value = String(S.interval);
+  updateCustomDropdown('interval');
   document.getElementById('testout').textContent = '';
   sheet.hidden = false;
   updateScrollLock();
@@ -1700,6 +1738,8 @@ if (window.ALANCHAND_FALLBACK_DATA) {
 }
 
 renderAll();
+initCustomDropdown('sort', false, false);
+initCustomDropdown('interval', false, false);
 refresh(false);
 schedule();
 

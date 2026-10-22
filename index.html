@@ -12,7 +12,7 @@
 
   <!-- Neobrutalism Design System & Fonts -->
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/neobrutal.css?v=57">
+  <link rel="stylesheet" href="css/neobrutal.css?v=58">
 </head>
 <body>
 
@@ -85,15 +85,20 @@
       <!-- Filters Row (Sub-groups Chips First, Smart Sort Button End) -->
       <div class="filters" id="filters" hidden>
         <div class="chips" id="chips"></div>
-        <div class="sort-btn" title="مرتب‌سازی">
-          <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
-          <span id="sort-cur">پیش‌فرض</span>
-          <select id="sort" class="sort-select" aria-label="مرتب‌سازی">
+        <div class="neo-dropdown sort-dropdown" id="sort-dropdown-wrap">
+          <select id="sort" class="tool-select" style="display:none" aria-label="مرتب‌سازی">
             <option value="def">پیش‌فرض</option>
             <option value="up">بیشترین رشد</option>
             <option value="down">بیشترین افت</option>
             <option value="price">بیشترین قیمت</option>
           </select>
+          <button type="button" class="sort-btn neo-dropdown-trigger" id="sort-trigger" aria-haspopup="listbox" aria-expanded="false" title="مرتب‌سازی">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+            <span class="neo-dropdown-text" id="sort-cur">پیش‌فرض</span>
+          </button>
+          <div class="neo-dropdown-panel sort-dropdown-panel" id="sort-panel" hidden>
+            <div class="neo-dropdown-options" id="sort-options" role="listbox"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -114,15 +119,26 @@
       <span>آدرس پروکسی CORS اختصاصی (اختیاری)</span>
       <input id="proxy" type="url" dir="ltr" placeholder="https://your-worker.workers.dev/?url=">
     </label>
-    <label class="f">
+    <div class="f">
       <span>فاصله بروزرسانی خودکار نرخ‌ها</span>
-      <select id="interval">
-        <option value="30">۳۰ ثانیه</option>
-        <option value="60">۶۰ ثانیه</option>
-        <option value="120">۲ دقیقه</option>
-        <option value="0">خاموش (دستی)</option>
-      </select>
-    </label>
+      <div class="neo-dropdown" id="interval-dropdown-wrap">
+        <select id="interval" class="tool-select" style="display:none">
+          <option value="30">۳۰ ثانیه</option>
+          <option value="60">۶۰ ثانیه</option>
+          <option value="120">۲ دقیقه</option>
+          <option value="0">خاموش (دستی)</option>
+        </select>
+        <button type="button" class="neo-dropdown-trigger" id="interval-trigger" aria-haspopup="listbox" aria-expanded="false">
+          <span class="neo-dropdown-selected">
+            <span class="neo-dropdown-text" id="interval-sel-text">۶۰ ثانیه</span>
+          </span>
+          <svg class="neo-dropdown-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="neo-dropdown-panel" id="interval-panel" hidden>
+          <div class="neo-dropdown-options" id="interval-options" role="listbox"></div>
+        </div>
+      </div>
+    </div>
     <p class="hint">به‌صورت پیش‌فرض از پروکسی پایدار کلادفلر ورکر برای اتصال استفاده می‌شود. اگر مایلید پروکسی اختصاصی خودتان را اجرا کنید، آدرس آن را وارد کنید (باید به «?url=» ختم شود).</p>
     <div class="testout" id="testout" role="status"></div>
     <div class="btns">

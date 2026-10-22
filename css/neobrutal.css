@@ -539,16 +539,6 @@ button {
   box-shadow: none;
 }
 
-.sort-select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  font-size: 16px;
-}
-
 .chips {
   flex: 1;
   min-width: 0;
@@ -1691,6 +1681,19 @@ section.grp > h2 small {
   width: 100%;
 }
 
+.neo-dropdown.is-open {
+  z-index: 100;
+}
+
+.tool-card.has-dropdown-open,
+.tool-card:has(.neo-dropdown.is-open) {
+  z-index: 60 !important;
+}
+
+.tool-fields:has(.neo-dropdown.is-open) {
+  z-index: 70 !important;
+}
+
 .neo-dropdown-trigger {
   box-sizing: border-box;
   width: 100%;
@@ -1838,14 +1841,16 @@ section.grp > h2 small {
 .neo-dropdown-options {
   max-height: 200px;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   overscroll-behavior: contain;
   direction: ltr; /* Sets vertical scrollbar to the RIGHT edge */
   scrollbar-width: thin;
   scrollbar-color: var(--sb-thumb) transparent;
-  padding: 2px 2px 2px 0;
+  padding: 3px;
+  box-sizing: border-box;
 }
 
 .neo-dropdown-options > * {
@@ -1894,7 +1899,7 @@ section.grp > h2 small {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: var(--neo-radius-sm);
   cursor: pointer;
   background: transparent;
@@ -1904,17 +1909,16 @@ section.grp > h2 small {
   font-weight: 800;
   color: var(--fg);
   text-align: right;
-  transition: all 0.08s ease;
+  transition: background 0.08s ease, border-color 0.08s ease;
   user-select: none;
   outline: none !important;
+  box-sizing: border-box;
 }
 
 .neo-dropdown-item:hover,
 .neo-dropdown-item:focus-visible {
   background: var(--surface2);
   border-color: var(--line);
-  transform: translate(-1px, -1px);
-  box-shadow: var(--neo-shadow-xs);
 }
 
 .neo-dropdown-item.active {
@@ -1922,7 +1926,6 @@ section.grp > h2 small {
   border-color: var(--line);
   color: var(--fg);
   font-weight: 900;
-  box-shadow: var(--neo-shadow-xs);
 }
 
 .neo-dropdown-item-left {
@@ -1936,6 +1939,61 @@ section.grp > h2 small {
   font-weight: 900;
   font-size: 0.9rem;
   color: var(--fg);
+}
+
+/* Sort Dropdown Component in Filter Bar */
+.sort-dropdown {
+  position: relative;
+  flex: none;
+}
+
+.sort-dropdown .sort-btn {
+  height: 36px;
+  margin: 0;
+  position: relative;
+}
+
+.sort-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: auto;
+  min-width: 145px;
+  width: max-content;
+  max-width: 220px;
+  z-index: 100;
+  box-shadow: var(--neo-shadow-md);
+}
+
+@media (max-width: 520px) {
+  .sort-dropdown .sort-btn {
+    height: 32px;
+    padding: 0 8px;
+    font-size: 0.78rem;
+  }
+}
+
+/* Settings Sheet Dropdown Overrides */
+.sheet-body .f .neo-dropdown-trigger {
+  height: 48px;
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--shadow-color);
+  padding: 0 14px;
+}
+
+.sheet-body .f .neo-dropdown-trigger:hover,
+.sheet-body .f .neo-dropdown-trigger:focus,
+.sheet-body .f .neo-dropdown-trigger[aria-expanded="true"] {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--neo-shadow-md);
+  border-color: var(--line);
+}
+
+.sheet-body .f .neo-dropdown-panel {
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--neo-shadow-md);
 }
 
 .tool-chips-bar {
