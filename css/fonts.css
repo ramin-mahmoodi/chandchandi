@@ -1,37 +1,33 @@
-/* Vazirmatn Persian Font & Global Typography */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
+/* Vazirmatn & Lalezar Persian Fonts & Typography */
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Space+Grotesk:wght@500;700;900&family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
 :root {
   --font-persian: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+  --font-display: 'Lalezar', 'Vazirmatn', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-heading: 'Space Grotesk', 'Vazirmatn', sans-serif;
+  --font-heading: 'Lalezar', 'Space Grotesk', 'Vazirmatn', sans-serif;
 }
 
 body, button, input, select, textarea {
   font-family: var(--font-persian);
   direction: rtl;
   text-align: right;
-  color: #000000;
+  color: inherit;
   margin: 0;
   padding: 0;
 }
 
-/* Persian Numerals using Vazirmatn's native tabular digits */
-.font-num {
-  font-family: var(--font-persian);
+.font-num, .num {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
-  display: inline-block;
-  direction: rtl;
 }
 
-/* English-only code / ticker symbols */
 .font-mono {
   font-family: var(--font-mono);
   direction: ltr;
   display: inline-block;
 }
 
-.font-heading {
-  font-family: var(--font-heading);
+.font-display {
+  font-family: var(--font-display);
 }
