@@ -403,7 +403,7 @@ function row(s) {
   }
   return '<article class="row ' + rc + ' t-' + TYPE[s] + (USD_UNIT[s] ? ' usdu' : '') + '"' + openAttrs(s) + '>' +
     avatar(s) +
-    '<div class="nm"><b>' + esc(m.fa) + '</b><small>' + esc(m.en) + '</small>' + sub + '</div>' +
+    '<div class="nm"><b>' + esc(m.fa) + '</b>' + sub + '</div>' +
     '<div class="pr"><b class="num' + fl(s) + '"' + pv(s, p, 'row') + '>' + (p == null ? '—' : fmtPrice(disp(s, p))) + '<em>' + unitLabel(s) + '</em></b><span class="pl"><span class="spk">' + spark(s) + '</span>' + pill(d && d.ch) + '</span></div>' +
     '<button class="star" data-star="' + s + '" aria-pressed="' + fav + '" aria-label="' + (fav ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها') + '">' + (fav ? '★' : '☆') + '</button>' +
     '</article>';
@@ -411,7 +411,7 @@ function row(s) {
 
 function hero(s) {
   var m = META[s], d = S.data[s], p = priceOf(s);
-  var sub = '<span dir="ltr">' + esc(m.en) + '</span>';
+  var sub = '';
   if (d && d.buy != null && d.sell != null && d.buy !== d.sell) {
     sub = '<span>خرید <b class="num">' + fmtPrice(disp(s, d.buy)) + '</b></span><span>فروش <b class="num">' + fmtPrice(disp(s, d.sell)) + '</b></span>';
   } else if (d && d.real > 0) {
@@ -867,7 +867,7 @@ function renderDetail() {
   }).join('');
 
   body.innerHTML = '<div class="dh">' + avatar(s) +
-    '<div class="ht"><b>' + esc(m.fa) + '</b><small>' + esc(m.en) + '</small></div>' +
+    '<div class="ht"><b>' + esc(m.fa) + '</b></div>' +
     '<button class="dx" id="dclose" aria-label="بستن">✕</button></div>' +
     '<div class="dp"><b class="num"' + pv(s, d.p, 'dp') + '>' + (d.p == null ? '—' : fmtPrice(disp(s, d.p))) + '</b><em>' + unitLabel(s) + '</em>' + pill(d.ch) + '</div>' +
     '<div class="facts">' + dfacts(s) + '</div>' +
