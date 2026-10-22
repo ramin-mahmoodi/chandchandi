@@ -235,6 +235,7 @@ function applyMap(map) {
 
 /* ---------- State Management ---------- */
 var S = {
+  search: '',
   sort: 'def',
   collapsed: {},
   tab: 'home',
@@ -555,6 +556,23 @@ function renderView() {
 
 function renderView0() {
   var v = document.getElementById('view'), h = '';
+  if (S.search) {
+    document.getElementById('filters').hidden = true;
+    var q = S.search.toLowerCase();
+    var matched = Object.keys(META).filter(function(s) {
+      var m = META[s];
+      return (m.fa && m.fa.toLowerCase().indexOf(q) >= 0) ||
+             (m.en && m.en.toLowerCase().indexOf(q) >= 0) ||
+             s.toLowerCase().indexOf(q) >= 0;
+    });
+    if (!matched.length) {
+      v.innerHTML = '<section class="grp"><div class="empty">نمادی با عنوان «' + esc(S.search) + '» یافت نشد.</div></section>';
+    } else {
+      v.innerHTML = '<section class="grp"><h2><span>نتایج جستجو</span><small>' + fmt(matched.length) + ' نماد</small></h2>' +
+        '<div class="list">' + sortSlugs(matched).map(row).join('') + '</div></section>';
+    }
+    return;
+  }
   document.getElementById('filters').hidden = (['gold', 'fx', 'crypto'].indexOf(S.tab) < 0);
   renderChips();
 
@@ -614,52 +632,446 @@ function renderView0() {
 }
 
 function toolsHTML() {
+  if (!S.toolState) S.toolState = { cAmt: '1', cSym: 'usd', gAmt: '1', gUnit: '1' };
+  var curCSym = S.toolState.cSym || 'usd';
+  var curCAmt = S.toolState.cAmt || '1';
+  var curGAmt = S.toolState.gAmt || '1';
+  var curGUnit = S.toolState.gUnit || '1';
+  var isRial = S.unit === 'rial';
+
   var opts = '';
+  var topCurrencies = ['usd', 'eur', 'aed', 'gbp', 'try', 'usdt', 'btc', 'eth'];
+  opts += '<optgroup label="ارزهای پرکاربرد">';
+  topCurrencies.forEach(function(s) {
+    if (META[s]) {
+      opts += '<option value="' + s + '"' + (s === curCSym ? ' selected' : '') + '>' + esc(META[s].fa) + ' (' + s.toUpperCase() + ')</option>';
+    }
+  });
+  opts += '</optgroup>';
+
   CATS.forEach(function(c) {
     if (c.id === 'gold') return;
     opts += '<optgroup label="' + esc(c.name) + '">';
     c.groups.forEach(function(g) {
       g.s.forEach(function(s) {
-        opts += '<option value="' + s + '"' + (s === 'usd' ? ' selected' : '') + '>' + esc(META[s].fa) + ' (' + s.toUpperCase() + ')</option>';
+        if (topCurrencies.indexOf(s) === -1 && META[s]) {
+          opts += '<option value="' + s + '"' + (s === curCSym ? ' selected' : '') + '>' + esc(META[s].fa) + ' (' + s.toUpperCase() + ')</option>';
+        }
       });
     });
     opts += '</optgroup>';
   });
 
-  return '<div class="cards">' +
-    '<div class="card"><h2>تبدیل ارز و رمزارز</h2><p class="sub">ارزش هر نماد به تومان و ریال بر پایه نرخ زنده</p>' +
-    '<label class="f"><span>مقدار</span><input id="c-amt" type="text" inputmode="decimal" value="1" autocomplete="off"></label>' +
-    '<label class="f"><span>نماد</span><select id="c-sym">' + opts + '</select></label>' +
-    '<div class="result"><span>مبلغ نهایی</span><b class="num" id="c-out">—</b></div></div>' +
-    '<div class="card"><h2>ارزش طلای ۱۸ عیار</h2><p class="sub">بر پایه نرخ لحظه‌ای هر گرم، بدون اجرت و مالیات</p>' +
-    '<div class="f2"><label class="f"><span>وزن</span><input id="g-amt" type="text" inputmode="decimal" value="1" autocomplete="off"></label>' +
-    '<label class="f"><span>واحد</span><select id="g-unit"><option value="1">گرم</option><option value="4.6083">مثقال</option><option value="0.01">سوت</option></select></label></div>' +
-    '<div class="result"><span>ارزش طلای خام</span><b class="num" id="g-out">—</b></div></div></div>';
+  return '<div class="tools-grid">' +
+      '<!-- Card 1: Currency / Crypto Converter -->' +
+      '<section class="tool-card">' +
+        '<div class="tool-badge tool-badge-live">' +
+          '<span class="pulse-dot"><span class="pulse-ring"></span></span>' +
+          'نرخ زنده' +
+        '</div>' +
+
+        '<div class="tool-header">' +
+          '<div class="tool-icon-box tool-icon-pink">' +
+            '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M3 8h15l-4-4"></path><path d="M21 16H6l4 4"></path></svg>' +
+          '</div>' +
+          '<div class="tool-header-text">' +
+            '<h2>تبدیل ارز و رمزارز</h2>' +
+            '<p>ارزش هر نماد به تومان و ریال بر پایه نرخ زنده</p>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="tool-fields">' +
+          '<div class="tool-f-amt">' +
+            '<label class="tool-label" for="c-amt">مقدار</label>' +
+            '<input id="c-amt" class="tool-input" type="text" inputmode="decimal" value="' + esc(curCAmt) + '" autocomplete="off">' +
+          '</div>' +
+          '<div class="tool-f-sym">' +
+            '<label class="tool-label" for="c-sym">نماد</label>' +
+            '<div class="neo-dropdown" id="c-sym-dropdown-wrap">' +
+              '<select id="c-sym" class="tool-select" style="display:none">' + opts + '</select>' +
+              '<button type="button" class="neo-dropdown-trigger" id="c-sym-trigger" aria-haspopup="listbox" aria-expanded="false">' +
+                '<span class="neo-dropdown-selected">' +
+                  '<span class="neo-dropdown-icon" id="c-sym-sel-icon">' + avatar(curCSym) + '</span>' +
+                  '<span class="neo-dropdown-text" id="c-sym-sel-text">' + esc(META[curCSym] ? META[curCSym].fa + ' (' + curCSym.toUpperCase() + ')' : curCSym) + '</span>' +
+                '</span>' +
+                '<svg class="neo-dropdown-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M6 9l6 6 6-6"/></svg>' +
+              '</button>' +
+              '<div class="neo-dropdown-panel" id="c-sym-panel" hidden>' +
+                '<div class="neo-dropdown-search">' +
+                  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>' +
+                  '<input type="text" placeholder="جستجوی ارز یا نماد..." class="neo-dropdown-search-input" id="c-sym-search" autocomplete="off">' +
+                '</div>' +
+                '<div class="neo-dropdown-options" id="c-sym-options"></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="tool-chips-bar">' +
+          '<span class="tool-chips-title">انتخاب سریع:</span>' +
+          '<button type="button" class="tool-chip active" data-target="c-amt" data-val="1">۱</button>' +
+          '<button type="button" class="tool-chip" data-target="c-amt" data-val="10">۱۰</button>' +
+          '<button type="button" class="tool-chip" data-target="c-amt" data-val="100">۱۰۰</button>' +
+          '<button type="button" class="tool-chip" data-target="c-amt" data-val="1000">۱,۰۰۰</button>' +
+        '</div>' +
+
+        '<div class="tool-res-box">' +
+          '<div class="tool-res-badge tool-res-badge-rot8" id="c-sym-badge">' + avatar(curCSym) + '</div>' +
+          '<span class="tool-res-title">مبلغ نهایی</span>' +
+          '<div class="tool-res-main">' +
+            '<span class="tool-res-num num" id="c-out-toman">—</span>' +
+            '<span class="tool-res-unit" id="c-res-unit">' + (isRial ? 'ریال' : 'تومان') + '</span>' +
+          '</div>' +
+          '<span class="tool-res-sub num" id="c-out-rial">—</span>' +
+          '<div class="tool-res-dashed"></div>' +
+          '<div class="tool-res-pill">' +
+            '<span>نرخ هر واحد</span>' +
+            '<span class="tool-res-pill-dot"></span>' +
+            '<span id="c-unit-rate" class="num">—</span>' +
+          '</div>' +
+        '</div>' +
+      '</section>' +
+
+      '<!-- Card 2: Gold Calculator -->' +
+      '<section class="tool-card">' +
+        '<div class="tool-badge tool-badge-gold">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="#0B0B0B" aria-hidden="true"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.8L18.2 22 12 18.3 5.8 22l1.6-7.6L2 9.6l7.1-.7z"></path></svg>' +
+          '۱۸ عیار · ۷۵۰' +
+        '</div>' +
+
+        '<div class="tool-header">' +
+          '<div class="tool-icon-box tool-icon-gold">' +
+            '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M7 4h10l4 7H3z"></path><path d="M3 11l3 9h12l3-9"></path><path d="M12 4v7"></path></svg>' +
+          '</div>' +
+          '<div class="tool-header-text">' +
+            '<h2>ارزش طلای ۱۸ عیار</h2>' +
+            '<p>بر پایه نرخ لحظه‌ای هر گرم، بدون اجرت و مالیات</p>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="tool-fields">' +
+          '<div class="tool-f-amt">' +
+            '<label class="tool-label" for="g-amt">وزن</label>' +
+            '<input id="g-amt" class="tool-input" type="text" inputmode="decimal" value="' + esc(curGAmt) + '" autocomplete="off">' +
+          '</div>' +
+          '<div class="tool-f-sym">' +
+            '<label class="tool-label" for="g-unit">واحد</label>' +
+            '<div class="neo-dropdown" id="g-unit-dropdown-wrap">' +
+              '<select id="g-unit" class="tool-select" style="display:none">' +
+                '<option value="1"' + (curGUnit === '1' ? ' selected' : '') + '>گرم</option>' +
+                '<option value="4.6083"' + (curGUnit === '4.6083' ? ' selected' : '') + '>مثقال</option>' +
+                '<option value="31.1035"' + (curGUnit === '31.1035' ? ' selected' : '') + '>اونس</option>' +
+                '<option value="1000"' + (curGUnit === '1000' ? ' selected' : '') + '>کیلوگرم</option>' +
+                '<option value="0.01"' + (curGUnit === '0.01' ? ' selected' : '') + '>سوت</option>' +
+              '</select>' +
+              '<button type="button" class="neo-dropdown-trigger" id="g-unit-trigger" aria-haspopup="listbox" aria-expanded="false">' +
+                '<span class="neo-dropdown-selected">' +
+                  '<span class="neo-dropdown-text" id="g-unit-sel-text">' + (curGUnit === '4.6083' ? 'مثقال' : curGUnit === '31.1035' ? 'اونس' : curGUnit === '1000' ? 'کیلوگرم' : curGUnit === '0.01' ? 'سوت' : 'گرم') + '</span>' +
+                '</span>' +
+                '<svg class="neo-dropdown-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M6 9l6 6 6-6"/></svg>' +
+              '</button>' +
+              '<div class="neo-dropdown-panel" id="g-unit-panel" hidden>' +
+                '<div class="neo-dropdown-options" id="g-unit-options"></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="tool-chips-bar">' +
+          '<span class="tool-chips-title">انتخاب سریع:</span>' +
+          '<button type="button" class="tool-chip active" data-target="g-amt" data-val="1">۱</button>' +
+          '<button type="button" class="tool-chip" data-target="g-amt" data-val="5">۵</button>' +
+          '<button type="button" class="tool-chip" data-target="g-amt" data-val="10">۱۰</button>' +
+          '<button type="button" class="tool-chip" data-target="g-amt" data-val="100">۱۰۰</button>' +
+        '</div>' +
+
+        '<div class="tool-res-box">' +
+          '<div class="tool-res-badge tool-res-badge-rot-neg8" id="g-gold-badge">' + avatar('18ayar') + '</div>' +
+          '<span class="tool-res-title">ارزش طلای خام</span>' +
+          '<div class="tool-res-main">' +
+            '<span class="tool-res-num num" id="g-out-toman">—</span>' +
+            '<span class="tool-res-unit" id="g-res-unit">' + (isRial ? 'ریال' : 'تومان') + '</span>' +
+          '</div>' +
+          '<span class="tool-res-sub num" id="g-out-rial">—</span>' +
+          '<div class="tool-res-dashed"></div>' +
+          '<div class="tool-res-pill">' +
+            '<span>نرخ هر گرم</span>' +
+            '<span class="tool-res-pill-dot"></span>' +
+            '<span id="g-gram-rate" class="num">—</span>' +
+          '</div>' +
+        '</div>' +
+      '</section>' +
+    '</div>';
 }
 
 function bindTools() {
-  var ca = document.getElementById('c-amt'), cs = document.getElementById('c-sym'), co = document.getElementById('c-out');
-  var ga = document.getElementById('g-amt'), gu = document.getElementById('g-unit'), go = document.getElementById('g-out');
-  if (!ca || !cs || !co || !ga || !gu || !go) return;
+  var ca = document.getElementById('c-amt'), cs = document.getElementById('c-sym'),
+      cot = document.getElementById('c-out-toman'), cor = document.getElementById('c-out-rial'),
+      cur = document.getElementById('c-unit-rate'), csb = document.getElementById('c-sym-badge');
+  var ga = document.getElementById('g-amt'), gu = document.getElementById('g-unit'),
+      got = document.getElementById('g-out-toman'), gor = document.getElementById('g-out-rial'),
+      ggr = document.getElementById('g-gram-rate');
+  if (!ca || !cs || !cot || !cor || !cur || !ga || !gu || !got || !gor || !ggr) return;
+
+  var SYMBOLS_MAP = {
+    usd: '$', 'usd-hav': '$', 'usd-ist': '$', 'usd-herat': '$', 'usd-sulaymaniyah': '$',
+    eur: '€', 'eur-hav': '€', 'eur-ist': '€',
+    gbp: '£', aed: 'د.إ', try: '₺', cad: 'C$', aud: 'A$', chf: 'Fr',
+    cny: '¥', jpy: '¥', rub: '₽', iqd: 'ع.د', kwd: 'د.ك', sar: 'ر.س', qar: 'ر.ق',
+    bhd: 'د.ب', omr: 'ر.ع', myr: 'RM', inr: '₹', gel: '₾', azn: '₼', amd: '֏',
+    afn: '؋', pkr: '₨', thb: '฿', sek: 'kr', nok: 'kr', dkk: 'kr', sgd: 'S$', hkd: 'HK$',
+    btc: '₿', eth: 'Ξ', usdt: '₮', bnb: 'BNB', sol: 'SOL', xrp: 'XRP', doge: 'Ð', ton: 'TON',
+    ada: '₳', trx: 'TRX', dot: 'DOT', link: 'LINK', ltc: 'Ł', bch: 'BCH', shib: 'SHIB'
+  };
+
+  function parseVal(v) {
+    if (!v) return 0;
+    var t = toEn(String(v)).replace(/[,٬،\s]/g, '');
+    var n = parseFloat(t);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function updateActiveChips() {
+    var cVal = parseVal(ca.value);
+    document.querySelectorAll('.tool-chip[data-target="c-amt"]').forEach(function(b) {
+      b.classList.toggle('active', parseVal(b.dataset.val) === cVal);
+    });
+    var gVal = parseVal(ga.value);
+    document.querySelectorAll('.tool-chip[data-target="g-amt"]').forEach(function(b) {
+      b.classList.toggle('active', parseVal(b.dataset.val) === gVal);
+    });
+  }
 
   function calcC() {
-    var a = parseFloat(toEn(ca.value)), p = priceOf(cs.value);
-    if (isNaN(a) || p == null) { co.textContent = '—'; return; }
+    var a = parseVal(ca.value), sym = cs.value, p = priceOf(sym);
+    if (!S.toolState) S.toolState = {};
+    S.toolState.cAmt = ca.value;
+    S.toolState.cSym = sym;
+    if (csb) {
+      csb.innerHTML = avatar(sym || 'usd');
+    }
+    var cru = document.getElementById('c-res-unit');
+    var isRial = S.unit === 'rial';
+    if (cru) cru.textContent = isRial ? 'ریال' : 'تومان';
+
+    if (p == null || a <= 0) {
+      cot.textContent = '—';
+      cor.textContent = '— ' + (isRial ? 'تومان' : 'ریال');
+      cur.textContent = (p != null ? fmt(isRial ? p * 10 : p) : '—') + ' ' + (isRial ? 'ریال' : 'تومان');
+      updateActiveChips();
+      return;
+    }
     var t = a * p;
-    co.innerHTML = fmt(t, t < 100 ? 2 : 0) + ' تومان<br><small style="font-weight:700;opacity:0.8">' + fmt(t * 10, t < 10 ? 2 : 0) + ' ریال</small>';
+    if (isRial) {
+      cot.textContent = fmt(Math.round(t * 10));
+      cor.textContent = fmt(Math.round(t)) + ' تومان';
+      cur.textContent = fmt(p * 10) + ' ریال';
+    } else {
+      cot.textContent = fmt(Math.round(t));
+      cor.textContent = fmt(Math.round(t * 10)) + ' ریال';
+      cur.textContent = fmt(p) + ' تومان';
+    }
+    updateActiveChips();
   }
 
   function calcG() {
-    var a = parseFloat(toEn(ga.value)), p = priceOf('18ayar');
-    if (isNaN(a) || p == null) { go.textContent = '—'; return; }
-    var t = a * parseFloat(gu.value) * p;
-    go.innerHTML = fmt(t) + ' تومان<br><small style="font-weight:700;opacity:0.8">' + fmt(t * 10) + ' ریال</small>';
+    var w = parseVal(ga.value), u = parseFloat(gu.value) || 1, p = priceOf('18ayar');
+    if (!S.toolState) S.toolState = {};
+    S.toolState.gAmt = ga.value;
+    S.toolState.gUnit = gu.value;
+    var gru = document.getElementById('g-res-unit');
+    var isRial = S.unit === 'rial';
+    if (gru) gru.textContent = isRial ? 'ریال' : 'تومان';
+
+    if (p == null || w <= 0) {
+      got.textContent = '—';
+      gor.textContent = '— ' + (isRial ? 'تومان' : 'ریال');
+      ggr.textContent = (p != null ? fmt(isRial ? p * 10 : p) : '—') + ' ' + (isRial ? 'ریال' : 'تومان');
+      updateActiveChips();
+      return;
+    }
+    var t = w * u * p;
+    if (isRial) {
+      got.textContent = fmt(Math.round(t * 10));
+      gor.textContent = fmt(Math.round(t)) + ' تومان';
+      ggr.textContent = fmt(p * 10) + ' ریال';
+    } else {
+      got.textContent = fmt(Math.round(t));
+      gor.textContent = fmt(Math.round(t * 10)) + ' ریال';
+      ggr.textContent = fmt(p) + ' تومان';
+    }
+    updateActiveChips();
   }
 
-  ca.oninput = cs.onchange = calcC;
-  ga.oninput = gu.onchange = calcG;
+  document.querySelectorAll('.tool-chip').forEach(function(btn) {
+    btn.onclick = function() {
+      var targetId = btn.dataset.target, val = btn.dataset.val;
+      var input = document.getElementById(targetId);
+      if (input) {
+        input.value = val;
+        if (targetId === 'c-amt') calcC();
+        else calcG();
+      }
+    };
+  });
+
+  ca.oninput = calcC;
+  cs.onchange = calcC;
+  ga.oninput = calcG;
+  gu.onchange = calcG;
+
+  initCustomDropdown('c-sym', true, true);
+  initCustomDropdown('g-unit', false, false);
+
   calcC();
   calcG();
+}
+
+function initCustomDropdown(idPrefix, hasSearch, hasIcons) {
+  var sel = document.getElementById(idPrefix);
+  var trig = document.getElementById(idPrefix + '-trigger');
+  var panel = document.getElementById(idPrefix + '-panel');
+  var optionsBox = document.getElementById(idPrefix + '-options');
+  var searchInput = document.getElementById(idPrefix + '-search');
+  var selText = document.getElementById(idPrefix + '-sel-text');
+  var selIcon = document.getElementById(idPrefix + '-sel-icon');
+  if (!sel || !trig || !panel || !optionsBox) return;
+
+  function renderOptions() {
+    var html = '';
+    var children = sel.children;
+    for (var i = 0; i < children.length; i++) {
+      var node = children[i];
+      if (node.tagName && node.tagName.toLowerCase() === 'optgroup') {
+        html += '<div class="neo-dropdown-group-header">' + esc(node.label) + '</div>';
+        for (var j = 0; j < node.children.length; j++) {
+          var opt = node.children[j];
+          var isActive = opt.value === sel.value;
+          html += '<button type="button" class="neo-dropdown-item' + (isActive ? ' active' : '') + '" data-val="' + esc(opt.value) + '">' +
+            '<span class="neo-dropdown-item-left">' +
+              (hasIcons ? '<span class="av">' + avatar(opt.value) + '</span>' : '') +
+              '<span>' + esc(opt.textContent) + '</span>' +
+            '</span>' +
+            (isActive ? '<span class="neo-dropdown-item-check">✓</span>' : '') +
+          '</button>';
+        }
+      } else if (node.tagName && node.tagName.toLowerCase() === 'option') {
+        var isAct = node.value === sel.value;
+        html += '<button type="button" class="neo-dropdown-item' + (isAct ? ' active' : '') + '" data-val="' + esc(node.value) + '">' +
+          '<span class="neo-dropdown-item-left">' +
+            (hasIcons ? '<span class="av">' + avatar(node.value) + '</span>' : '') +
+            '<span>' + esc(node.textContent) + '</span>' +
+          '</span>' +
+          (isAct ? '<span class="neo-dropdown-item-check">✓</span>' : '') +
+        '</button>';
+      }
+    }
+    optionsBox.innerHTML = html;
+  }
+
+  function updateTriggerDisplay() {
+    var curOpt = sel.options[sel.selectedIndex];
+    if (curOpt) {
+      if (selText) selText.textContent = curOpt.textContent;
+      if (selIcon && hasIcons) selIcon.innerHTML = avatar(curOpt.value);
+    }
+  }
+
+  renderOptions();
+  updateTriggerDisplay();
+
+  function openDropdown() {
+    document.querySelectorAll('.neo-dropdown-panel:not([hidden])').forEach(function(p) {
+      if (p !== panel) {
+        p.hidden = true;
+        var t = p.previousElementSibling;
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+    });
+    panel.hidden = false;
+    trig.setAttribute('aria-expanded', 'true');
+    renderOptions();
+    if (searchInput) {
+      searchInput.value = '';
+      setTimeout(function() { searchInput.focus(); }, 40);
+      filterOptions('');
+    }
+  }
+
+  function closeDropdown() {
+    panel.hidden = true;
+    trig.setAttribute('aria-expanded', 'false');
+  }
+
+  trig.onclick = function(e) {
+    e.stopPropagation();
+    if (panel.hidden) openDropdown();
+    else closeDropdown();
+  };
+
+  optionsBox.onclick = function(e) {
+    var btn = e.target.closest('.neo-dropdown-item');
+    if (!btn) return;
+    var val = btn.dataset.val;
+    if (val != null) {
+      sel.value = val;
+      updateTriggerDisplay();
+      if (typeof sel.onchange === 'function') sel.onchange();
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      closeDropdown();
+      trig.focus();
+    }
+  };
+
+  function filterOptions(q) {
+    var query = toEn(String(q || '')).toLowerCase().trim();
+    var items = optionsBox.querySelectorAll('.neo-dropdown-item');
+    var headers = optionsBox.querySelectorAll('.neo-dropdown-group-header');
+    items.forEach(function(item) {
+      var text = item.textContent.toLowerCase();
+      var val = (item.dataset.val || '').toLowerCase();
+      var match = !query || text.indexOf(query) !== -1 || val.indexOf(query) !== -1;
+      item.style.display = match ? 'flex' : 'none';
+    });
+    headers.forEach(function(h) {
+      var next = h.nextElementSibling;
+      var hasVisible = false;
+      while (next && !next.classList.contains('neo-dropdown-group-header')) {
+        if (next.style.display !== 'none') { hasVisible = true; break; }
+        next = next.nextElementSibling;
+      }
+      h.style.display = hasVisible ? 'block' : 'none';
+    });
+  }
+
+  if (searchInput) {
+    searchInput.oninput = function() {
+      filterOptions(searchInput.value);
+    };
+    searchInput.onclick = function(e) {
+      e.stopPropagation();
+    };
+  }
+
+  if (!window._neoDropGlobalListener) {
+    window._neoDropGlobalListener = true;
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.neo-dropdown-panel:not([hidden])').forEach(function(p) {
+        if (!p.contains(e.target) && !p.previousElementSibling.contains(e.target)) {
+          p.hidden = true;
+          if (p.previousElementSibling) p.previousElementSibling.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.neo-dropdown-panel:not([hidden])').forEach(function(p) {
+          p.hidden = true;
+          if (p.previousElementSibling) p.previousElementSibling.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  }
 }
 
 /* ---------- Top Bar & Navigation Chrome ---------- */
@@ -671,20 +1083,31 @@ function renderChrome() {
   document.getElementById('u-rial').setAttribute('aria-pressed', S.unit === 'rial');
 
   var u = document.getElementById('updated');
-  var fd = function(x) { return new Date(x).toLocaleString('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }); };
-  if (S.live && S.updated) {
-    u.textContent = 'بروزرسانی ' + S.updated.toLocaleTimeString('fa-IR');
-  } else if (S.stale) {
-    u.textContent = 'آخرین قیمت: ' + fd(S.stale) + (S.err ? ' (آفلاین)' : '');
-  } else if (S.snapT) {
-    u.textContent = 'آخرین قیمت: ' + fd(S.snapT) + (S.err ? ' (آفلاین)' : '');
-  } else {
-    u.textContent = '';
+  if (u) {
+    var fd = function(x) { return new Date(x).toLocaleString('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }); };
+    if (S.live && S.updated) {
+      u.textContent = 'بروزرسانی ' + S.updated.toLocaleTimeString('fa-IR');
+    } else if (S.stale) {
+      u.textContent = 'آخرین قیمت: ' + fd(S.stale) + (S.err ? ' (آفلاین)' : '');
+    } else if (S.snapT) {
+      u.textContent = 'آخرین قیمت: ' + fd(S.snapT) + (S.err ? ' (آفلاین)' : '');
+    } else {
+      u.textContent = '';
+    }
   }
 }
 
 function go(tab) {
   S.tab = tab;
+  if (S.search) {
+    S.search = '';
+    var si = document.getElementById('search-input');
+    if (si) si.value = '';
+    var sb = document.getElementById('search-bar');
+    if (sb) sb.hidden = true;
+    var bts = document.getElementById('btn-search');
+    if (bts) bts.setAttribute('aria-pressed', 'false');
+  }
   try { history.replaceState(null, '', '#' + tab); } catch(e) {}
   renderChrome();
   renderView();
@@ -968,16 +1391,26 @@ function drawChart() {
   st.innerHTML = factHTML('کمترین', fmtPrice(lo)) + factHTML('بیشترین', fmtPrice(hi)) + factHTML('تغییر بازه', pc(chv), pcCls(chv));
 }
 
+function updateScrollLock() {
+  var ds = document.getElementById('dsheet');
+  var sh = document.getElementById('sheet');
+  var isAnyOpen = (ds && !ds.hidden) || (sh && !sh.hidden);
+  document.body.classList.toggle('sheet-open', Boolean(isAnyOpen));
+  document.documentElement.classList.toggle('sheet-open', Boolean(isAnyOpen));
+}
+
 function openDetail(s) {
   if (!META[s] || !S.data[s]) return;
   DT.slug = s;
   DT.period = 'month';
   document.getElementById('dsheet').hidden = false;
+  updateScrollLock();
   renderDetail();
 }
 
 function closeDetail() {
   document.getElementById('dsheet').hidden = true;
+  updateScrollLock();
 }
 
 /* ---------- Global Event Listeners ---------- */
@@ -992,6 +1425,52 @@ document.getElementById('chips').addEventListener('click', function(e) {
   S.group[S.tab] = parseInt(b.dataset.g, 10);
   renderView();
 });
+
+/* Drag-to-scroll & Wheel-scroll for Category Chips on Desktop */
+(function() {
+  var chips = document.getElementById('chips');
+  if (!chips) return;
+  var isDown = false, startX = 0, scrollLeft = 0, isDragged = false;
+
+  chips.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    isDown = true;
+    isDragged = false;
+    chips.classList.add('dragging');
+    startX = e.pageX;
+    scrollLeft = chips.scrollLeft;
+  });
+
+  window.addEventListener('mouseup', function() {
+    if (!isDown) return;
+    isDown = false;
+    chips.classList.remove('dragging');
+    setTimeout(function() { isDragged = false; }, 50);
+  });
+
+  window.addEventListener('mousemove', function(e) {
+    if (!isDown) return;
+    var dx = e.pageX - startX;
+    if (Math.abs(dx) > 4) {
+      isDragged = true;
+      chips.scrollLeft = scrollLeft - dx;
+    }
+  });
+
+  chips.addEventListener('click', function(e) {
+    if (isDragged) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }, true);
+
+  chips.addEventListener('wheel', function(e) {
+    if (e.deltaY && !e.deltaX) {
+      chips.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, { passive: false });
+})();
 
 document.getElementById('view').addEventListener('click', function(e) {
   var gh = e.target.closest('button[data-gh]');
@@ -1045,7 +1524,68 @@ window.addEventListener('resize', function() {
 
 document.getElementById('sort').addEventListener('change', function(e) {
   S.sort = e.target.value;
+  var cur = document.getElementById('sort-cur');
+  if (cur) cur.textContent = e.target.options[e.target.selectedIndex].text;
   renderView();
+});
+
+var btnSearch = document.getElementById('btn-search');
+var searchBar = document.getElementById('search-bar');
+var searchInput = document.getElementById('search-input');
+var searchClear = document.getElementById('search-clear');
+
+function toggleSearch(show) {
+  if (!searchBar) return;
+  if (show === undefined) show = searchBar.hidden;
+  searchBar.hidden = !show;
+  if (btnSearch) btnSearch.setAttribute('aria-pressed', show ? 'true' : 'false');
+  if (show) {
+    if (searchInput) {
+      searchInput.focus();
+      if (searchInput.value) {
+        S.search = searchInput.value.trim();
+        renderView();
+      }
+    }
+  } else {
+    if (searchInput) searchInput.value = '';
+    S.search = '';
+    renderView();
+  }
+  fixSpacer();
+}
+
+if (btnSearch) {
+  btnSearch.addEventListener('click', function() {
+    toggleSearch();
+  });
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', function(e) {
+    S.search = e.target.value.trim();
+    renderView();
+  });
+}
+
+if (searchClear) {
+  searchClear.addEventListener('click', function() {
+    toggleSearch(false);
+  });
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    if (searchBar && !searchBar.hidden) {
+      toggleSearch(false);
+    }
+  } else if (e.key === '/') {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+      e.preventDefault();
+      toggleSearch(true);
+    }
+  }
 });
 
 document.getElementById('u-toman').onclick = function() {
@@ -1079,9 +1619,11 @@ function openSheet() {
   document.getElementById('interval').value = String(S.interval);
   document.getElementById('testout').textContent = '';
   sheet.hidden = false;
+  updateScrollLock();
 }
 function closeSheet() {
   sheet.hidden = true;
+  updateScrollLock();
 }
 
 document.getElementById('btn-settings').onclick = openSheet;
@@ -1089,6 +1631,17 @@ document.getElementById('s-close').onclick = closeSheet;
 
 sheet.addEventListener('click', function(e) {
   if (e.target === sheet) closeSheet();
+});
+
+['sheet', 'dsheet'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('wheel', function(e) {
+    if (e.target === el) e.preventDefault();
+  }, { passive: false });
+  el.addEventListener('touchmove', function(e) {
+    if (e.target === el) e.preventDefault();
+  }, { passive: false });
 });
 
 document.addEventListener('keydown', function(e) {

@@ -12,52 +12,57 @@
 
   <!-- Neobrutalism Design System & Fonts -->
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/neobrutal.css?v=30">
+  <link rel="stylesheet" href="css/neobrutal.css?v=52">
 </head>
 <body>
 
 <div class="wrap">
   <!-- Fixed Sticky Top Bar -->
   <div class="topbar" id="topbar">
-    <div class="topin">
+            <div class="topin">
       <div class="top">
-        <!-- Brand -->
-        <div class="brand">
-          <h1>چندچندی؟</h1>
+        <!-- Brand & Main Menu on the Right (Single Line) -->
+        <div class="brand-nav">
+          <div class="brand">
+            <img src="assets/logo.svg" alt="لوگو" class="brand-logo" width="30" height="30">
+            <h1>چندچندی؟</h1>
+          </div>
+
+          <nav class="tabs" role="tablist" aria-label="دسته‌بندی بازار" id="tabs">
+            <button role="tab" data-tab="home" aria-selected="true">
+              <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+              <span>خلاصه</span>
+            </button>
+            <button role="tab" data-tab="gold" aria-selected="false">
+              <svg viewBox="0 0 24 24"><path d="M3 17l3-8h12l3 8z"/><path d="M8 9l1.5-4h5L16 9"/></svg>
+              <span>طلا و سکه</span>
+            </button>
+            <button role="tab" data-tab="fx" aria-selected="false">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+              <span>ارز</span>
+            </button>
+            <button role="tab" data-tab="crypto" aria-selected="false">
+              <svg viewBox="0 0 24 24"><path d="M9 4v16M13 4v16M7 8h7a2.5 2.5 0 0 1 0 5H7M7 13h8a3 3 0 0 1 0 6H7"/></svg>
+              <span>رمزارز</span>
+            </button>
+            <button role="tab" data-tab="tools" aria-selected="false">
+              <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>
+              <span>ابزار</span>
+            </button>
+          </nav>
         </div>
 
-        <!-- Navigation Tabs (Inline on Desktop, Floating Dock on Mobile) -->
-        <nav class="tabs" role="tablist" aria-label="دسته‌بندی بازار" id="tabs">
-          <button role="tab" data-tab="home" aria-selected="true">
-            <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
-            <span>خلاصه</span>
-          </button>
-          <button role="tab" data-tab="gold" aria-selected="false">
-            <svg viewBox="0 0 24 24"><path d="M3 17l3-8h12l3 8z"/><path d="M8 9l1.5-4h5L16 9"/></svg>
-            <span>طلا و سکه</span>
-          </button>
-          <button role="tab" data-tab="fx" aria-selected="false">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
-            <span>ارز</span>
-          </button>
-          <button role="tab" data-tab="crypto" aria-selected="false">
-            <svg viewBox="0 0 24 24"><path d="M9 4v16M13 4v16M7 8h7a2.5 2.5 0 0 1 0 5H7M7 13h8a3 3 0 0 1 0 6H7"/></svg>
-            <span>رمزارز</span>
-          </button>
-          <button role="tab" data-tab="tools" aria-selected="false">
-            <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>
-            <span>ابزار</span>
-          </button>
-        </nav>
-
-        <!-- Action Tools: Toman/Rial, Refresh, Theme, Settings -->
+        <!-- Action Tools on the Left -->
         <div class="tools">
+          <button class="ibtn" id="btn-search" aria-label="جستجوی نماد" title="جستجو (/)">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+          </button>
           <div class="seg" role="group" aria-label="واحد قیمت">
             <button id="u-toman" aria-pressed="true">تومان</button>
             <button id="u-rial" aria-pressed="false">ریال</button>
           </div>
           <button class="ibtn" id="btn-refresh" aria-label="بروزرسانی قیمت‌ها" title="بروزرسانی قیمت‌ها">
-            <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M21 12a9 9 0 1 1-2.7-6.36L21 8"/></svg>
           </button>
           <button class="ibtn" id="btn-theme" aria-label="تغییر تم رنگی" title="تغییر تم">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
@@ -68,15 +73,28 @@
         </div>
       </div>
 
-      <!-- Filters Row (Sub-groups Chips & Sorting) -->
+      <!-- Expandable Search Bar -->
+      <div class="search-bar" id="search-bar" hidden>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="search-input" placeholder="جستجوی نماد (دلار، سکه، تتر، بورس...)" autocomplete="off">
+          <button id="search-clear" aria-label="بستن جستجو">✕</button>
+        </div>
+      </div>
+
+      <!-- Filters Row (Sub-groups Chips First, Smart Sort Button End) -->
       <div class="filters" id="filters" hidden>
-        <select id="sort" class="sort" aria-label="مرتب‌سازی">
-          <option value="def">پیش‌فرض</option>
-          <option value="up">بیشترین رشد</option>
-          <option value="down">بیشترین افت</option>
-          <option value="price">بیشترین قیمت</option>
-        </select>
         <div class="chips" id="chips"></div>
+        <div class="sort-btn" title="مرتب‌سازی">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+          <span id="sort-cur">پیش‌فرض</span>
+          <select id="sort" class="sort-select" aria-label="مرتب‌سازی">
+            <option value="def">پیش‌فرض</option>
+            <option value="up">بیشترین رشد</option>
+            <option value="down">بیشترین افت</option>
+            <option value="price">بیشترین قیمت</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -84,20 +102,8 @@
   <!-- Dynamic Spacer matching sticky topbar height -->
   <div id="spacer" aria-hidden="true"></div>
 
-  <!-- Meta Status Header -->
-  <header>
-    <div class="meta">
-      <span id="updated" class="num"></span>
-    </div>
-  </header>
-
   <!-- Main View Container -->
   <main id="view"></main>
-
-  <!-- Footer -->
-  <footer class="foot">
-    <p>داده‌ها از API الان‌چند — طراحی نئوبروتالیسم «چندچندی؟» — <a href="https://github.com/ramin-mahmoodi/chandchandi" target="_blank" rel="noopener">GitHub</a></p>
-  </footer>
 </div>
 
 <!-- Settings Sheet Modal -->
@@ -134,7 +140,7 @@
 
 <!-- Fallback Snapshot & Main Logic -->
 <script src="js/fallback-data.js"></script>
-<script src="js/app.js"></script>
+<script src="js/app.js?v=38"></script>
 
 </body>
 </html>
