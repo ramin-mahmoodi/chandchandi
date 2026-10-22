@@ -1,43 +1,36 @@
 /* ==========================================================================
-   ChandChandi Iranian Vintage Neobrutalism Design System
-   Inspired by classic Iranian heritage aesthetics & Dribbble editorial neobrutalism
-   - Warm vintage parchment canvas (#F7F4EE)
-   - Persian crimson red (#B91C1C) accents & framed headline badges
-   - Antique gold & jade green status indicators
-   - Crisp 2px/2.5px solid black borders, hard 0-blur drop shadows
+   ChandChandi Neobrutalism Design System (Official neobrutal-ui spec)
+   Layout: Fixed topbar, group cards, floating mobile dock, interactive SVG chart
+   Style: 2px/2.5px solid black borders, hard 0-blur drop shadows, pastel palette
    ========================================================================== */
 
 :root {
-  /* Iranian Vintage Neobrutalism Light Palette */
-  --bg: #F7F4EE;             /* Warm vintage parchment canvas */
-  --surface: #FFFFFF;        /* Crisp white cards */
-  --surface2: #F0EAE1;       /* Warm antique paper contrast */
-  --fg: #18181B;             /* Deep dark ink */
-  --muted: #57534E;          /* Warm stone / slate gray */
-  --line: #000000;           /* Crisp 2px solid black borders */
+  /* Official Neobrutal Light Palette */
+  --bg: #f0eefc;             /* Signature pastel lilac canvas */
+  --surface: #ffffff;        /* Pure crisp white cards */
+  --surface2: #f8fafc;       /* Neutral light surface */
+  --fg: #000000;             /* True black text */
+  --muted: #4b5563;          /* High-legibility dark slate */
+  --line: #000000;           /* 2px solid black borders */
   --shadow-color: #000000;   /* Solid black hard shadow */
 
-  /* Iranian Heritage Accent Tokens */
-  --accent: #B91C1C;         /* Persian Crimson / Lacquer Red */
-  --accent-fg: #FFFFFF;      /* Crisp white text on crimson */
-  --crimson: #B91C1C;        /* Signature badge & headline color */
-  --gold: #D97706;           /* Iranian warm ochre / gold */
-  --gold-surface: #FEF3C7;   /* Pastel gold canvas */
-  --fx: #2563EB;             /* Persian cobalt / sky blue */
-  --crypto: #7C3AED;         /* Traditional amethyst */
-  --up: #059669;             /* Persian jade / emerald green */
-  --up-bg: #D1FAE5;          /* Pastel jade green */
-  --down: #B91C1C;           /* Crimson red for drops */
-  --down-bg: #FEE2E2;        /* Pastel crimson rose */
-  --flat: #E7E5E4;           /* Warm neutral slate */
+  /* Category & Status Color Tokens */
+  --accent: #b6ace4;         /* Official Neobrutal lilac accent */
+  --accent-fg: #000000;      /* Contrast black on accent */
+  --gold: #fed170;           /* Sunny lemon gold */
+  --fx: #88c5ee;             /* Clear sky blue */
+  --crypto: #b6ace4;         /* Lavender crypto */
+  --up: #97ee88;             /* Fresh lime mint (gains) */
+  --down: #ff88a5;           /* Coral pink (drops) */
+  --flat: #e2e8f0;           /* Neutral slate */
 
-  /* Neobrutal Geometry (Geometric, Snappy, Framed) */
-  --neo-radius-sm: 3px;
-  --neo-radius: 4px;
-  --neo-radius-lg: 6px;
-  --neo-radius-xl: 8px;
+  /* Neobrutal Geometry */
+  --neo-radius-sm: 4px;
+  --neo-radius: 6px;
+  --neo-radius-lg: 8px;
+  --neo-radius-xl: 10px;
 
-  /* Neobrutal Hard Shadows (Zero Blur) */
+  /* Neobrutal Shadows (Zero Blur) */
   --neo-shadow-xs: 1px 1px 0px var(--shadow-color);
   --neo-shadow-sm: 2px 2px 0px var(--shadow-color);
   --neo-shadow: 3px 3px 0px var(--shadow-color);
@@ -51,49 +44,41 @@
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #161412;
-    --surface: #221F1B;
-    --surface2: #2D2924;
-    --fg: #F5F2EB;
-    --muted: #A8A29E;
-    --line: #FFFFFF;
-    --shadow-color: #FFFFFF;
-    --accent: #DC2626;
-    --accent-fg: #FFFFFF;
-    --crimson: #EF4444;
-    --gold: #F59E0B;
-    --gold-surface: #3B2E1E;
-    --fx: #60A5FA;
-    --crypto: #A78BFA;
-    --up: #10B981;
-    --up-bg: #064E3B;
-    --down: #EF4444;
-    --down-bg: #7F1D1D;
-    --flat: #44403C;
+    --bg: #121217;
+    --surface: #1e1e24;
+    --surface2: #282832;
+    --fg: #f4f4f5;
+    --muted: #a1a1aa;
+    --line: #ffffff;
+    --shadow-color: #ffffff;
+    --accent: #b6ace4;
+    --accent-fg: #000000;
+    --gold: #fed170;
+    --fx: #88c5ee;
+    --crypto: #c084fc;
+    --up: #97ee88;
+    --down: #ff88a5;
+    --flat: #52525b;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #161412;
-  --surface: #221F1B;
-  --surface2: #2D2924;
-  --fg: #F5F2EB;
-  --muted: #A8A29E;
-  --line: #FFFFFF;
-  --shadow-color: #FFFFFF;
-  --accent: #DC2626;
-  --accent-fg: #FFFFFF;
-  --crimson: #EF4444;
-  --gold: #F59E0B;
-  --gold-surface: #3B2E1E;
-  --fx: #60A5FA;
-  --crypto: #A78BFA;
-  --up: #10B981;
-  --up-bg: #064E3B;
-  --down: #EF4444;
-  --down-bg: #7F1D1D;
-  --flat: #44403C;
+  --bg: #121217;
+  --surface: #1e1e24;
+  --surface2: #282832;
+  --fg: #f4f4f5;
+  --muted: #a1a1aa;
+  --line: #ffffff;
+  --shadow-color: #ffffff;
+  --accent: #b6ace4;
+  --accent-fg: #000000;
+  --gold: #fed170;
+  --fx: #88c5ee;
+  --crypto: #c084fc;
+  --up: #97ee88;
+  --down: #ff88a5;
+  --flat: #52525b;
   color-scheme: dark;
 }
 
@@ -144,8 +129,8 @@ button {
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
-  padding-left: max(14px, env(safe-area-inset-left, 0px));
-  padding-right: max(14px, env(safe-area-inset-right, 0px));
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
   padding-bottom: 110px;
   box-sizing: border-box;
 }
@@ -169,8 +154,8 @@ button {
   border-bottom: 2.5px solid var(--line);
   box-shadow: none;
   padding-top: env(safe-area-inset-top, 0px);
-  padding-left: max(12px, env(safe-area-inset-left, 0px));
-  padding-right: max(12px, env(safe-area-inset-right, 0px));
+  padding-left: max(10px, env(safe-area-inset-left, 0px));
+  padding-right: max(10px, env(safe-area-inset-right, 0px));
 }
 
 .topin {
@@ -202,11 +187,11 @@ button {
 
 .brand h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 4.5vw, 1.95rem);
+  font-size: clamp(1.3rem, 4.5vw, 1.85rem);
   font-weight: 900;
   line-height: 1;
   margin: 0;
-  color: var(--crimson);
+  color: var(--fg);
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
@@ -278,17 +263,17 @@ button {
 .seg button {
   border: 1.5px solid transparent;
   background: transparent;
-  padding: 3px 9px;
-  border-radius: var(--neo-radius-sm);
-  font-size: 0.82rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--muted);
   transition: all 0.1s ease;
 }
 
 .seg button[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: var(--gold);
+  color: #000000;
   border-color: var(--line);
   box-shadow: 1px 1px 0 var(--line);
   font-weight: 900;
@@ -333,7 +318,7 @@ button {
   box-shadow: var(--neo-shadow-sm);
   padding: 0 8px;
   font-size: 0.82rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--fg);
 }
 
@@ -359,7 +344,7 @@ button {
   border-radius: var(--neo-radius);
   padding: 5px 12px;
   font-size: 0.82rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--fg);
   white-space: nowrap;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
@@ -414,7 +399,7 @@ nav.tabs {
 }
 
 nav.tabs button {
-  border: 1.5px solid transparent;
+  border: 2px solid transparent;
   background: transparent;
   display: flex;
   flex-direction: column;
@@ -423,8 +408,8 @@ nav.tabs button {
   padding: 6px 2px;
   border-radius: var(--neo-radius);
   color: var(--muted);
-  font-size: 0.74rem;
-  font-weight: 800;
+  font-size: 0.72rem;
+  font-weight: 700;
   min-width: 0;
   transition: all 0.1s ease;
 }
@@ -456,7 +441,7 @@ nav.tabs button[aria-selected="true"] {
     z-index: auto;
     border: 2px solid var(--line);
     box-shadow: none;
-    border-radius: var(--neo-radius);
+    border-radius: var(--neo-radius-lg);
     padding: 3px;
     display: flex;
     gap: 4px;
@@ -487,7 +472,7 @@ header {
   gap: 8px;
   font-size: 0.8rem;
   color: var(--muted);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 /* Market Pulse Bar */
@@ -496,7 +481,7 @@ header {
   background: var(--surface);
   border: 2.5px solid var(--line);
   box-shadow: var(--neo-shadow-md);
-  border-radius: var(--neo-radius);
+  border-radius: var(--neo-radius-lg);
   padding: 14px;
   display: flex;
   flex-direction: column;
@@ -507,27 +492,12 @@ header {
 
 .pulse h2.mood {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   font-weight: 900;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: var(--fg);
-}
-
-/* Distinct Dribbble Badge Style for Pulse Mood */
-.pulse h2.mood span {
-  display: inline-flex;
-  align-items: center;
-  background: var(--surface2);
-  border: 2px solid var(--line);
-  box-shadow: var(--neo-shadow-xs);
-  border-radius: var(--neo-radius);
-  padding: 3px 12px;
-  color: var(--crimson);
-  font-family: var(--font-display);
-  font-size: 1.18rem;
-  letter-spacing: -0.01em;
 }
 
 .pulse h2.mood small {
@@ -538,8 +508,8 @@ header {
 
 .bar {
   display: flex;
-  height: 18px;
-  border-radius: var(--neo-radius-sm);
+  height: 16px;
+  border-radius: 6px;
   overflow: hidden;
   border: 2px solid var(--line);
   background: var(--flat);
@@ -566,7 +536,7 @@ header {
   gap: 8px 16px;
   font-size: 0.82rem;
   color: var(--muted);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .legend b {
@@ -595,7 +565,7 @@ header {
   overflow: hidden;
   border: 2.5px solid var(--line);
   box-shadow: var(--neo-shadow-md);
-  border-radius: var(--neo-radius);
+  border-radius: var(--neo-radius-lg);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -605,26 +575,26 @@ header {
   width: 100%;
   box-sizing: border-box;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
-  color: #18181B;
+  color: #000000;
 }
 
-/* High Contrast Iranian Heritage Hero Surfaces */
+/* High Contrast Neobrutal Cards */
 .hero.t-fx {
-  background-color: #EFF6FF; /* Soft Sky Parchment */
+  background-color: #dbeafe; /* Pastel Sky Blue */
 }
 
 .hero.t-gold {
-  background-color: #FEF3C7; /* Warm Antique Ochre/Gold */
+  background-color: #fef3c7; /* Pastel Sunny Gold */
 }
 
 :root[data-theme="dark"] .hero.t-fx {
-  background-color: #1E293B;
-  color: #FFFFFF;
+  background-color: #1e293b;
+  color: #ffffff;
 }
 
 :root[data-theme="dark"] .hero.t-gold {
-  background-color: #3B2E1E;
-  color: #FFFFFF;
+  background-color: #3b2c17;
+  color: #ffffff;
 }
 
 .hero:hover {
@@ -654,21 +624,20 @@ header {
 }
 
 .hero .hl .ht small {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
   opacity: 0.85;
 }
 
 .hero .hl .ht b {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 900;
 }
 
 .hero .av {
   border: 2px solid var(--line);
   box-shadow: var(--neo-shadow-xs);
-  background: #FFFFFF;
+  background: #ffffff;
   color: #000000;
 }
 
@@ -702,7 +671,7 @@ header {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 8px;
+  padding: 2px 8px;
   background: var(--surface);
   border: 1.5px solid var(--line);
   border-radius: var(--neo-radius-sm);
@@ -751,7 +720,7 @@ header {
   background: var(--surface);
   border: 2px solid var(--line);
   box-shadow: var(--neo-shadow);
-  border-radius: var(--neo-radius);
+  border-radius: var(--neo-radius-lg);
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -776,15 +745,15 @@ header {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-weight: 900;
-  font-size: 0.88rem;
+  font-weight: 800;
+  font-size: 0.84rem;
   color: var(--fg);
 }
 
 .tile .av {
   width: 30px;
   height: 30px;
-  border-radius: var(--neo-radius-sm);
+  border-radius: 4px;
   flex-shrink: 0;
 }
 
@@ -827,34 +796,34 @@ header {
   flex: none;
 }
 
-/* Category Sections & Signature Framed Headline Badges */
+/* Category Sections & Rows */
 section.grp {
-  margin-top: 18px;
+  margin-top: 16px;
   width: 100%;
 }
 
-/* Distinct Dribbble Badges for Section Titles */
 section.grp > h2 {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin: 0 0 10px;
-  background: var(--surface);
-  border: 2px solid var(--line);
-  box-shadow: var(--neo-shadow-sm);
-  border-radius: var(--neo-radius);
-  padding: 5px 14px;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 900;
-  color: var(--crimson);
+}
+
+section.grp > h2::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1.5px solid var(--line);
+  background: var(--cat, var(--accent));
 }
 
 section.grp > h2 small {
   color: var(--muted);
-  font-family: var(--font-body);
-  font-size: 0.78rem;
   font-weight: 700;
+  font-size: 0.8rem;
 }
 
 /* Group Headers (Accordion Trigger) */
@@ -871,7 +840,7 @@ section.grp > h2 small {
   margin-bottom: 8px;
   text-align: right;
   font-weight: 900;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   color: var(--fg);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   box-sizing: border-box;
@@ -887,12 +856,19 @@ section.grp > h2 small {
   box-shadow: var(--neo-shadow-xs);
 }
 
+.gh::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1.5px solid var(--line);
+  background: var(--cat, var(--accent));
+  flex: none;
+}
+
 .gh .gt {
   flex: 1;
   min-width: 0;
-  color: var(--crimson);
-  font-family: var(--font-display);
-  font-size: 1.15rem;
 }
 
 .gh .gs {
@@ -903,19 +879,19 @@ section.grp > h2 small {
 }
 
 .gh .gs .up {
-  color: #065F46;
-  background: var(--up-bg);
+  color: #065f46;
+  background: var(--up);
   padding: 1px 6px;
   border: 1px solid var(--line);
-  border-radius: var(--neo-radius-sm);
+  border-radius: 3px;
 }
 
 .gh .gs .down {
-  color: #991B1B;
-  background: var(--down-bg);
+  color: #9f1239;
+  background: var(--down);
   padding: 1px 6px;
   border: 1px solid var(--line);
-  border-radius: var(--neo-radius-sm);
+  border-radius: 3px;
 }
 
 .gh svg {
@@ -1005,7 +981,7 @@ section.grp > h2 small {
   justify-content: center;
   line-height: 1;
   color: #000000;
-  background: var(--surface2);
+  background: var(--c, var(--surface2));
   direction: ltr;
   flex-shrink: 0;
 }
@@ -1039,6 +1015,11 @@ section.grp > h2 small {
   transition: opacity 0.15s ease;
 }
 
+/* Category Color Tokens */
+.t-gold { --c: var(--gold); --cat: var(--gold); }
+.t-fx { --c: var(--fx); --cat: var(--fx); }
+.t-crypto { --c: var(--crypto); --cat: var(--crypto); }
+
 .nm {
   min-width: 0;
   display: flex;
@@ -1046,10 +1027,21 @@ section.grp > h2 small {
 }
 
 .nm b {
-  font-weight: 900;
-  font-size: 0.98rem;
+  font-weight: 800;
+  font-size: 0.94rem;
   line-height: 1.35;
   color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nm small {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  direction: ltr;
+  text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1098,7 +1090,7 @@ section.grp > h2 small {
   flex: none;
 }
 
-/* Status Pills (Heritage Emerald & Crimson) */
+/* Status Pills (Gain / Loss) */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -1110,22 +1102,12 @@ section.grp > h2 small {
   white-space: nowrap;
   border: 1.5px solid var(--line);
   box-shadow: 1px 1px 0 var(--line);
+  color: #000000;
 }
 
-.pill.up {
-  background: var(--up-bg);
-  color: #065F46;
-}
-
-.pill.down {
-  background: var(--down-bg);
-  color: #991B1B;
-}
-
-.pill.flat {
-  background: var(--flat);
-  color: var(--fg);
-}
+.pill.up { background: var(--up); }
+.pill.down { background: var(--down); }
+.pill.flat { background: var(--flat); }
 
 /* Favorite Star Button */
 .star {
@@ -1188,7 +1170,7 @@ section.grp > h2 small {
   background: var(--surface);
   border: 2.5px solid var(--line);
   box-shadow: var(--neo-shadow-md);
-  border-radius: var(--neo-radius);
+  border-radius: var(--neo-radius-lg);
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -1200,10 +1182,9 @@ section.grp > h2 small {
 
 .card h2 {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 900;
-  color: var(--crimson);
+  color: var(--fg);
 }
 
 .card p.sub {
@@ -1248,7 +1229,7 @@ label.f {
 }
 
 .result {
-  background: var(--gold-surface);
+  background: var(--gold);
   border: 2px solid var(--line);
   box-shadow: var(--neo-shadow);
   border-radius: var(--neo-radius);
@@ -1256,7 +1237,7 @@ label.f {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  color: #18181B;
+  color: #000000;
 }
 
 .result span {
@@ -1271,16 +1252,16 @@ label.f {
   overflow-wrap: anywhere;
 }
 
-/* Generic Neobrutal Buttons (Dribbble Crimson Style) */
+/* Generic Neobrutal Buttons */
 .btn {
   height: 44px;
   border-radius: var(--neo-radius);
   border: 2px solid var(--line);
   box-shadow: var(--neo-shadow);
-  background: var(--crimson);
-  color: #FFFFFF;
+  background: var(--accent);
+  color: var(--accent-fg);
   font-weight: 900;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   padding: 0 18px;
   display: inline-flex;
   align-items: center;
@@ -1309,7 +1290,7 @@ label.f {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(24, 20, 16, 0.7);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1325,10 +1306,10 @@ label.f {
 .sheet-body {
   width: 100%;
   max-width: 580px;
-  background: var(--bg);
+  background: var(--surface);
   border: 3px solid var(--line);
   box-shadow: var(--neo-shadow-lg);
-  border-radius: var(--neo-radius-lg) var(--neo-radius-lg) 0 0;
+  border-radius: var(--neo-radius-xl) var(--neo-radius-xl) 0 0;
   padding: 20px max(16px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px));
   display: flex;
   flex-direction: column;
@@ -1340,16 +1321,15 @@ label.f {
 
 @media (min-width: 640px) {
   .sheet-body {
-    border-radius: var(--neo-radius-lg);
+    border-radius: var(--neo-radius-xl);
   }
 }
 
 .sheet-body h2 {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 900;
-  color: var(--crimson);
+  color: var(--fg);
 }
 
 .sheet-body .hint {
@@ -1373,7 +1353,7 @@ label.f {
 }
 
 .testout.ok { color: #047857; }
-.testout.bad { color: #B91C1C; }
+.testout.bad { color: #b91c1c; }
 
 /* Detail Sheet Component */
 .dh {
@@ -1391,10 +1371,16 @@ label.f {
 }
 
 .dh .ht b {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 900;
-  color: var(--crimson);
+  color: var(--fg);
+}
+
+.dh .ht small {
+  color: var(--muted);
+  font-weight: 700;
+  direction: ltr;
+  text-align: right;
 }
 
 .dx {
@@ -1403,8 +1389,8 @@ label.f {
   border-radius: var(--neo-radius);
   border: 2px solid var(--line);
   box-shadow: var(--neo-shadow-sm);
-  background: var(--crimson);
-  color: #FFFFFF;
+  background: var(--down);
+  color: #000000;
   font-weight: 900;
   font-size: 1rem;
   display: grid;
@@ -1443,7 +1429,7 @@ label.f {
 }
 
 .fact {
-  background: var(--surface);
+  background: var(--surface2);
   border: 2px solid var(--line);
   box-shadow: var(--neo-shadow-xs);
   border-radius: var(--neo-radius);
@@ -1466,7 +1452,7 @@ label.f {
 }
 
 .fact b.up { color: #047857; }
-.fact b.down { color: #B91C1C; }
+.fact b.down { color: #b91c1c; }
 
 .ptabs {
   display: flex;
@@ -1483,7 +1469,7 @@ label.f {
   border: 1.5px solid transparent;
   background: transparent;
   padding: 6px 4px;
-  border-radius: var(--neo-radius-sm);
+  border-radius: 4px;
   font-size: 0.84rem;
   font-weight: 800;
   color: var(--muted);
@@ -1491,8 +1477,8 @@ label.f {
 }
 
 .ptabs button[aria-pressed="true"] {
-  background: var(--crimson);
-  color: #FFFFFF;
+  background: var(--accent);
+  color: var(--accent-fg);
   border-color: var(--line);
   box-shadow: 1px 1px 0 var(--line);
   font-weight: 900;
@@ -1579,8 +1565,8 @@ label.f {
   stroke-width: 2.5;
 }
 
-.ch.up { color: #047857; }
-.ch.down { color: #B91C1C; }
+.ch.up { color: #059669; }
+.ch.down { color: #e11d48; }
 
 .sp {
   display: block;
@@ -1589,8 +1575,8 @@ label.f {
   overflow: visible;
 }
 
-.sp.up { color: #047857; }
-.sp.down { color: #B91C1C; }
+.sp.up { color: #059669; }
+.sp.down { color: #e11d48; }
 
 .sp .sl {
   stroke: currentColor;
@@ -1605,24 +1591,24 @@ label.f {
   margin-top: 32px;
   color: var(--muted);
   font-size: 0.8rem;
-  font-weight: 800;
+  font-weight: 700;
   text-align: center;
 }
 
 .foot a {
-  color: var(--crimson);
+  color: var(--fg);
   font-weight: 900;
   text-decoration: underline;
 }
 
-/* Flash Animations on Price Update */
+/* Flash Animations on Price Update (Clean Color Pulse) */
 @keyframes flU {
   0% { color: #047857; }
   100% { color: inherit; }
 }
 
 @keyframes flD {
-  0% { color: #B91C1C; }
+  0% { color: #b91c1c; }
   100% { color: inherit; }
 }
 
