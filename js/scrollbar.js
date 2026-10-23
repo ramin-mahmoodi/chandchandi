@@ -38,7 +38,13 @@
 
   addEventListener('scroll', function () { update(); show(); }, { passive: true });
   addEventListener('resize', update);
-  if (window.ResizeObserver) new ResizeObserver(update).observe(document.body);
+  if (window.ResizeObserver) {
+    var roRaf = 0;
+    new ResizeObserver(function () {
+      if (roRaf) return;
+      roRaf = requestAnimationFrame(function () { roRaf = 0; update(); });
+    }).observe(document.body);
+  }
   new MutationObserver(update).observe(root, { attributes: true, attributeFilter: ['class'] });
   track.addEventListener('mouseenter', function () { track.classList.add('show'); clearTimeout(hideT); });
   track.addEventListener('mouseleave', show);

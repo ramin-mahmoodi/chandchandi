@@ -243,6 +243,13 @@ var S = {
   unit: 'toman',
   data: {},
   live: false,
+  loading: false,
+  pulseSel: null,
+  hmMode: 'chg',
+  hmOpen: false,
+  pulseShown: false,
+  tried: false,
+  pulse: false,
   stale: null,
   snapT: null,
   err: false,
@@ -549,13 +556,187 @@ function renderChips() {
   box.innerHTML = h;
 }
 
+function syncToolBadge() {
+  var st = S.dstate || 'stale';
+  document.querySelectorAll('.tool-badge-live').forEach(function(el) {
+    el.classList.toggle('is-stale', st !== 'live');
+    var l = el.querySelector('.tb-label');
+    if (l) l.textContent = st === 'live' ? 'نرخ زنده' : (st === 'loading' ? 'در حال دریافت…' : 'داده ذخیره‌شده');
+  });
+}
+
 function renderView() {
   renderView0();
+  syncToolBadge();
+  pulseMount();
   fitPrices(document.getElementById('view'));
 }
 
+function skeletonHTML() {
+  var one = '<div class="skel-card"><span class="skel skel-av"></span><span class="skel-col"><span class="skel skel-l1"></span><span class="skel skel-l2"></span></span><span class="skel skel-pr"></span></div>';
+  var hero = '<div class="skel-hero"><span class="skel skel-l1"></span><span class="skel skel-big"></span><span class="skel skel-l2"></span></div>';
+  return '<div class="skel-wrap" aria-busy="true" aria-label="در حال بارگذاری قیمت‌ها">' +
+    '<div class="skel-heroes">' + hero + hero + '</div>' +
+    '<div class="skel-list">' + new Array(8).join(one) + '</div></div>';
+}
+
+
+/* ---------- Market pulse: heatmap of every symbol ---------- */
+var PS_LABEL = { u: 'صعودی', f: 'بدون تغییر', d: 'نزولی' };
+var HM_CAT = { gold: 'طلا و سکه', fx: 'ارز', crypto: 'رمزارز' };
+
+function hmClass(s) { var c = chg(s); return c > 0.004 ? 'u' : (c < -0.004 ? 'd' : 'f'); }
+
+function hmCell(s, i, cap) {
+  var c = chg(s), k = hmClass(s);
+  var pct = k === 'f' ? 0 : Math.round(30 + 70 * Math.min(Math.abs(c) / cap, 1));
+  var code = s.toUpperCase().replace(/[-_]/g, '').slice(0, 4);
+  return '<button type="button" class="hm-c ' + k + '" data-hm="' + s + '" style="--p:' + pct + '%;--d:' + Math.min(i, 60) * 9 + 'ms" aria-label="' + esc(META[s].fa) + ': ' + (c > 0 ? '+' : '') + fmt(c, 2) + '٪"><span>' + esc(code) + '</span></button>';
+}
+
+function hmReadout(s) {
+  var d = S.data[s], c = chg(s), k = hmClass(s);
+  return '<span class="hr-n">' + esc(META[s].fa) + '</span>' + pill(d && d.ch) +
+    '<button type="button" class="hr-open" data-open="' + s + '">نمودار ◂</button>';
+}
+
+function pulseHTML(all0, cu, cf, cd) {
+  var tot = all0.length || 1;
+  var mk = cu > cd * 1.6 ? 'up' : (cd > cu * 1.6 ? 'down' : 'calm');
+  var mood = mk === 'up' ? 'بازار امروز صعودی است' : (mk === 'down' ? 'بازار امروز نزولی است' : 'بازار امروز آرام است');
+  var mIcon = mk === 'up' ? '<path d="M4 16l6-6 4 4 6-7"/><path d="M14 7h6v6"/>' : (mk === 'down' ? '<path d="M4 8l6 6 4-4 6 7"/><path d="M14 17h6v-6"/>' : '<path d="M4 12h16"/><path d="M4 8h16M4 16h16" opacity=".45"/>');
+  var cnt = { u: cu, f: cf, d: cd };
+  var sel = S.pulseSel && cnt[S.pulseSel] ? S.pulseSel : null;
+  var mode = S.hmMode === 'cat' ? 'cat' : 'chg';
+  var anim = !S.pulseShown;
+  S.pulseShown = true;
+  var open = S.hmOpen === true;
+
+  var abs = all0.map(function(s) { return Math.abs(chg(s)); }).sort(function(a, b) { return a - b; });
+  var cap = Math.max(2, abs[Math.floor(abs.length * 0.9)] || 2);
+  var byChg = function(a, b) { return chg(b) - chg(a); };
+  var body = '';
+  if (mode === 'cat') {
+    ['gold', 'fx', 'crypto'].forEach(function(t) {
+      var list = all0.filter(function(s) { return TYPE[s] === t; }).sort(byChg);
+      if (!list.length) return;
+      body += '<div class="hm-g"><div class="hm-gt">' + HM_CAT[t] + ' <small class="num">' + fmt(list.length) + '</small></div><div class="hm-grid">' +
+        list.map(function(s, i) { return hmCell(s, i, cap); }).join('') + '</div></div>';
+    });
+  } else {
+    body = '<div class="hm-grid">' + all0.slice().sort(byChg).map(function(s, i) { return hmCell(s, i, cap); }).join('') + '</div>';
+  }
+
+  function stat(k) {
+    return '<button type="button" class="st ' + k + '" data-ps="' + k + '" aria-pressed="' + (sel === k) + '"><span class="dot" aria-hidden="true"></span><b class="num">' + fmt(cnt[k]) + '</b><span class="lb">' + PS_LABEL[k] + '</span><em class="num">' + fmt(Math.round(cnt[k] / tot * 100)) + '٪</em></button>';
+  }
+
+  var best = all0.slice().sort(byChg)[0];
+  var strip = '<div class="hm-strip" aria-hidden="true">' + all0.slice().sort(byChg).map(function(x) {
+    var c = chg(x), k = hmClass(x);
+    return '<i class="' + k + '" style="--p:' + (k === 'f' ? 0 : Math.round(30 + 70 * Math.min(Math.abs(c) / cap, 1))) + '%"></i>';
+  }).join('') + '</div>';
+  return '<div class="pulse m-' + mk + (anim ? ' play' : '') + (open ? ' hm-open' : '') + '" data-sel="' + (sel || '') + '" data-mode="' + mode + '">' +
+    '<h2 class="mood"><span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24">' + mIcon + '</svg></span><span class="mt">' + mood + '<small>' + fmt(all0.length) + ' نماد در ۲۴ ساعت</small></span>' +
+    '<button type="button" class="hm-toggle" data-hmtoggle aria-expanded="' + open + '" aria-controls="hm-wrap"><span class="ht-o">نقشه</span><span class="ht-c">پنهان</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></h2>' +
+    '<div class="legend">' + stat('u') + stat('f') + stat('d') + '</div>' +
+    strip +
+    '<div class="hm-wrap" id="hm-wrap"><div class="hm-inner">' +
+    '<div class="hm-tools"><div class="hm-read" id="hm-read" aria-live="polite">' + (best ? hmReadout(best) : '') + '</div>' +
+    '<button type="button" class="hm-mode" data-hmmode="' + (mode === 'cat' ? 'chg' : 'cat') + '" aria-label="تغییر نحوه چیدمان">' + (mode === 'cat' ? 'دسته' : 'تغییر') + '</button></div>' +
+    '<div class="hm ' + (mode === 'cat' ? 'is-cat' : '') + '">' + body + '</div>' +
+    '<div class="hm-scale" aria-hidden="true"><span>رشد بیشتر</span><i></i><span>افت بیشتر</span></div>' +
+    '</div></div></div>';
+}
+
+function pulseMount() { /* the entrance animation is pure CSS (.pulse.play) */ }
+
+function pulseRerender() {
+  var el = document.querySelector('.pulse');
+  if (!el) return;
+  var all0 = Object.keys(META), cu = 0, cf = 0, cd = 0;
+  all0.forEach(function(s) { var k = hmClass(s); if (k === 'u') cu++; else if (k === 'd') cd++; else cf++; });
+  el.outerHTML = pulseHTML(all0, cu, cf, cd);
+}
+
+function hmShow(s) {
+  var r = document.getElementById('hm-read');
+  if (r && META[s]) r.innerHTML = hmReadout(s);
+  document.querySelectorAll('.hm-c.is-on').forEach(function(c) { c.classList.remove('is-on'); });
+  var c = document.querySelector('.hm-c[data-hm="' + s + '"]');
+  if (c) c.classList.add('is-on');
+}
+
+var hmPD = null;
+(function() {
+  var v = document.getElementById('view');
+  v.addEventListener('pointerdown', function(e) {
+    var c = e.target.closest && e.target.closest('[data-hm]');
+    hmPD = c ? { touch: e.pointerType !== 'mouse', on: c.classList.contains('is-on') } : null;
+  });
+  v.addEventListener('click', function(e) {
+    var tg = e.target.closest && e.target.closest('[data-hmtoggle]');
+    if (tg) {
+      var pl = tg.closest('.pulse');
+      S.hmOpen = !pl.classList.contains('hm-open');
+      pl.classList.toggle('hm-open', S.hmOpen);
+      tg.setAttribute('aria-expanded', S.hmOpen);
+      lsSet('cc_hm', S.hmOpen ? '1' : '0');
+      return;
+    }
+    var t = e.target.closest && e.target.closest('[data-hmmode]');
+    if (t) { S.hmMode = t.dataset.hmmode; pulseRerender(); return; }
+    var b = e.target.closest && e.target.closest('[data-ps]');
+    if (b) { S.pulseSel = (S.pulseSel === b.dataset.ps) ? null : b.dataset.ps; pulseRerender(); var f = document.querySelector('.pulse [data-ps="' + b.dataset.ps + '"]'); if (f) f.focus({ preventScroll: true }); return; }
+    var c = e.target.closest && e.target.closest('[data-hm]');
+    if (c) {
+      var pd = hmPD; hmPD = null;
+      /* touch: first tap shows the readout, second tap opens the chart (mouse / keyboard open at once) */
+      if (pd && pd.touch && !pd.on) { hmShow(c.dataset.hm); return; }
+      openDetail(c.dataset.hm);
+    }
+  });
+  v.addEventListener('mouseover', function(e) {
+    var c = e.target.closest && e.target.closest('[data-hm]');
+    if (c) hmShow(c.dataset.hm);
+  });
+  /* release the highlighted cell: pointer leaves it, focus moves away, tap outside, or Escape */
+  function hmClear(blur) {
+    document.querySelectorAll('.hm-c.is-on').forEach(function(c) { c.classList.remove('is-on'); });
+    var a = document.activeElement;
+    if (blur && a && a.closest && a.closest('.hm-c') && a.blur) a.blur();
+  }
+  v.addEventListener('mouseout', function(e) {
+    var c = e.target.closest && e.target.closest('[data-hm]');
+    if (c && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('[data-hm]')) && document.activeElement !== c) hmClear(false);
+  });
+  v.addEventListener('focusout', function(e) {
+    if (e.target.closest && e.target.closest('[data-hm]')) hmClear(false);
+  });
+  document.addEventListener('pointerdown', function(e) {
+    if (!(e.target.closest && e.target.closest('[data-hm], .hm-read'))) hmClear(true);
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') hmClear(true);
+  });
+  v.addEventListener('focusin', function(e) {
+    var c = e.target.closest && e.target.closest('[data-hm]');
+    if (c) hmShow(c.dataset.hm);
+  });
+})();
+
 function renderView0() {
   var v = document.getElementById('view'), h = '';
+  if (!Object.keys(S.data).length) {
+    document.getElementById('filters').hidden = true;
+    if (S.tried && S.err && !S.loading) {
+      v.innerHTML = '<section class="grp"><div class="empty">دریافت قیمت‌ها ممکن نشد. اتصال اینترنت یا پروکسی را بررسی کنید.<br><button class="btn" id="retry-load" type="button">تلاش دوباره</button></div></section>';
+      document.getElementById('retry-load').onclick = function() { refresh(true); };
+    } else {
+      v.innerHTML = skeletonHTML();
+    }
+    return;
+  }
   if (S.search) {
     document.getElementById('filters').hidden = true;
     var q = S.search.toLowerCase();
@@ -596,19 +777,7 @@ function renderView0() {
       else if (c < -0.004) cd++;
       else cf++;
     });
-    var mood = cu > cd * 1.6 ? 'بازار امروز صعودی است' : (cd > cu * 1.6 ? 'بازار امروز نزولی است' : 'بازار امروز آرام است');
-    h += '<div class="pulse">' +
-      '<h2 class="mood"><span>' + mood + '</span><small>' + fmt(all0.length) + ' نماد در ۲۴ ساعت</small></h2>' +
-      '<div class="bar" role="img" aria-label="' + cu + ' صعودی، ' + cd + ' نزولی">' +
-      '<i class="u" style="width:' + (cu / all0.length * 100) + '%"></i>' +
-      '<i class="f" style="width:' + (cf / all0.length * 100) + '%"></i>' +
-      '<i class="d" style="width:' + (cd / all0.length * 100) + '%"></i>' +
-      '</div>' +
-      '<div class="legend">' +
-      '<span><b class="num">' + fmt(cu) + '</b> صعودی</span>' +
-      '<span><b class="num">' + fmt(cf) + '</b> بدون تغییر</span>' +
-      '<span><b class="num">' + fmt(cd) + '</b> نزولی</span>' +
-      '</div></div>';
+    h += pulseHTML(all0, cu, cf, cd);
 
     h += '<div class="heroes">' + hero('usd') + hero('18ayar') + '</div>';
     h += '<div class="tiles">' + HOME_TILES.map(tile).join('') + '</div>';
@@ -673,7 +842,7 @@ function toolsHTML() {
       '<section class="tool-card">' +
         '<div class="tool-badge tool-badge-live">' +
           '<span class="pulse-dot"><span class="pulse-ring"></span></span>' +
-          'نرخ زنده' +
+          '<span class="tb-label">نرخ زنده</span>' +
         '</div>' +
 
         '<div class="tool-header">' +
@@ -1133,19 +1302,39 @@ function renderChrome() {
   document.getElementById('u-toman').setAttribute('aria-pressed', S.unit === 'toman');
   document.getElementById('u-rial').setAttribute('aria-pressed', S.unit === 'rial');
 
+  /* Data freshness: live / loading / saved (stale) */
   var u = document.getElementById('updated');
-  if (u) {
-    var fd = function(x) { return new Date(x).toLocaleString('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }); };
-    if (S.live && S.updated) {
-      u.textContent = 'بروزرسانی ' + S.updated.toLocaleTimeString('fa-IR');
-    } else if (S.stale) {
-      u.textContent = 'آخرین قیمت: ' + fd(S.stale) + (S.err ? ' (آفلاین)' : '');
-    } else if (S.snapT) {
-      u.textContent = 'آخرین قیمت: ' + fd(S.snapT) + (S.err ? ' (آفلاین)' : '');
-    } else {
-      u.textContent = '';
-    }
+  var fd = function(x) { return new Date(x).toLocaleString('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }); };
+  var st = 'stale', label = 'داده ذخیره‌شده', detail = '';
+  if (S.live && S.updated && !S.err) {
+    st = 'live'; label = 'نرخ زنده';
+    detail = 'بروزرسانی ' + S.updated.toLocaleTimeString('fa-IR');
+  } else {
+    var t = S.stale || S.snapT;
+    if (S.loading && !S.tried) { st = 'loading'; label = 'در حال دریافت قیمت زنده…'; }
+    else if (S.err) { label = 'آفلاین · داده قدیمی'; }
+    else if (S.live) { st = 'live'; label = 'نرخ زنده'; }
+    if (t && st !== 'loading') detail = 'آخرین قیمت: ' + fd(t);
   }
+  if (u) {
+    u.hidden = false;
+    u.className = 'data-status is-' + st;
+    u.innerHTML = '<span class="ds-dot" aria-hidden="true"></span><b>' + label + '</b>' + (detail ? '<span class="ds-sep">·</span><span>' + detail + '</span>' : '');
+  }
+  S.dstate = st;
+  syncToolBadge();
+  var vw = document.getElementById('view');
+  if (vw) vw.classList.toggle('is-refreshing', Boolean(S.loading && S.pulse));
+}
+
+/* One-shot CSS animation hooks (class is removed again so refreshes never replay them) */
+function playAnim(el, cls, ms) {
+  if (!el) return;
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+  clearTimeout(el['_t_' + cls]);
+  el['_t_' + cls] = setTimeout(function() { el.classList.remove(cls); }, ms || 900);
 }
 
 function go(tab) {
@@ -1162,6 +1351,7 @@ function go(tab) {
   try { history.replaceState(null, '', '#' + tab); } catch(e) {}
   renderChrome();
   renderView();
+  playAnim(document.getElementById('view'), 'view-enter', 1100);
   window.scrollTo({ top: 0 });
 }
 
@@ -1240,6 +1430,9 @@ async function fetchLive(customProxy) {
 async function refresh(manual) {
   var b = document.getElementById('btn-refresh');
   b.classList.add('spin');
+  S.loading = true;
+  S.pulse = Boolean(manual) || !S.tried;
+  renderChrome();
   try {
     var r = await fetchLive(S.proxy);
     var old = S.data;
@@ -1257,6 +1450,9 @@ async function refresh(manual) {
   } catch(e) {
     S.err = true;
   }
+  S.loading = false;
+  S.tried = true;
+  S.pulse = false;
   b.classList.remove('spin');
   renderAll();
 }
@@ -1395,13 +1591,15 @@ function drawChart() {
   }
 
   var up = ys[ys.length - 1] >= ys[0];
-  host.innerHTML = '<svg class="ch ' + (up ? 'up' : 'down') + '" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="نمودار قیمت">' +
+  var sig = s + '|' + DT.period, fresh = DT.sig !== sig;
+  DT.sig = sig;
+  host.innerHTML = '<svg class="ch ' + (up ? 'up' : 'down') + (fresh ? ' draw' : '') + '" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="نمودار قیمت">' +
     '<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">' +
     '<stop offset="0" stop-color="currentColor" stop-opacity=".35"/>' +
     '<stop offset="1" stop-color="currentColor" stop-opacity="0"/>' +
     '</linearGradient></defs>' +
     grid + xl + '<path d="' + area + '" fill="url(#cg)"/>' +
-    '<path class="ln" d="' + d + '" fill="none"/>' +
+    '<path class="ln" pathLength="1" d="' + d + '" fill="none"/>' +
     '<circle cx="' + X(x1).toFixed(1) + '" cy="' + Y(ys[ys.length - 1]).toFixed(1) + '" r="4.5" fill="currentColor"/>' +
     '<g id="cross" opacity="0"><line class="cl" y1="' + pt + '" y2="' + (H - pb) + '" x1="0" x2="0"/><circle class="cd" r="5" cx="0" cy="0"/></g>' +
     '</svg><div class="tip"></div>';
@@ -1453,6 +1651,7 @@ function updateScrollLock() {
 function openDetail(s) {
   if (!META[s] || !S.data[s]) return;
   DT.slug = s;
+  DT.sig = null;
   DT.period = 'month';
   document.getElementById('dsheet').hidden = false;
   updateScrollLock();
@@ -1529,6 +1728,11 @@ document.getElementById('view').addEventListener('click', function(e) {
     var k = gh.dataset.gh;
     S.collapsed[k] = !S.collapsed[k];
     renderView();
+    if (!S.collapsed[k]) {
+      Array.prototype.forEach.call(document.querySelectorAll('button[data-gh]'), function(x) {
+        if (x.dataset.gh === k && x.closest('section')) playAnim(x.closest('section'), 'grp-open', 600);
+      });
+    }
     return;
   }
   var b = e.target.closest('button[data-star]');
@@ -1538,6 +1742,9 @@ document.getElementById('view').addEventListener('click', function(e) {
     else S.favs.push(s);
     lsSet('cc_favs', JSON.stringify(S.favs));
     renderView();
+    Array.prototype.forEach.call(document.querySelectorAll('button[data-star]'), function(x) {
+      if (x.dataset.star === s) playAnim(x, 'pop', 600);
+    });
     return;
   }
   var o = e.target.closest('[data-open]');
@@ -1643,12 +1850,14 @@ document.getElementById('u-toman').onclick = function() {
   S.unit = 'toman';
   lsSet('cc_unit', 'toman');
   renderAll();
+  playAnim(document.getElementById('view'), 'view-soft', 500);
 };
 
 document.getElementById('u-rial').onclick = function() {
   S.unit = 'rial';
   lsSet('cc_unit', 'rial');
   renderAll();
+  playAnim(document.getElementById('view'), 'view-soft', 500);
 };
 
 document.getElementById('btn-refresh').onclick = function() {
@@ -1661,6 +1870,8 @@ document.getElementById('btn-theme').onclick = function() {
   var nx = dark ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', nx);
   lsSet('cc_theme', nx);
+  playAnim(document.documentElement, 'theme-anim', 500);
+  playAnim(document.getElementById('btn-theme'), 'rot', 600);
 };
 
 /* Settings Dialog */
@@ -1730,6 +1941,7 @@ document.getElementById('s-test').onclick = async function() {
 };
 
 /* ---------- Bootstrapping ---------- */
+S.hmOpen = lsGet('cc_hm', '0') === '1';
 var h0 = (location.hash || '').replace('#', '');
 if (['home', 'gold', 'fx', 'crypto', 'tools'].indexOf(h0) > -1) {
   S.tab = h0;
@@ -1752,13 +1964,20 @@ if (window.ALANCHAND_FALLBACK_DATA) {
 }
 
 renderAll();
+playAnim(document.getElementById('view'), 'view-enter', 1100);
 initCustomDropdown('sort', false, false);
 initCustomDropdown('interval', false, false);
 refresh(false);
 schedule();
 
 if (window.ResizeObserver) {
-  new ResizeObserver(fixSpacer).observe(document.getElementById('topbar'));
+  /* Deferred to the next frame: resizing the spacer changes <body> size, which other
+     observers watch — doing it synchronously causes "ResizeObserver loop" errors. */
+  var _roRaf = 0;
+  new ResizeObserver(function() {
+    if (_roRaf) return;
+    _roRaf = requestAnimationFrame(function() { _roRaf = 0; fixSpacer(); });
+  }).observe(document.getElementById('topbar'));
 }
 window.addEventListener('resize', fixSpacer);
 fixSpacer();
